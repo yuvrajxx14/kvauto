@@ -48,13 +48,13 @@ function CustomerDetail() {
             <CardTitle className="text-base">Profile</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
-            <Field label="Mobile" value={c.mobile} />
-            <Field label="Alternate mobile" value={c.alternate_mobile} />
-            <Field label="Village" value={c.village} />
-            <Field label="Taluka" value={c.taluka} />
-            <Field label="District" value={c.district} />
-            <Field label="Address" value={c.address} />
-            <Field label="Customer type" value={c.customer_type} />
+            <Field label="Mobile">{c.mobile ?? "—"}</Field>
+            <Field label="Alternate mobile">{c.alternate_mobile ?? "—"}</Field>
+            <Field label="Village">{c.village ?? "—"}</Field>
+            <Field label="Taluka">{c.taluka ?? "—"}</Field>
+            <Field label="District">{c.district ?? "—"}</Field>
+            <Field label="Address">{c.address ?? "—"}</Field>
+            <Field label="Customer type">{c.customer_type ?? "—"}</Field>
           </CardContent>
         </Card>
 
