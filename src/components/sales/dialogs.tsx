@@ -554,6 +554,7 @@ export function BookingDialog({
       const { data, error } = await supabase
         .from("bookings")
         .insert({
+          booking_number: "",
           inquiry_id: inquiry.id,
           customer_id: inquiry.customer_id,
           salesman_id: inquiry.salesman_id,
