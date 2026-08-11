@@ -306,7 +306,7 @@ function NewInquiry() {
             <div className="space-y-1.5">
               <Label>Salesman</Label>
               {me?.isManagement ? (
-                <Select name="salesman_id" defaultValue={user?.id}>
+                <Select name="salesman_id" defaultValue={user?.id ?? ""}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>

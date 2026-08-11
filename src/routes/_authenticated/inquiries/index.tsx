@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ALL_STATUSES, STATUS_LABEL, fmtDate, todayISO, type InquiryStatus } from "@/lib/sales";
 
-type Search = { status?: string };
+type Search = { status?: string | undefined };
 
 export const Route = createFileRoute("/_authenticated/inquiries/")({
   validateSearch: (s: Record<string, unknown>): Search => ({
