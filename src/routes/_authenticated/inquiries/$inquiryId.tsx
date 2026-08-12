@@ -57,10 +57,17 @@ function InquiryDetail() {
   const [edit, setEdit] = useState(false);
 
   const update = useMutation({
-    mutationFn: async (patch: Record<string, unknown>) => {
+    mutationFn: async (patch: {
+      status: InquiryStatus;
+      interest_level: InterestLevel;
+      next_followup_date: string | null;
+      remarks: string | null;
+      salesman_id: string;
+    }) => {
       const { error } = await supabase.from("inquiries").update(patch).eq("id", inquiryId);
       if (error) throw error;
     },
+
     onSuccess: () => {
       toast.success("Inquiry updated");
       qc.invalidateQueries();
