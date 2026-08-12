@@ -39,9 +39,10 @@ function Landing() {
 
         <div className="mt-8 grid grid-cols-1 gap-3 text-left sm:grid-cols-3">
           {[
-            { icon: ClipboardList, t: "Inquiry to Delivery", d: "Full tractor sales pipeline" },
-            { icon: PhoneCall, t: "Follow-up Control", d: "Today, overdue & upcoming" },
-            { icon: BookCheck, t: "Bookings", d: "Payments & tractor allocation" },
+            { icon: ClipboardList, t: "Inquiry Management", d: "Capture, track and update leads" },
+            { icon: CalendarClock, t: "Follow-up Control", d: "Today, overdue & upcoming dates" },
+            { icon: Users, t: "Customer Master", d: "Village-wise customer records" },
+
           ].map((f) => (
             <div key={f.t} className="rounded-lg border border-border bg-card p-4 shadow-card">
               <f.icon className="h-5 w-5 text-primary" />
