@@ -11,7 +11,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Internal dealership ERP for KrushiVidhya Automobiles: inquiries, follow-ups, demos, bookings and tractor allocation.",
+          "Internal dealership ERP for KrushiVidhya Automobiles: tractor sales inquiries, customers and follow-up tracking.",
       },
       { property: "og:title", content: "KrushiVidhya Automobiles — Sales Module" },
       {
