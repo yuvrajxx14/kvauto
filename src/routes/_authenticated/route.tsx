@@ -30,7 +30,6 @@ function AuthenticatedLayout() {
   const { data: me, isLoading } = useMe();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [q, setQ] = useState("");
 
   async function handleSignOut() {
     await signOutAndRedirect(queryClient);
@@ -44,22 +43,7 @@ function AuthenticatedLayout() {
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b border-border bg-card/95 px-2 backdrop-blur sm:px-4">
             <SidebarTrigger />
-            <form
-              className="relative ml-1 max-w-md flex-1"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (q.trim().length >= 2) navigate({ to: "/search", search: { q: q.trim() } });
-              }}
-            >
-              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Search name, mobile, inquiry, booking, chassis…"
-                className="h-9 pl-8"
-                aria-label="Search sales records"
-              />
-            </form>
+
             <div className="ml-auto flex items-center gap-2">
               <div className="hidden text-right sm:block">
                 <p className="text-xs font-semibold leading-tight">
