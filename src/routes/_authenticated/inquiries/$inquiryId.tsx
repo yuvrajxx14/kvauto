@@ -187,7 +187,7 @@ function InquiryDetail() {
                   }
                   update.mutate({
                     status: nextStatus,
-                    interest_level: String(fd.get("interest_level")),
+                    interest_level: String(fd.get("interest_level")) as InterestLevel,
                     next_followup_date: nextDate || null,
                     remarks: String(fd.get("remarks") || "") || null,
                     salesman_id: String(fd.get("salesman_id") || inquiry.salesman_id),
