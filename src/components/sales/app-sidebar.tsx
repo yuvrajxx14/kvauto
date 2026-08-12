@@ -1,16 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  LayoutDashboard,
-  Users,
-  ClipboardList,
-  PhoneCall,
-  Tractor,
-  Handshake,
-  BookCheck,
-  Truck,
-  BarChart3,
-  UserCog,
-} from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -27,14 +16,8 @@ import { useMe } from "@/lib/auth";
 
 const SALES_ITEMS = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Customers", url: "/customers", icon: Users },
   { title: "Inquiries", url: "/inquiries", icon: ClipboardList },
-  { title: "Follow-Ups", url: "/followups", icon: PhoneCall },
-  { title: "Demos", url: "/demos", icon: Tractor },
-  { title: "Negotiations", url: "/negotiations", icon: Handshake },
-  { title: "Bookings", url: "/bookings", icon: BookCheck },
-  { title: "Delivery Ready", url: "/delivery-ready", icon: Truck },
-  { title: "Reports", url: "/reports", icon: BarChart3 },
+  { title: "Customers", url: "/customers", icon: Users },
 ];
 
 export function AppSidebar() {
