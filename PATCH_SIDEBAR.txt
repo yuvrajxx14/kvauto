@@ -1,0 +1,9 @@
+In src/components/sales/app-sidebar.tsx:
+
+Add an icon import:
+  import { ..., ReceiptText } from "lucide-react";
+
+Add this item to SALES_ITEMS:
+  { title: "Bookings", url: "/bookings", icon: ReceiptText },
+
+Do not remove or redesign the existing Inquiry/Customer navigation.

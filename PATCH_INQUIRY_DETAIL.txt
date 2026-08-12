@@ -1,0 +1,14 @@
+In src/routes/_authenticated/inquiries/$inquiryId.tsx:
+
+1. Import Link already exists.
+2. Add a Create Booking button to PageHeader actions for inquiries that are not BOOKED/DELIVERED/LOST:
+   <Button asChild size="sm">
+     <Link to="/bookings/new" search={{ inquiryId }}>Create Booking</Link>
+   </Button>
+
+3. Keep all existing Inquiry UI unchanged.
+4. Once BOOKED, hide the button.
+5. If you want the exact guard, use:
+   const canBook = !["BOOKED","DELIVERED","LOST"].includes(status);
+
+The existing database has a UNIQUE constraint on bookings.inquiry_id, so an inquiry cannot receive two bookings.
