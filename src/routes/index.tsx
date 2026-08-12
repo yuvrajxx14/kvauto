@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Tractor, ClipboardList, PhoneCall, BookCheck } from "lucide-react";
+import { Tractor, ClipboardList, Users, CalendarClock } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 
