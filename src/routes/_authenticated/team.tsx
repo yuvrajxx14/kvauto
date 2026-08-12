@@ -116,7 +116,7 @@ function TeamPage() {
                         <Select
                           value={current ?? ""}
                           onValueChange={(v) => setRole.mutate({ userId: p.id, role: v as Role })}
-                          disabled={p.id === me.userId}
+                          disabled={p.id === me.profile?.id}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select role" />
