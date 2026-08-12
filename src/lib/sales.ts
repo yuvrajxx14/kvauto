@@ -8,17 +8,14 @@ export type DemoStatus = Database["public"]["Enums"]["demo_status"];
 export type BookingStatus = Database["public"]["Enums"]["booking_status"];
 export type PaymentMode = Database["public"]["Enums"]["payment_mode"];
 
-export const PIPELINE: InquiryStatus[] = [
-  "NEW",
-  "CONTACTED",
-  "FOLLOW_UP",
-  "DEMO",
-  "NEGOTIATION",
-  "BOOKED",
-  "DELIVERED",
-];
+/** Stages exposed in the MVP. Booking/allocation/delivery arrive with later modules. */
+export const PIPELINE: InquiryStatus[] = ["NEW", "CONTACTED", "FOLLOW_UP", "BOOKED"];
 
 export const ALL_STATUSES: InquiryStatus[] = [...PIPELINE, "LOST"];
+
+/** Statuses a user can set manually from the inquiry screen. */
+export const EDITABLE_STATUSES: InquiryStatus[] = ["NEW", "CONTACTED", "FOLLOW_UP", "LOST"];
+
 
 export const STATUS_LABEL: Record<InquiryStatus, string> = {
   NEW: "New",

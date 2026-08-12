@@ -12,13 +12,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   CUSTOMER_TYPES,
+  INTEREST_LEVELS,
   LEAD_SOURCES,
-  PURCHASE_PURPOSES,
   TRACTOR_MODELS,
   VARIANTS,
   addDaysISO,
@@ -45,7 +44,6 @@ type ExistingCustomer = {
   mobile: string;
   village: string;
   taluka: string | null;
-  district: string | null;
   customer_type: string;
 };
 
@@ -73,7 +71,7 @@ function NewInquiry() {
     setChecking(true);
     const { data: cust } = await supabase
       .from("customers")
-      .select("id, customer_name, mobile, village, taluka, district, customer_type")
+      .select("id, customer_name, mobile, village, taluka, customer_type")
       .eq("mobile", mobile.trim())
       .maybeSingle();
     if (cust) {
@@ -104,11 +102,8 @@ function NewInquiry() {
           .insert({
             customer_name: String(fd.get("customer_name")).trim(),
             mobile: mobile.trim(),
-            alternate_mobile: (fd.get("alternate_mobile") as string) || null,
             village: String(fd.get("village")).trim(),
             taluka: (fd.get("taluka") as string) || null,
-            district: (fd.get("district") as string) || null,
-            address: (fd.get("address") as string) || null,
             customer_type: fd.get("customer_type") as never,
             assigned_salesman_id: salesmanId,
             created_by: user!.id,
@@ -130,13 +125,7 @@ function NewInquiry() {
           model: String(fd.get("model")),
           hp: (fd.get("hp") as string) || null,
           variant: (fd.get("variant") as string) || null,
-          expected_purchase_date: (fd.get("expected_purchase_date") as string) || null,
-          purchase_purpose: (fd.get("purchase_purpose") as string) || null,
-          budget: Number(fd.get("budget") || 0) || null,
-          exchange_required: fd.get("exchange_required") === "on",
-          finance_required: fd.get("finance_required") === "on",
-          subsidy_required: fd.get("subsidy_required") === "on",
-          competitor: (fd.get("competitor") as string) || null,
+          interest_level: fd.get("interest_level") as never,
           next_followup_date: String(fd.get("next_followup_date")),
           remarks: (fd.get("remarks") as string) || null,
           created_by: user!.id,
@@ -250,14 +239,10 @@ function NewInquiry() {
             <CardHeader className="pb-3">
               <CardTitle className="text-base">2. Customer information</CardTitle>
             </CardHeader>
-            <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-              <div className="space-y-1.5 sm:col-span-2">
+            <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
                 <Label>Customer name</Label>
                 <Input name="customer_name" required maxLength={100} />
-              </div>
-              <div className="space-y-1.5">
-                <Label>Alternate mobile</Label>
-                <Input name="alternate_mobile" inputMode="numeric" maxLength={10} />
               </div>
               <div className="space-y-1.5">
                 <Label>Village</Label>
@@ -266,14 +251,6 @@ function NewInquiry() {
               <div className="space-y-1.5">
                 <Label>Taluka</Label>
                 <Input name="taluka" maxLength={80} />
-              </div>
-              <div className="space-y-1.5">
-                <Label>District</Label>
-                <Input name="district" maxLength={80} />
-              </div>
-              <div className="space-y-1.5 sm:col-span-2">
-                <Label>Full address</Label>
-                <Input name="address" maxLength={250} />
               </div>
               <div className="space-y-1.5">
                 <Label>Customer type</Label>
@@ -296,7 +273,9 @@ function NewInquiry() {
 
         <Card className="shadow-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base">3. Inquiry information</CardTitle>
+            <CardTitle className="text-base">
+              {existing ? "2" : "3"}. Inquiry information
+            </CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div className="space-y-1.5">
@@ -381,47 +360,23 @@ function NewInquiry() {
             </div>
 
             <div className="space-y-1.5">
-              <Label>Expected purchase date</Label>
-              <Input type="date" name="expected_purchase_date" />
-            </div>
-            <div className="space-y-1.5">
-              <Label>Purchase purpose</Label>
-              <Select name="purchase_purpose" defaultValue="Farming">
+              <Label>Interest level</Label>
+              <Select name="interest_level" defaultValue="WARM">
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {PURCHASE_PURPOSES.map((p) => (
-                    <SelectItem key={p} value={p}>
-                      {p}
+                  {INTEREST_LEVELS.map((l) => (
+                    <SelectItem key={l} value={l}>
+                      {l}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>Expected budget (₹)</Label>
-              <Input type="number" name="budget" min={0} />
-            </div>
-
-            <div className="space-y-1.5">
-              <Label>Competitor tractor</Label>
-              <Input name="competitor" maxLength={120} />
-            </div>
-            <div className="space-y-1.5">
               <Label>Next follow-up date *</Label>
               <Input type="date" name="next_followup_date" defaultValue={addDaysISO(2)} required />
-            </div>
-            <div className="flex flex-wrap items-end gap-4 pb-1">
-              <label className="flex items-center gap-2 text-sm">
-                <Checkbox name="exchange_required" /> Exchange
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <Checkbox name="finance_required" /> Finance
-              </label>
-              <label className="flex items-center gap-2 text-sm">
-                <Checkbox name="subsidy_required" /> Subsidy
-              </label>
             </div>
 
             <div className="space-y-1.5 sm:col-span-3">
