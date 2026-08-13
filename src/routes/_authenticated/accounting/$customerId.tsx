@@ -44,7 +44,7 @@ function LedgerPage() {
     <div>
       <PageHeader
         title={customer?.customer_name ? `Ledger \u00b7 ${customer.customer_name}` : "Customer ledger"}
-        subtitle={customer ? `${customer.mobile} \u00b7 ${customer.village}` : undefined}
+        subtitle={customer ? `${customer.mobile} · ${customer.village}` : ""}
         actions={
           <Button asChild variant="outline" size="sm">
             <Link to="/accounting"><ArrowLeft className="mr-1 h-4 w-4" /> Accounting</Link>
