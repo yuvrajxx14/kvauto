@@ -19,6 +19,8 @@ import { Route as AuthenticatedBookingsBookingIdRouteImport } from './routes/_au
 import { Route as AuthenticatedBookingsNewRouteImport } from './routes/_authenticated/bookings/new'
 import { Route as AuthenticatedCustomersIndexRouteImport } from './routes/_authenticated/customers/index'
 import { Route as AuthenticatedCustomersCustomerIdRouteImport } from './routes/_authenticated/customers/$customerId'
+import { Route as AuthenticatedDeliveryIndexRouteImport } from './routes/_authenticated/delivery/index'
+import { Route as AuthenticatedDeliveryBookingIdRouteImport } from './routes/_authenticated/delivery/$bookingId'
 import { Route as AuthenticatedInquiriesIndexRouteImport } from './routes/_authenticated/inquiries/index'
 import { Route as AuthenticatedInquiriesInquiryIdRouteImport } from './routes/_authenticated/inquiries/$inquiryId'
 import { Route as AuthenticatedInquiriesNewRouteImport } from './routes/_authenticated/inquiries/new'
@@ -79,6 +81,18 @@ const AuthenticatedCustomersCustomerIdRoute =
     path: '/customers/$customerId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDeliveryIndexRoute =
+  AuthenticatedDeliveryIndexRouteImport.update({
+    id: '/delivery/',
+    path: '/delivery/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDeliveryBookingIdRoute =
+  AuthenticatedDeliveryBookingIdRouteImport.update({
+    id: '/delivery/$bookingId',
+    path: '/delivery/$bookingId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedInquiriesIndexRoute =
   AuthenticatedInquiriesIndexRouteImport.update({
     id: '/inquiries/',
@@ -117,11 +131,13 @@ export interface FileRoutesByFullPath {
   '/bookings/$bookingId': typeof AuthenticatedBookingsBookingIdRoute
   '/bookings/new': typeof AuthenticatedBookingsNewRoute
   '/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
+  '/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/customers/': typeof AuthenticatedCustomersIndexRoute
+  '/delivery/': typeof AuthenticatedDeliveryIndexRoute
   '/inquiries/': typeof AuthenticatedInquiriesIndexRoute
   '/stock/': typeof AuthenticatedStockIndexRoute
 }
@@ -133,11 +149,13 @@ export interface FileRoutesByTo {
   '/bookings/$bookingId': typeof AuthenticatedBookingsBookingIdRoute
   '/bookings/new': typeof AuthenticatedBookingsNewRoute
   '/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
+  '/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/bookings': typeof AuthenticatedBookingsIndexRoute
   '/customers': typeof AuthenticatedCustomersIndexRoute
+  '/delivery': typeof AuthenticatedDeliveryIndexRoute
   '/inquiries': typeof AuthenticatedInquiriesIndexRoute
   '/stock': typeof AuthenticatedStockIndexRoute
 }
@@ -151,11 +169,13 @@ export interface FileRoutesById {
   '/_authenticated/bookings/$bookingId': typeof AuthenticatedBookingsBookingIdRoute
   '/_authenticated/bookings/new': typeof AuthenticatedBookingsNewRoute
   '/_authenticated/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
+  '/_authenticated/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
   '/_authenticated/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/_authenticated/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/_authenticated/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/_authenticated/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/_authenticated/customers/': typeof AuthenticatedCustomersIndexRoute
+  '/_authenticated/delivery/': typeof AuthenticatedDeliveryIndexRoute
   '/_authenticated/inquiries/': typeof AuthenticatedInquiriesIndexRoute
   '/_authenticated/stock/': typeof AuthenticatedStockIndexRoute
 }
@@ -169,11 +189,13 @@ export interface FileRouteTypes {
     | '/bookings/$bookingId'
     | '/bookings/new'
     | '/customers/$customerId'
+    | '/delivery/$bookingId'
     | '/inquiries/$inquiryId'
     | '/inquiries/new'
     | '/stock/$stockId'
     | '/bookings/'
     | '/customers/'
+    | '/delivery/'
     | '/inquiries/'
     | '/stock/'
   fileRoutesByTo: FileRoutesByTo
@@ -185,11 +207,13 @@ export interface FileRouteTypes {
     | '/bookings/$bookingId'
     | '/bookings/new'
     | '/customers/$customerId'
+    | '/delivery/$bookingId'
     | '/inquiries/$inquiryId'
     | '/inquiries/new'
     | '/stock/$stockId'
     | '/bookings'
     | '/customers'
+    | '/delivery'
     | '/inquiries'
     | '/stock'
   id:
@@ -202,11 +226,13 @@ export interface FileRouteTypes {
     | '/_authenticated/bookings/$bookingId'
     | '/_authenticated/bookings/new'
     | '/_authenticated/customers/$customerId'
+    | '/_authenticated/delivery/$bookingId'
     | '/_authenticated/inquiries/$inquiryId'
     | '/_authenticated/inquiries/new'
     | '/_authenticated/stock/$stockId'
     | '/_authenticated/bookings/'
     | '/_authenticated/customers/'
+    | '/_authenticated/delivery/'
     | '/_authenticated/inquiries/'
     | '/_authenticated/stock/'
   fileRoutesById: FileRoutesById
@@ -289,6 +315,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCustomersCustomerIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/delivery/': {
+      id: '/_authenticated/delivery/'
+      path: '/delivery'
+      fullPath: '/delivery/'
+      preLoaderRoute: typeof AuthenticatedDeliveryIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/delivery/$bookingId': {
+      id: '/_authenticated/delivery/$bookingId'
+      path: '/delivery/$bookingId'
+      fullPath: '/delivery/$bookingId'
+      preLoaderRoute: typeof AuthenticatedDeliveryBookingIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/inquiries/': {
       id: '/_authenticated/inquiries/'
       path: '/inquiries'
@@ -333,11 +373,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBookingsBookingIdRoute: typeof AuthenticatedBookingsBookingIdRoute
   AuthenticatedBookingsNewRoute: typeof AuthenticatedBookingsNewRoute
   AuthenticatedCustomersCustomerIdRoute: typeof AuthenticatedCustomersCustomerIdRoute
+  AuthenticatedDeliveryBookingIdRoute: typeof AuthenticatedDeliveryBookingIdRoute
   AuthenticatedInquiriesInquiryIdRoute: typeof AuthenticatedInquiriesInquiryIdRoute
   AuthenticatedInquiriesNewRoute: typeof AuthenticatedInquiriesNewRoute
   AuthenticatedStockStockIdRoute: typeof AuthenticatedStockStockIdRoute
   AuthenticatedBookingsIndexRoute: typeof AuthenticatedBookingsIndexRoute
   AuthenticatedCustomersIndexRoute: typeof AuthenticatedCustomersIndexRoute
+  AuthenticatedDeliveryIndexRoute: typeof AuthenticatedDeliveryIndexRoute
   AuthenticatedInquiriesIndexRoute: typeof AuthenticatedInquiriesIndexRoute
   AuthenticatedStockIndexRoute: typeof AuthenticatedStockIndexRoute
 }
@@ -348,11 +390,13 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBookingsBookingIdRoute: AuthenticatedBookingsBookingIdRoute,
   AuthenticatedBookingsNewRoute: AuthenticatedBookingsNewRoute,
   AuthenticatedCustomersCustomerIdRoute: AuthenticatedCustomersCustomerIdRoute,
+  AuthenticatedDeliveryBookingIdRoute: AuthenticatedDeliveryBookingIdRoute,
   AuthenticatedInquiriesInquiryIdRoute: AuthenticatedInquiriesInquiryIdRoute,
   AuthenticatedInquiriesNewRoute: AuthenticatedInquiriesNewRoute,
   AuthenticatedStockStockIdRoute: AuthenticatedStockStockIdRoute,
   AuthenticatedBookingsIndexRoute: AuthenticatedBookingsIndexRoute,
   AuthenticatedCustomersIndexRoute: AuthenticatedCustomersIndexRoute,
+  AuthenticatedDeliveryIndexRoute: AuthenticatedDeliveryIndexRoute,
   AuthenticatedInquiriesIndexRoute: AuthenticatedInquiriesIndexRoute,
   AuthenticatedStockIndexRoute: AuthenticatedStockIndexRoute,
 }
