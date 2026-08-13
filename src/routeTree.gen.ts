@@ -23,6 +23,7 @@ import { Route as AuthenticatedInquiriesIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedInquiriesInquiryIdRouteImport } from './routes/_authenticated/inquiries/$inquiryId'
 import { Route as AuthenticatedInquiriesNewRouteImport } from './routes/_authenticated/inquiries/new'
 import { Route as AuthenticatedStockIndexRouteImport } from './routes/_authenticated/stock/index'
+import { Route as AuthenticatedStockStockIdRouteImport } from './routes/_authenticated/stock/$stockId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -101,6 +102,12 @@ const AuthenticatedStockIndexRoute = AuthenticatedStockIndexRouteImport.update({
   path: '/stock/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedStockStockIdRoute =
+  AuthenticatedStockStockIdRouteImport.update({
+    id: '/stock/$stockId',
+    path: '/stock/$stockId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByFullPath {
   '/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
+  '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/customers/': typeof AuthenticatedCustomersIndexRoute
   '/inquiries/': typeof AuthenticatedInquiriesIndexRoute
@@ -127,6 +135,7 @@ export interface FileRoutesByTo {
   '/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
+  '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/bookings': typeof AuthenticatedBookingsIndexRoute
   '/customers': typeof AuthenticatedCustomersIndexRoute
   '/inquiries': typeof AuthenticatedInquiriesIndexRoute
@@ -144,6 +153,7 @@ export interface FileRoutesById {
   '/_authenticated/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
   '/_authenticated/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/_authenticated/inquiries/new': typeof AuthenticatedInquiriesNewRoute
+  '/_authenticated/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/_authenticated/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/_authenticated/customers/': typeof AuthenticatedCustomersIndexRoute
   '/_authenticated/inquiries/': typeof AuthenticatedInquiriesIndexRoute
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/customers/$customerId'
     | '/inquiries/$inquiryId'
     | '/inquiries/new'
+    | '/stock/$stockId'
     | '/bookings/'
     | '/customers/'
     | '/inquiries/'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/customers/$customerId'
     | '/inquiries/$inquiryId'
     | '/inquiries/new'
+    | '/stock/$stockId'
     | '/bookings'
     | '/customers'
     | '/inquiries'
@@ -192,6 +204,7 @@ export interface FileRouteTypes {
     | '/_authenticated/customers/$customerId'
     | '/_authenticated/inquiries/$inquiryId'
     | '/_authenticated/inquiries/new'
+    | '/_authenticated/stock/$stockId'
     | '/_authenticated/bookings/'
     | '/_authenticated/customers/'
     | '/_authenticated/inquiries/'
@@ -304,6 +317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStockIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/stock/$stockId': {
+      id: '/_authenticated/stock/$stockId'
+      path: '/stock/$stockId'
+      fullPath: '/stock/$stockId'
+      preLoaderRoute: typeof AuthenticatedStockStockIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -315,6 +335,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCustomersCustomerIdRoute: typeof AuthenticatedCustomersCustomerIdRoute
   AuthenticatedInquiriesInquiryIdRoute: typeof AuthenticatedInquiriesInquiryIdRoute
   AuthenticatedInquiriesNewRoute: typeof AuthenticatedInquiriesNewRoute
+  AuthenticatedStockStockIdRoute: typeof AuthenticatedStockStockIdRoute
   AuthenticatedBookingsIndexRoute: typeof AuthenticatedBookingsIndexRoute
   AuthenticatedCustomersIndexRoute: typeof AuthenticatedCustomersIndexRoute
   AuthenticatedInquiriesIndexRoute: typeof AuthenticatedInquiriesIndexRoute
@@ -329,6 +350,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCustomersCustomerIdRoute: AuthenticatedCustomersCustomerIdRoute,
   AuthenticatedInquiriesInquiryIdRoute: AuthenticatedInquiriesInquiryIdRoute,
   AuthenticatedInquiriesNewRoute: AuthenticatedInquiriesNewRoute,
+  AuthenticatedStockStockIdRoute: AuthenticatedStockStockIdRoute,
   AuthenticatedBookingsIndexRoute: AuthenticatedBookingsIndexRoute,
   AuthenticatedCustomersIndexRoute: AuthenticatedCustomersIndexRoute,
   AuthenticatedInquiriesIndexRoute: AuthenticatedInquiriesIndexRoute,

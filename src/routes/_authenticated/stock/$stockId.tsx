@@ -35,7 +35,7 @@ function StockDetail() {
 
   const update = useMutation({
     mutationFn: async (patch: Record<string, string>) => {
-      const { error } = await supabase.from("tractor_stock").update(patch).eq("id", stockId);
+      const { error } = await supabase.from("tractor_stock").update(patch as never).eq("id", stockId);
       if (error) throw error;
     },
     onSuccess: () => {
