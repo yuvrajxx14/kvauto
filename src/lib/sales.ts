@@ -1,12 +1,19 @@
 import type { Database } from "@/integrations/supabase/types";
 
+export {
+  BOOKING_STATUS_LABEL,
+  BOOKING_STATUSES,
+  PAYMENT_MODES,
+  PAYMENT_MODE_LABEL,
+  type BookingStatus,
+  type PaymentMode,
+} from "./booking";
+
 export type InquiryStatus = Database["public"]["Enums"]["inquiry_status"];
 export type InterestLevel = Database["public"]["Enums"]["interest_level"];
 export type CustomerType = Database["public"]["Enums"]["customer_type"];
 export type ContactMethod = Database["public"]["Enums"]["contact_method"];
 export type DemoStatus = Database["public"]["Enums"]["demo_status"];
-export type BookingStatus = Database["public"]["Enums"]["booking_status"];
-export type PaymentMode = Database["public"]["Enums"]["payment_mode"];
 
 /** Stages exposed in the MVP. Booking/allocation/delivery arrive with later modules. */
 export const PIPELINE: InquiryStatus[] = ["NEW", "CONTACTED", "FOLLOW_UP", "BOOKED"];
@@ -54,7 +61,6 @@ export const CONTACT_METHODS: ContactMethod[] = [
 
 export const INTEREST_LEVELS: InterestLevel[] = ["HOT", "WARM", "COLD"];
 
-export const PAYMENT_MODES: PaymentMode[] = ["Cash", "Bank", "UPI", "Cheque"];
 
 export const LOST_REASONS = [
   "Price",
@@ -97,13 +103,6 @@ export const PURCHASE_PURPOSES = [
   "Other",
 ] as const;
 
-export const BOOKING_STATUS_LABEL: Record<BookingStatus, string> = {
-  BOOKED: "Booked",
-  ALLOCATED: "Tractor Allocated",
-  READY_FOR_DELIVERY: "Ready for Delivery",
-  DELIVERED: "Delivered",
-  CANCELLED: "Cancelled",
-};
 
 export function inr(value: number | null | undefined) {
   if (value === null || value === undefined) return "—";

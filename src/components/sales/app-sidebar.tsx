@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -18,6 +18,13 @@ const SALES_ITEMS = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Inquiries", url: "/inquiries", icon: ClipboardList },
   { title: "Customers", url: "/customers", icon: Users },
+  { title: "Bookings", url: "/bookings", icon: FileSignature },
+];
+
+const OPS_ITEMS = [
+  { title: "Stock", url: "/stock", icon: Boxes },
+  { title: "Delivery", url: "/delivery", icon: Truck },
+  { title: "Accounting", url: "/accounting", icon: IndianRupee },
 ];
 
 export function AppSidebar() {
@@ -52,6 +59,24 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {SALES_ITEMS.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
+                    <Link to={item.url} className="flex items-center gap-2">
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Operations</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {OPS_ITEMS.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
                     <Link to={item.url} className="flex items-center gap-2">

@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { TRACTOR_MODELS, VARIANTS } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/bookings/new")({
-  validateSearch: (search: Record<string, unknown>) => ({ inquiryId: String(search.inquiryId ?? "") }),
+  validateSearch: (search: Record<string, unknown>) => ({ inquiryId: String(search['inquiryId'] ?? "") }),
   component: NewBooking,
 });
 
@@ -73,9 +73,18 @@ function NewBooking() {
           const fd = new FormData(e.currentTarget);
           const finalPrice = Number(fd.get("final_price"));
           const bookingAmount = Number(fd.get("booking_amount"));
-          if (!Number.isFinite(finalPrice) || finalPrice <= 0) return toast.error("Enter a valid deal price");
-          if (!Number.isFinite(bookingAmount) || bookingAmount <= 0) return toast.error("Enter a valid booking amount");
-          if (bookingAmount > finalPrice) return toast.error("Booking amount cannot exceed deal price");
+          if (!Number.isFinite(finalPrice) || finalPrice <= 0) {
+            toast.error("Enter a valid deal price");
+            return;
+          }
+          if (!Number.isFinite(bookingAmount) || bookingAmount <= 0) {
+            toast.error("Enter a valid booking amount");
+            return;
+          }
+          if (bookingAmount > finalPrice) {
+            toast.error("Booking amount cannot exceed deal price");
+            return;
+          }
 
           create.mutate({
             final_price: finalPrice,
