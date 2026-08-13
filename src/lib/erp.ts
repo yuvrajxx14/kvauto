@@ -54,7 +54,7 @@ export function useBookingPayments(bookingId: string) {
   });
 }
 
-export function useStock(opts?: { status?: string; model?: string }) {
+export function useStock(opts?: { status?: string | undefined; model?: string | undefined }) {
   return useQuery({
     queryKey: ["stock", opts?.status ?? "all", opts?.model ?? "all"],
     queryFn: async () => {
