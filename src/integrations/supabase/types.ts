@@ -55,7 +55,8 @@ export type Database = {
           created_by: string | null
           id: string
           payment_date: string
-          payment_mode: Database["public"]["Enums"]["payment_mode"]
+          payment_mode: string
+          payment_type: string
           reference_number: string | null
           remarks: string | null
         }
@@ -66,7 +67,8 @@ export type Database = {
           created_by?: string | null
           id?: string
           payment_date?: string
-          payment_mode?: Database["public"]["Enums"]["payment_mode"]
+          payment_mode?: string
+          payment_type?: string
           reference_number?: string | null
           remarks?: string | null
         }
@@ -77,7 +79,8 @@ export type Database = {
           created_by?: string | null
           id?: string
           payment_date?: string
-          payment_mode?: Database["public"]["Enums"]["payment_mode"]
+          payment_mode?: string
+          payment_type?: string
           reference_number?: string | null
           remarks?: string | null
         }
@@ -108,10 +111,10 @@ export type Database = {
           finance_required: boolean
           id: string
           inquiry_id: string
-          payment_mode: Database["public"]["Enums"]["payment_mode"] | null
+          payment_mode: string | null
           remarks: string | null
           salesman_id: string
-          status: Database["public"]["Enums"]["booking_status"]
+          status: string
           subsidy_required: boolean
           tractor_model: string
           updated_at: string
@@ -133,10 +136,10 @@ export type Database = {
           finance_required?: boolean
           id?: string
           inquiry_id: string
-          payment_mode?: Database["public"]["Enums"]["payment_mode"] | null
+          payment_mode?: string | null
           remarks?: string | null
           salesman_id: string
-          status?: Database["public"]["Enums"]["booking_status"]
+          status?: string
           subsidy_required?: boolean
           tractor_model: string
           updated_at?: string
@@ -158,10 +161,10 @@ export type Database = {
           finance_required?: boolean
           id?: string
           inquiry_id?: string
-          payment_mode?: Database["public"]["Enums"]["payment_mode"] | null
+          payment_mode?: string | null
           remarks?: string | null
           salesman_id?: string
-          status?: Database["public"]["Enums"]["booking_status"]
+          status?: string
           subsidy_required?: boolean
           tractor_model?: string
           updated_at?: string
@@ -180,6 +183,66 @@ export type Database = {
             columns: ["inquiry_id"]
             isOneToOne: true
             referencedRelation: "inquiries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_salesman_id_fkey"
+            columns: ["salesman_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customer_documents: {
+        Row: {
+          created_at: string
+          customer_id: string
+          doc_type: string
+          document_number: string | null
+          expiry_date: string | null
+          file_name: string | null
+          file_path: string | null
+          id: string
+          remarks: string | null
+          updated_at: string
+          uploaded_by: string | null
+          verification_status: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          doc_type: string
+          document_number?: string | null
+          expiry_date?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          id?: string
+          remarks?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+          verification_status?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          doc_type?: string
+          document_number?: string | null
+          expiry_date?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          id?: string
+          remarks?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+          verification_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_documents_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
             referencedColumns: ["id"]
           },
         ]
@@ -231,6 +294,64 @@ export type Database = {
           village?: string
         }
         Relationships: []
+      }
+      deliveries: {
+        Row: {
+          booking_id: string
+          created_at: string
+          customer_id: string
+          delivered_by: string | null
+          delivery_date: string
+          id: string
+          odometer_hours: number | null
+          remarks: string | null
+          tractor_stock_id: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          customer_id: string
+          delivered_by?: string | null
+          delivery_date?: string
+          id?: string
+          odometer_hours?: number | null
+          remarks?: string | null
+          tractor_stock_id: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          customer_id?: string
+          delivered_by?: string | null
+          delivery_date?: string
+          id?: string
+          odometer_hours?: number | null
+          remarks?: string | null
+          tractor_stock_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deliveries_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deliveries_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deliveries_tractor_stock_id_fkey"
+            columns: ["tractor_stock_id"]
+            isOneToOne: false
+            referencedRelation: "tractor_stock"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       demos: {
         Row: {
@@ -294,6 +415,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      document_checklist: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          doc_type: string
+          has_expiry: boolean
+          has_number: boolean
+          id: string
+          is_required: boolean
+          label: string
+          sort_order: number
+        }
+        Insert: {
+          active?: boolean
+          category: string
+          created_at?: string
+          doc_type: string
+          has_expiry?: boolean
+          has_number?: boolean
+          id?: string
+          is_required?: boolean
+          label: string
+          sort_order?: number
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          doc_type?: string
+          has_expiry?: boolean
+          has_number?: boolean
+          id?: string
+          is_required?: boolean
+          label?: string
+          sort_order?: number
+        }
+        Relationships: []
       }
       followups: {
         Row: {
@@ -456,6 +616,76 @@ export type Database = {
           },
         ]
       }
+      ledger_entries: {
+        Row: {
+          amount: number
+          booking_id: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          direction: string
+          entry_date: string
+          id: string
+          payment_id: string | null
+          payment_mode: string | null
+          reference_number: string | null
+          remarks: string | null
+          txn_type: string
+        }
+        Insert: {
+          amount: number
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id: string
+          direction: string
+          entry_date?: string
+          id?: string
+          payment_id?: string | null
+          payment_mode?: string | null
+          reference_number?: string | null
+          remarks?: string | null
+          txn_type: string
+        }
+        Update: {
+          amount?: number
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string
+          direction?: string
+          entry_date?: string
+          id?: string
+          payment_id?: string | null
+          payment_mode?: string | null
+          reference_number?: string | null
+          remarks?: string | null
+          txn_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ledger_entries_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ledger_entries_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ledger_entries_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "booking_payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lost_inquiries: {
         Row: {
           competitor: string | null
@@ -496,6 +726,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      model_stock_config: {
+        Row: {
+          branch: string
+          created_at: string
+          id: string
+          min_regular_stock: number
+          model: string
+          updated_at: string
+        }
+        Insert: {
+          branch?: string
+          created_at?: string
+          id?: string
+          min_regular_stock?: number
+          model: string
+          updated_at?: string
+        }
+        Update: {
+          branch?: string
+          created_at?: string
+          id?: string
+          min_regular_stock?: number
+          model?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       negotiations: {
         Row: {
@@ -647,35 +904,131 @@ export type Database = {
           },
         ]
       }
-      tractor_stock: {
+      tractor_orders: {
         Row: {
-          chassis_number: string
+          approved_by: string | null
+          branch: string
           created_at: string
-          engine_number: string
-          hp: string | null
+          created_by: string | null
+          expected_arrival_date: string | null
           id: string
           model: string
-          status: Database["public"]["Enums"]["tractor_stock_status"]
+          order_date: string
+          order_number: string
+          quantity: number
+          remarks: string | null
+          status: string
+          supplier: string | null
+          updated_at: string
           variant: string | null
         }
         Insert: {
-          chassis_number: string
+          approved_by?: string | null
+          branch?: string
           created_at?: string
-          engine_number: string
-          hp?: string | null
+          created_by?: string | null
+          expected_arrival_date?: string | null
           id?: string
           model: string
-          status?: Database["public"]["Enums"]["tractor_stock_status"]
+          order_date?: string
+          order_number: string
+          quantity?: number
+          remarks?: string | null
+          status?: string
+          supplier?: string | null
+          updated_at?: string
           variant?: string | null
         }
         Update: {
-          chassis_number?: string
+          approved_by?: string | null
+          branch?: string
           created_at?: string
+          created_by?: string | null
+          expected_arrival_date?: string | null
+          id?: string
+          model?: string
+          order_date?: string
+          order_number?: string
+          quantity?: number
+          remarks?: string | null
+          status?: string
+          supplier?: string | null
+          updated_at?: string
+          variant?: string | null
+        }
+        Relationships: []
+      }
+      tractor_stock: {
+        Row: {
+          arrival_date: string | null
+          branch: string
+          chassis_number: string
+          colour: string | null
+          created_at: string
+          delivery_check_remarks: string | null
+          delivery_check_status: string
+          engine_number: string
+          hp: string | null
+          id: string
+          inspection_remarks: string | null
+          inspection_status: string
+          location: string
+          mfg_year: string | null
+          model: string
+          order_id: string | null
+          order_reference: string | null
+          pdi_remarks: string | null
+          pdi_status: string
+          status: string
+          updated_at: string
+          variant: string | null
+        }
+        Insert: {
+          arrival_date?: string | null
+          branch?: string
+          chassis_number: string
+          colour?: string | null
+          created_at?: string
+          delivery_check_remarks?: string | null
+          delivery_check_status?: string
+          engine_number: string
+          hp?: string | null
+          id?: string
+          inspection_remarks?: string | null
+          inspection_status?: string
+          location?: string
+          mfg_year?: string | null
+          model: string
+          order_id?: string | null
+          order_reference?: string | null
+          pdi_remarks?: string | null
+          pdi_status?: string
+          status?: string
+          updated_at?: string
+          variant?: string | null
+        }
+        Update: {
+          arrival_date?: string | null
+          branch?: string
+          chassis_number?: string
+          colour?: string | null
+          created_at?: string
+          delivery_check_remarks?: string | null
+          delivery_check_status?: string
           engine_number?: string
           hp?: string | null
           id?: string
+          inspection_remarks?: string | null
+          inspection_status?: string
+          location?: string
+          mfg_year?: string | null
           model?: string
-          status?: Database["public"]["Enums"]["tractor_stock_status"]
+          order_id?: string | null
+          order_reference?: string | null
+          pdi_remarks?: string | null
+          pdi_status?: string
+          status?: string
+          updated_at?: string
           variant?: string | null
         }
         Relationships: []
@@ -706,6 +1059,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      allocate_tractor_atomic: {
+        Args: { _booking_id: string; _tractor_stock_id: string }
+        Returns: string
+      }
+      complete_delivery_atomic: {
+        Args: { _booking_id: string; _delivery_date: string; _remarks: string }
+        Returns: string
+      }
+      create_booking_atomic: {
+        Args: {
+          _booking_amount: number
+          _booking_date: string
+          _final_price: number
+          _inquiry_id: string
+          _remarks: string
+          _salesman_id: string
+          _tractor_model: string
+          _variant: string
+        }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -726,7 +1100,20 @@ export type Database = {
         Returns: undefined
       }
       owns_booking: { Args: { _booking_id: string }; Returns: boolean }
+      owns_customer: { Args: { _customer_id: string }; Returns: boolean }
       owns_inquiry: { Args: { _inquiry_id: string }; Returns: boolean }
+      receive_booking_payment_atomic: {
+        Args: {
+          _amount: number
+          _booking_id: string
+          _payment_date: string
+          _payment_mode: string
+          _payment_type?: string
+          _reference_number: string
+          _remarks: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "ceo" | "manager" | "salesman" | "receptionist"
