@@ -62,7 +62,7 @@ function DeliveryDetail() {
     { label: "Tractor allocated", ok: !!alloc },
     { label: "PDI passed", ok: alloc?.stock?.pdi_status === "PASSED" },
     { label: "Inspection passed", ok: alloc?.stock?.inspection_status === "PASSED" },
-    { label: "Full payment received", ok: outstanding <= 0 },
+    { label: "Full payment received", ok: outstanding < 1 },
     { label: "Required documents verified", ok: progress.complete },
   ];
   const ready = checks.every((c) => c.ok);
