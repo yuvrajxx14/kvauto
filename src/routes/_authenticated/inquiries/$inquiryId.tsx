@@ -90,6 +90,7 @@ function InquiryDetail() {
   const c = inquiry.customer as unknown as Customer | null;
   const status = inquiry.status as InquiryStatus;
   const locked = status === "BOOKED" || status === "DELIVERED";
+  const canBook = !["BOOKED", "DELIVERED", "LOST"].includes(status);
 
   return (
     <div>
@@ -103,6 +104,13 @@ function InquiryDetail() {
                 <ArrowLeft className="mr-1 h-4 w-4" /> All inquiries
               </Link>
             </Button>
+            {canBook && (
+              <Button asChild size="sm">
+                <Link to="/bookings/new" search={{ inquiryId }}>
+                  Create Booking
+                </Link>
+              </Button>
+            )}
             {!locked && (
               <Button size="sm" onClick={() => setEdit((v) => !v)}>
                 {edit ? "Cancel edit" : "Update inquiry"}
