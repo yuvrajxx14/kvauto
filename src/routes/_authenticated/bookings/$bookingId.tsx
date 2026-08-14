@@ -242,7 +242,7 @@ function BookingDetail() {
         <Card className="shadow-card">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-base">Payment history</CardTitle>
-            {outstanding > 0 && (
+            {outstanding >= 1 && (
               <Button size="sm" onClick={() => setPaymentOpen((v) => !v)}>
                 <CreditCard className="mr-1 h-4 w-4" /> Receive Payment
               </Button>
