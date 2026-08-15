@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, CheckCircle2, Printer, ScanLine, XCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Printer, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
@@ -117,13 +117,6 @@ function DeliveryDetail() {
                 <Printer className="mr-1 h-4 w-4" /> Documents
               </Link>
             </Button>
-            {stock?.id && (
-              <Button asChild variant="outline" size="sm">
-                <Link to="/documents/chassis-print" search={{ stockId: stock.id }}>
-                  <ScanLine className="mr-1 h-4 w-4" /> Chassis print
-                </Link>
-              </Button>
-            )}
           </div>
         }
       />
