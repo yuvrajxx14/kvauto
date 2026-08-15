@@ -10,11 +10,7 @@ import { DocumentsPanel } from "@/components/sales/documents-panel";
 import { PaymentDialog } from "@/components/sales/payment-dialog";
 import { CancelBookingDialog } from "@/components/sales/cancel-booking-dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useBooking, useBookingPayments, useStock } from "@/lib/erp";
 import {
   BOOKING_STATUS_LABEL,
