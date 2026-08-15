@@ -121,15 +121,7 @@ function PassingSetPrint() {
               <p className="mb-1 text-sm font-semibold uppercase tracking-wide">{s.label}</p>
               <p className="mb-3 text-xs text-muted-foreground">{s.note}</p>
               {s.key === "FORM22" ? (
-                <Form22
-                  customer={b.customer?.customer_name ?? "—"}
-                  village={b.customer?.village ?? "—"}
-                  model={`${b.tractor_model} ${b.variant ?? ""}`}
-                  chassis={alloc?.chassis_number ?? "—"}
-                  engine={alloc?.engine_number ?? "—"}
-                  invoiceNo={invoice?.invoice_number ?? "—"}
-                  invoiceDate={fmtDate(invoice?.invoice_date ?? null)}
-                />
+                <Form22 />
               ) : s.url ? (
                 <img src={s.url} alt={s.label} className="max-h-[950px] w-full object-contain" />
               ) : (
