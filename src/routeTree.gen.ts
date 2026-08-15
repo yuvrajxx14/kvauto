@@ -28,6 +28,7 @@ import { Route as AuthenticatedInquiriesInquiryIdRouteImport } from './routes/_a
 import { Route as AuthenticatedInquiriesNewRouteImport } from './routes/_authenticated/inquiries/new'
 import { Route as AuthenticatedStockIndexRouteImport } from './routes/_authenticated/stock/index'
 import { Route as AuthenticatedStockStockIdRouteImport } from './routes/_authenticated/stock/$stockId'
+import { Route as AuthenticatedPrintReceiptPaymentIdRouteImport } from './routes/_authenticated/print/receipt.$paymentId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -136,6 +137,12 @@ const AuthenticatedStockStockIdRoute =
     path: '/stock/$stockId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPrintReceiptPaymentIdRoute =
+  AuthenticatedPrintReceiptPaymentIdRouteImport.update({
+    id: '/print/receipt/$paymentId',
+    path: '/print/receipt/$paymentId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -156,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/delivery/': typeof AuthenticatedDeliveryIndexRoute
   '/inquiries/': typeof AuthenticatedInquiriesIndexRoute
   '/stock/': typeof AuthenticatedStockIndexRoute
+  '/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -176,6 +184,7 @@ export interface FileRoutesByTo {
   '/delivery': typeof AuthenticatedDeliveryIndexRoute
   '/inquiries': typeof AuthenticatedInquiriesIndexRoute
   '/stock': typeof AuthenticatedStockIndexRoute
+  '/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -198,6 +207,7 @@ export interface FileRoutesById {
   '/_authenticated/delivery/': typeof AuthenticatedDeliveryIndexRoute
   '/_authenticated/inquiries/': typeof AuthenticatedInquiriesIndexRoute
   '/_authenticated/stock/': typeof AuthenticatedStockIndexRoute
+  '/_authenticated/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -220,6 +230,7 @@ export interface FileRouteTypes {
     | '/delivery/'
     | '/inquiries/'
     | '/stock/'
+    | '/print/receipt/$paymentId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -240,6 +251,7 @@ export interface FileRouteTypes {
     | '/delivery'
     | '/inquiries'
     | '/stock'
+    | '/print/receipt/$paymentId'
   id:
     | '__root__'
     | '/'
@@ -261,6 +273,7 @@ export interface FileRouteTypes {
     | '/_authenticated/delivery/'
     | '/_authenticated/inquiries/'
     | '/_authenticated/stock/'
+    | '/_authenticated/print/receipt/$paymentId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -404,6 +417,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStockStockIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/print/receipt/$paymentId': {
+      id: '/_authenticated/print/receipt/$paymentId'
+      path: '/print/receipt/$paymentId'
+      fullPath: '/print/receipt/$paymentId'
+      preLoaderRoute: typeof AuthenticatedPrintReceiptPaymentIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -424,6 +444,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDeliveryIndexRoute: typeof AuthenticatedDeliveryIndexRoute
   AuthenticatedInquiriesIndexRoute: typeof AuthenticatedInquiriesIndexRoute
   AuthenticatedStockIndexRoute: typeof AuthenticatedStockIndexRoute
+  AuthenticatedPrintReceiptPaymentIdRoute: typeof AuthenticatedPrintReceiptPaymentIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -444,6 +465,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDeliveryIndexRoute: AuthenticatedDeliveryIndexRoute,
   AuthenticatedInquiriesIndexRoute: AuthenticatedInquiriesIndexRoute,
   AuthenticatedStockIndexRoute: AuthenticatedStockIndexRoute,
+  AuthenticatedPrintReceiptPaymentIdRoute:
+    AuthenticatedPrintReceiptPaymentIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
