@@ -176,3 +176,56 @@
 @utility stat-value {
   @apply text-3xl font-bold tabular-nums tracking-tight;
 }
+
+/* ---------- Printing ---------------------------------------------------- */
+@media print {
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  /* App chrome never prints */
+  [data-sidebar],
+  [data-slot="sidebar"],
+  [data-slot="sidebar-wrapper"] > div:first-child,
+  header.sticky,
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+  }
+
+  /* When a page marks a printable document, print only that document */
+  body:has(.print-area) * {
+    visibility: hidden !important;
+  }
+
+  body:has(.print-area) .print-area,
+  body:has(.print-area) .print-area * {
+    visibility: visible !important;
+  }
+
+  body:has(.print-area) .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .print-area {
+    color: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
