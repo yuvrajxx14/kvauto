@@ -237,3 +237,106 @@ export function ledgerTotals(entries: { direction: string; amount: number }[]) {
   const credit = entries.filter((e) => e.direction === "CREDIT").reduce((s, e) => s + Number(e.amount), 0);
   return { debit, credit, outstanding: debit - credit };
 }
+
+/* ---------- Product master ---------- */
+
+export type Product = {
+  id: string;
+  model: string;
+  hp: string | null;
+  category: string | null;
+  sort_order: number;
+  active: boolean;
+};
+
+export function useProducts(activeOnly = false) {
+  return useQuery({
+    queryKey: ["products", activeOnly],
+    queryFn: async (): Promise<Product[]> => {
+      let q = supabase.from("products").select("id, model, hp, category, sort_order, active").order("sort_order").order("model");
+      if (activeOnly) q = q.eq("active", true);
+      const { data, error } = await q;
+      if (error) throw error;
+      return (data ?? []) as Product[];
+    },
+    staleTime: 60_000,
+  });
+}
+
+/* ---------- Subsidy ---------- */
+
+export function useSubsidyCases() {
+  return useQuery({
+    queryKey: ["subsidy-cases"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("subsidy_cases")
+        .select("*, customer:customers(id, customer_name, mobile, village), booking:bookings(id, booking_number, tractor_model, final_price, extra_charges, amount_received)")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export function useSubsidyCase(bookingId: string) {
+  return useQuery({
+    queryKey: ["subsidy-case", bookingId],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("subsidy_cases").select("*").eq("booking_id", bookingId).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!bookingId,
+  });
+}
+
+/* ---------- Passing ---------- */
+
+export function usePassingRecord(bookingId: string) {
+  return useQuery({
+    queryKey: ["passing", bookingId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("passing_records")
+        .select("*, checklist:passing_checklist(*)")
+        .eq("booking_id", bookingId)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!bookingId,
+  });
+}
+
+export function usePassingRecords() {
+  return useQuery({
+    queryKey: ["passing-records"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("passing_records").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export function usePayment(paymentId: string) {
+  return useQuery({
+    queryKey: ["payment", paymentId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("booking_payments")
+        .select("*, booking:bookings(*, customer:customers(*))")
+        .eq("id", paymentId)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!paymentId,
+  });
+}
+
+/** Total due on a booking: deal price + extra charges (loan doc charge, insurance). */
+export function bookingDue(b: { final_price: number | null; extra_charges?: number | null }) {
+  return Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0);
+}

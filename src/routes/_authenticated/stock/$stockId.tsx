@@ -11,16 +11,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useStockItem } from "@/lib/erp";
-import { CHECK_LABEL, CHECK_STATUSES, STOCK_STATUSES, STOCK_STATUS_LABEL, type CheckStatus, type StockStatus } from "@/lib/stock";
+import { type CheckStatus, type StockStatus } from "@/lib/stock";
 import { fmtDate } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/stock/$stockId")({
   head: () => ({
     meta: [
       { title: "Stock unit · KrushiVidhya Automobiles" },
-      { name: "description", content: "Chassis-wise tractor record with inspection, PDI and delivery checks." },
+      { name: "description", content: "Chassis-wise tractor record with NTIR inspection and PDI results." },
       { property: "og:title", content: "Stock unit · KrushiVidhya Automobiles" },
-      { property: "og:description", content: "Inspection, PDI and delivery readiness for a tractor unit." },
+      { property: "og:description", content: "NTIR and PDI status for a tractor unit." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -28,18 +28,33 @@ export const Route = createFileRoute("/_authenticated/stock/$stockId")({
   component: StockDetail,
 });
 
+const RESULTS = ["PASSED", "FAILED"] as const;
+
 function StockDetail() {
   const { stockId } = Route.useParams();
   const qc = useQueryClient();
   const { data: u, isLoading } = useStockItem(stockId);
 
-  const update = useMutation({
-    mutationFn: async (patch: Record<string, string>) => {
+  const save = useMutation({
+    mutationFn: async (p: { ntir: string; pdi: string; remarks: string }) => {
+      const bothPassed = p.ntir === "PASSED" && p.pdi === "PASSED";
+      const patch: Record<string, string> = {
+        inspection_status: p.ntir,
+        pdi_status: p.pdi,
+        delivery_check_status: bothPassed ? "PASSED" : "FAILED",
+        inspection_remarks: p.remarks,
+        pdi_remarks: p.remarks,
+        delivery_check_remarks: p.remarks,
+      };
+      // Only move stock status when the unit is not already reserved/allocated/sold.
+      if (u && ["AVAILABLE", "IN_TRANSIT", "HOLD", "RECEIVED"].includes(String(u.status))) {
+        patch['status'] = bothPassed ? "AVAILABLE" : "HOLD";
+      }
       const { error } = await supabase.from("tractor_stock").update(patch as never).eq("id", stockId);
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Stock updated");
+      toast.success("Checks saved");
       qc.invalidateQueries();
     },
     onError: (e: Error) => toast.error(e.message),
@@ -74,54 +89,45 @@ function StockDetail() {
         </Card>
 
         <Card className="shadow-card lg:col-span-2">
-          <CardHeader className="pb-2"><CardTitle className="text-base">Checks</CardTitle></CardHeader>
-          <CardContent className="space-y-4">
-            {([
-              ["inspection", "Inspection", u.inspection_status, u.inspection_remarks],
-              ["pdi", "PDI", u.pdi_status, u.pdi_remarks],
-              ["delivery_check", "Delivery check", u.delivery_check_status, u.delivery_check_remarks],
-            ] as const).map(([key, label, value, remarks]) => (
-              <form
-                key={key}
-                className="grid gap-2 rounded-md border p-3 md:grid-cols-[160px_1fr_auto] md:items-end"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const fd = new FormData(e.currentTarget);
-                  update.mutate({
-                    [`${key}_status`]: String(fd.get("status")),
-                    [`${key}_remarks`]: String(fd.get("remarks") || ""),
-                  });
-                }}
-              >
-                <div>
-                  <Label>{label}</Label>
-                  <div className="mb-1"><CheckBadge status={(value as CheckStatus) ?? "PENDING"} /></div>
-                  <Select name="status" defaultValue={value ?? "PENDING"}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>{CHECK_STATUSES.map((c) => <SelectItem key={c} value={c}>{CHECK_LABEL[c]}</SelectItem>)}</SelectContent>
-                  </Select>
-                </div>
-                <div><Label>Remarks</Label><Textarea name="remarks" defaultValue={remarks ?? ""} rows={2} /></div>
-                <Button size="sm" disabled={update.isPending}>Save</Button>
-              </form>
-            ))}
-
+          <CardHeader className="pb-2"><CardTitle className="text-base">Receiving checks</CardTitle></CardHeader>
+          <CardContent>
+            <div className="mb-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+              <span>NTIR</span><CheckBadge status={(u.inspection_status as CheckStatus) ?? "PENDING"} />
+              <span>PDI</span><CheckBadge status={(u.pdi_status as CheckStatus) ?? "PENDING"} />
+            </div>
             <form
-              className="flex items-end gap-2 rounded-md border p-3"
+              className="space-y-3"
               onSubmit={(e) => {
                 e.preventDefault();
                 const fd = new FormData(e.currentTarget);
-                update.mutate({ status: String(fd.get("status")) });
+                save.mutate({
+                  ntir: String(fd.get("ntir")),
+                  pdi: String(fd.get("pdi")),
+                  remarks: String(fd.get("remarks") ?? ""),
+                });
               }}
             >
-              <div className="flex-1">
-                <Label>Stock status</Label>
-                <Select name="status" defaultValue={u.status}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{STOCK_STATUSES.map((s) => <SelectItem key={s} value={s}>{STOCK_STATUS_LABEL[s]}</SelectItem>)}</SelectContent>
-                </Select>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div>
+                  <Label>NTIR inspection</Label>
+                  <Select name="ntir" defaultValue={u.inspection_status === "FAILED" ? "FAILED" : "PASSED"}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>{RESULTS.map((r) => <SelectItem key={r} value={r}>{r === "PASSED" ? "Passed" : "Failed"}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>PDI</Label>
+                  <Select name="pdi" defaultValue={u.pdi_status === "FAILED" ? "FAILED" : "PASSED"}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>{RESULTS.map((r) => <SelectItem key={r} value={r}>{r === "PASSED" ? "Passed" : "Failed"}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
               </div>
-              <Button size="sm" disabled={update.isPending}>Update status</Button>
+              <div><Label>Remarks</Label><Textarea name="remarks" rows={2} defaultValue={u.pdi_remarks ?? ""} /></div>
+              <Button disabled={save.isPending}>{save.isPending ? "Saving…" : "Save checks"}</Button>
+              <p className="text-xs text-muted-foreground">
+                Saving updates NTIR, PDI, delivery check and stock status together. Both must pass before the unit can be delivered.
+              </p>
             </form>
           </CardContent>
         </Card>

@@ -1,28 +1,22 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, CreditCard, Truck, Wrench } from "lucide-react";
+import { ArrowLeft, Printer, Truck, Wrench } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
 import { BookingBadge, StockBadge } from "@/components/sales/badges";
 import { DocumentsPanel } from "@/components/sales/documents-panel";
+import { PaymentDialog } from "@/components/sales/payment-dialog";
+import { CancelBookingDialog } from "@/components/sales/cancel-booking-dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useBooking, useBookingPayments, useStock } from "@/lib/erp";
 import {
   BOOKING_STATUS_LABEL,
-  PAYMENT_MODES,
-  PAYMENT_MODE_LABEL,
-  PAYMENT_TYPES,
   PAYMENT_TYPE_LABEL,
   bookingPaymentState,
   type BookingStatus,
-  type PaymentMode,
 } from "@/lib/booking";
 import type { StockStatus } from "@/lib/stock";
 import { fmtDate, inr } from "@/lib/sales";
@@ -45,42 +39,12 @@ function BookingDetail() {
   const { bookingId } = Route.useParams();
   const qc = useQueryClient();
   const navigate = useNavigate();
-  const [paymentOpen, setPaymentOpen] = useState(false);
   const [allocOpen, setAllocOpen] = useState(false);
 
   const bookingQuery = useBooking(bookingId);
   const paymentsQuery = useBookingPayments(bookingId);
   const b = bookingQuery.data;
   const availableStock = useStock({ status: "AVAILABLE", model: b?.tractor_model });
-
-  const createPayment = useMutation({
-    mutationFn: async (payload: {
-      amount: number;
-      payment_date: string;
-      payment_mode: PaymentMode;
-      payment_type: string;
-      reference_number: string;
-      remarks: string;
-    }) => {
-      const { data, error } = await supabase.rpc("receive_booking_payment_atomic", {
-        _booking_id: bookingId,
-        _amount: payload.amount,
-        _payment_date: payload.payment_date,
-        _payment_mode: payload.payment_mode,
-        _payment_type: payload.payment_type,
-        _reference_number: payload.reference_number || "",
-        _remarks: payload.remarks || "",
-      });
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      toast.success("Payment received");
-      setPaymentOpen(false);
-      qc.invalidateQueries();
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
 
   const allocate = useMutation({
     mutationFn: async (stockId: string) => {
@@ -105,7 +69,8 @@ function BookingDetail() {
   const alloc = Array.isArray(b.allocation) ? b.allocation[0] : b.allocation;
   const delivery = Array.isArray(b.delivery) ? b.delivery[0] : b.delivery;
   const totalReceived = Number(b.amount_received ?? 0);
-  const outstanding = Math.max(0, Number(b.final_price ?? 0) - totalReceived);
+  const totalDue = Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0);
+  const outstanding = Math.max(0, totalDue - totalReceived);
   const status = b.status as BookingStatus;
 
   return (
@@ -118,6 +83,14 @@ function BookingDetail() {
             <Button asChild variant="outline" size="sm">
               <Link to="/bookings"><ArrowLeft className="mr-1 h-4 w-4" /> All bookings</Link>
             </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link to="/print/challan/$bookingId" params={{ bookingId }} target="_blank">
+                <Printer className="mr-1 h-4 w-4" /> Challan
+              </Link>
+            </Button>
+            {status !== "DELIVERED" && status !== "CANCELLED" && (
+              <CancelBookingDialog bookingId={bookingId} received={Number(b.amount_received ?? 0)} />
+            )}
             {status !== "DELIVERED" && alloc && (
               <Button size="sm" onClick={() => navigate({ to: "/delivery/$bookingId", params: { bookingId } })}>
                 <Truck className="mr-1 h-4 w-4" /> Delivery
@@ -129,7 +102,7 @@ function BookingDetail() {
 
       <div className="mb-4 grid gap-3 sm:grid-cols-5">
         <Metric label="Deal price" value={inr(b.final_price)} />
-        <Metric label="Booking amount" value={inr(b.booking_amount)} />
+        <Metric label="Other charges" value={inr(b.extra_charges)} />
         <Metric label="Total received" value={inr(totalReceived)} />
         <Metric label="Outstanding" value={inr(outstanding)} />
         <Card className="shadow-card">
@@ -172,6 +145,8 @@ function BookingDetail() {
             <Field label="Salesman">{b.salesman?.full_name ?? "—"}</Field>
             <Field label="Booking amount state">{bookingPaymentState(totalReceived, Number(b.booking_amount))}</Field>
             <Field label="Booking status">{BOOKING_STATUS_LABEL[status]}</Field>
+            <Field label="Deal type">{b.finance_type === "LOAN" ? `Loan · ${inr(b.loan_amount)}` : "Cash"}</Field>
+            <Field label="Booking amount">{inr(b.booking_amount)}</Field>
             <Field label="Expected delivery">{fmtDate(b.expected_delivery_date)}</Field>
             <Field label="Remarks">{b.remarks || "—"}</Field>
           </CardContent>
@@ -242,71 +217,16 @@ function BookingDetail() {
         <Card className="shadow-card">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-base">Payment history</CardTitle>
-            {outstanding >= 1 && (
-              <Button size="sm" onClick={() => setPaymentOpen((v) => !v)}>
-                <CreditCard className="mr-1 h-4 w-4" /> Receive Payment
-              </Button>
+            {outstanding >= 1 && status !== "CANCELLED" && (
+              <PaymentDialog
+                bookingId={bookingId}
+                bookingNumber={b.booking_number}
+                outstanding={outstanding}
+                defaultType={totalReceived > 0 ? "BALANCE" : "BOOKING"}
+              />
             )}
           </CardHeader>
           <CardContent className="space-y-3">
-            {paymentOpen && (
-              <form
-                className="space-y-3 rounded-md border p-3"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const fd = new FormData(e.currentTarget);
-                  const amount = Number(fd.get("amount"));
-                  if (!Number.isFinite(amount) || amount <= 0) {
-                    toast.error("Enter a valid payment amount");
-                    return;
-                  }
-                  if (amount > outstanding) {
-                    toast.error("Payment cannot exceed outstanding balance");
-                    return;
-                  }
-                  createPayment.mutate({
-                    amount,
-                    payment_date: String(fd.get("payment_date")),
-                    payment_mode: String(fd.get("payment_mode")) as PaymentMode,
-                    payment_type: String(fd.get("payment_type")),
-                    reference_number: String(fd.get("reference_number") || ""),
-                    remarks: String(fd.get("remarks") || ""),
-                  });
-                }}
-              >
-                <div><Label>Amount</Label><Input name="amount" type="number" min="1" step="0.01" required /></div>
-                <div>
-                  <Label>Payment type</Label>
-                  <Select name="payment_type" defaultValue={totalReceived > 0 ? "BALANCE" : "BOOKING"}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {PAYMENT_TYPES.filter((t) => t !== "REFUND").map((t) => (
-                        <SelectItem key={t} value={t}>{PAYMENT_TYPE_LABEL[t]}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Payment date</Label>
-                  <Input name="payment_date" type="date" defaultValue={new Date().toISOString().slice(0, 10)} required />
-                </div>
-                <div>
-                  <Label>Payment mode</Label>
-                  <Select name="payment_mode" defaultValue="Cash">
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {PAYMENT_MODES.map((m) => <SelectItem key={m} value={m}>{PAYMENT_MODE_LABEL[m]}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div><Label>Reference / transaction number</Label><Input name="reference_number" /></div>
-                <div><Label>Remarks</Label><Textarea name="remarks" /></div>
-                <Button className="w-full" disabled={createPayment.isPending}>
-                  {createPayment.isPending ? "Saving…" : "Save Payment"}
-                </Button>
-              </form>
-            )}
-
             {paymentsQuery.data?.length ? (
               paymentsQuery.data.map((p) => (
                 <div key={p.id} className="flex items-center justify-between border-b pb-2 text-sm">
@@ -318,7 +238,11 @@ function BookingDetail() {
                       {p.reference_number ? ` · ${p.reference_number}` : ""}
                     </p>
                   </div>
-                  <span className="text-xs text-muted-foreground">{p.remarks || ""}</span>
+                  <Button asChild size="sm" variant="ghost">
+                    <Link to="/print/receipt/$paymentId" params={{ paymentId: p.id }} target="_blank">
+                      <Printer className="h-4 w-4" />
+                    </Link>
+                  </Button>
                 </div>
               ))
             ) : (

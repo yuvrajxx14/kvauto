@@ -6,8 +6,10 @@ import { AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, useMe } from "@/lib/auth";
 import { useProfiles } from "@/lib/queries";
+import { useProducts } from "@/lib/erp";
 import { PageHeader } from "@/components/sales/ui";
 import { StatusBadge } from "@/components/sales/badges";
+import { ModelSelect } from "@/components/sales/model-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,7 +20,6 @@ import {
   CUSTOMER_TYPES,
   INTEREST_LEVELS,
   LEAD_SOURCES,
-  TRACTOR_MODELS,
   VARIANTS,
   addDaysISO,
   fmtDate,
@@ -61,7 +62,9 @@ function NewInquiry() {
     { id: string; inquiry_number: string; model: string; status: string; inquiry_date: string }[]
   >([]);
   const [checked, setChecked] = useState(false);
-  const [modelIdx, setModelIdx] = useState(0);
+  const [selectedModel, setSelectedModel] = useState("");
+  const { data: productList } = useProducts(true);
+  const selectedHp = (productList ?? []).find((p) => p.model === selectedModel)?.hp ?? "";
 
   async function checkDuplicate() {
     if (!/^\d{10}$/.test(mobile.trim())) {
@@ -322,27 +325,13 @@ function NewInquiry() {
 
             <div className="space-y-1.5">
               <Label>Tractor model</Label>
-              <Select
-                name="model"
-                defaultValue={TRACTOR_MODELS[0].model}
-                onValueChange={(v) => setModelIdx(TRACTOR_MODELS.findIndex((m) => m.model === v))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {TRACTOR_MODELS.map((m) => (
-                    <SelectItem key={m.model} value={m.model}>
-                      {m.model}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ModelSelect name="model" onValueChange={(v) => setSelectedModel(v)} />
             </div>
             <div className="space-y-1.5">
               <Label>HP</Label>
-              <Input name="hp" defaultValue={TRACTOR_MODELS[modelIdx]?.hp} key={modelIdx} maxLength={20} />
+              <Input name="hp" defaultValue={selectedHp} key={selectedHp} maxLength={20} />
             </div>
+
             <div className="space-y-1.5">
               <Label>Variant</Label>
               <Select name="variant" defaultValue="2WD">

@@ -26,8 +26,15 @@ import { Route as AuthenticatedDeliveryBookingIdRouteImport } from './routes/_au
 import { Route as AuthenticatedInquiriesIndexRouteImport } from './routes/_authenticated/inquiries/index'
 import { Route as AuthenticatedInquiriesInquiryIdRouteImport } from './routes/_authenticated/inquiries/$inquiryId'
 import { Route as AuthenticatedInquiriesNewRouteImport } from './routes/_authenticated/inquiries/new'
+import { Route as AuthenticatedPassingIndexRouteImport } from './routes/_authenticated/passing/index'
+import { Route as AuthenticatedPassingBookingIdRouteImport } from './routes/_authenticated/passing/$bookingId'
+import { Route as AuthenticatedProductsIndexRouteImport } from './routes/_authenticated/products/index'
 import { Route as AuthenticatedStockIndexRouteImport } from './routes/_authenticated/stock/index'
 import { Route as AuthenticatedStockStockIdRouteImport } from './routes/_authenticated/stock/$stockId'
+import { Route as AuthenticatedSubsidyIndexRouteImport } from './routes/_authenticated/subsidy/index'
+import { Route as AuthenticatedPrintChallanBookingIdRouteImport } from './routes/_authenticated/print/challan.$bookingId'
+import { Route as AuthenticatedPrintDocumentsCustomerIdRouteImport } from './routes/_authenticated/print/documents.$customerId'
+import { Route as AuthenticatedPrintReceiptPaymentIdRouteImport } from './routes/_authenticated/print/receipt.$paymentId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -125,6 +132,24 @@ const AuthenticatedInquiriesNewRoute =
     path: '/inquiries/new',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPassingIndexRoute =
+  AuthenticatedPassingIndexRouteImport.update({
+    id: '/passing/',
+    path: '/passing/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPassingBookingIdRoute =
+  AuthenticatedPassingBookingIdRouteImport.update({
+    id: '/passing/$bookingId',
+    path: '/passing/$bookingId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedProductsIndexRoute =
+  AuthenticatedProductsIndexRouteImport.update({
+    id: '/products/',
+    path: '/products/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedStockIndexRoute = AuthenticatedStockIndexRouteImport.update({
   id: '/stock/',
   path: '/stock/',
@@ -134,6 +159,30 @@ const AuthenticatedStockStockIdRoute =
   AuthenticatedStockStockIdRouteImport.update({
     id: '/stock/$stockId',
     path: '/stock/$stockId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSubsidyIndexRoute =
+  AuthenticatedSubsidyIndexRouteImport.update({
+    id: '/subsidy/',
+    path: '/subsidy/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPrintChallanBookingIdRoute =
+  AuthenticatedPrintChallanBookingIdRouteImport.update({
+    id: '/print/challan/$bookingId',
+    path: '/print/challan/$bookingId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPrintDocumentsCustomerIdRoute =
+  AuthenticatedPrintDocumentsCustomerIdRouteImport.update({
+    id: '/print/documents/$customerId',
+    path: '/print/documents/$customerId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPrintReceiptPaymentIdRoute =
+  AuthenticatedPrintReceiptPaymentIdRouteImport.update({
+    id: '/print/receipt/$paymentId',
+    path: '/print/receipt/$paymentId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
@@ -149,13 +198,20 @@ export interface FileRoutesByFullPath {
   '/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
+  '/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/accounting/': typeof AuthenticatedAccountingIndexRoute
   '/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/customers/': typeof AuthenticatedCustomersIndexRoute
   '/delivery/': typeof AuthenticatedDeliveryIndexRoute
   '/inquiries/': typeof AuthenticatedInquiriesIndexRoute
+  '/passing/': typeof AuthenticatedPassingIndexRoute
+  '/products/': typeof AuthenticatedProductsIndexRoute
   '/stock/': typeof AuthenticatedStockIndexRoute
+  '/subsidy/': typeof AuthenticatedSubsidyIndexRoute
+  '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
+  '/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
+  '/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -169,13 +225,20 @@ export interface FileRoutesByTo {
   '/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
+  '/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/accounting': typeof AuthenticatedAccountingIndexRoute
   '/bookings': typeof AuthenticatedBookingsIndexRoute
   '/customers': typeof AuthenticatedCustomersIndexRoute
   '/delivery': typeof AuthenticatedDeliveryIndexRoute
   '/inquiries': typeof AuthenticatedInquiriesIndexRoute
+  '/passing': typeof AuthenticatedPassingIndexRoute
+  '/products': typeof AuthenticatedProductsIndexRoute
   '/stock': typeof AuthenticatedStockIndexRoute
+  '/subsidy': typeof AuthenticatedSubsidyIndexRoute
+  '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
+  '/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
+  '/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -191,13 +254,20 @@ export interface FileRoutesById {
   '/_authenticated/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
   '/_authenticated/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/_authenticated/inquiries/new': typeof AuthenticatedInquiriesNewRoute
+  '/_authenticated/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
   '/_authenticated/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/_authenticated/accounting/': typeof AuthenticatedAccountingIndexRoute
   '/_authenticated/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/_authenticated/customers/': typeof AuthenticatedCustomersIndexRoute
   '/_authenticated/delivery/': typeof AuthenticatedDeliveryIndexRoute
   '/_authenticated/inquiries/': typeof AuthenticatedInquiriesIndexRoute
+  '/_authenticated/passing/': typeof AuthenticatedPassingIndexRoute
+  '/_authenticated/products/': typeof AuthenticatedProductsIndexRoute
   '/_authenticated/stock/': typeof AuthenticatedStockIndexRoute
+  '/_authenticated/subsidy/': typeof AuthenticatedSubsidyIndexRoute
+  '/_authenticated/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
+  '/_authenticated/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
+  '/_authenticated/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -213,13 +283,20 @@ export interface FileRouteTypes {
     | '/delivery/$bookingId'
     | '/inquiries/$inquiryId'
     | '/inquiries/new'
+    | '/passing/$bookingId'
     | '/stock/$stockId'
     | '/accounting/'
     | '/bookings/'
     | '/customers/'
     | '/delivery/'
     | '/inquiries/'
+    | '/passing/'
+    | '/products/'
     | '/stock/'
+    | '/subsidy/'
+    | '/print/challan/$bookingId'
+    | '/print/documents/$customerId'
+    | '/print/receipt/$paymentId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -233,13 +310,20 @@ export interface FileRouteTypes {
     | '/delivery/$bookingId'
     | '/inquiries/$inquiryId'
     | '/inquiries/new'
+    | '/passing/$bookingId'
     | '/stock/$stockId'
     | '/accounting'
     | '/bookings'
     | '/customers'
     | '/delivery'
     | '/inquiries'
+    | '/passing'
+    | '/products'
     | '/stock'
+    | '/subsidy'
+    | '/print/challan/$bookingId'
+    | '/print/documents/$customerId'
+    | '/print/receipt/$paymentId'
   id:
     | '__root__'
     | '/'
@@ -254,13 +338,20 @@ export interface FileRouteTypes {
     | '/_authenticated/delivery/$bookingId'
     | '/_authenticated/inquiries/$inquiryId'
     | '/_authenticated/inquiries/new'
+    | '/_authenticated/passing/$bookingId'
     | '/_authenticated/stock/$stockId'
     | '/_authenticated/accounting/'
     | '/_authenticated/bookings/'
     | '/_authenticated/customers/'
     | '/_authenticated/delivery/'
     | '/_authenticated/inquiries/'
+    | '/_authenticated/passing/'
+    | '/_authenticated/products/'
     | '/_authenticated/stock/'
+    | '/_authenticated/subsidy/'
+    | '/_authenticated/print/challan/$bookingId'
+    | '/_authenticated/print/documents/$customerId'
+    | '/_authenticated/print/receipt/$paymentId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -390,6 +481,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInquiriesNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/passing/': {
+      id: '/_authenticated/passing/'
+      path: '/passing'
+      fullPath: '/passing/'
+      preLoaderRoute: typeof AuthenticatedPassingIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/passing/$bookingId': {
+      id: '/_authenticated/passing/$bookingId'
+      path: '/passing/$bookingId'
+      fullPath: '/passing/$bookingId'
+      preLoaderRoute: typeof AuthenticatedPassingBookingIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/products/': {
+      id: '/_authenticated/products/'
+      path: '/products'
+      fullPath: '/products/'
+      preLoaderRoute: typeof AuthenticatedProductsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/stock/': {
       id: '/_authenticated/stock/'
       path: '/stock'
@@ -402,6 +514,34 @@ declare module '@tanstack/react-router' {
       path: '/stock/$stockId'
       fullPath: '/stock/$stockId'
       preLoaderRoute: typeof AuthenticatedStockStockIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/subsidy/': {
+      id: '/_authenticated/subsidy/'
+      path: '/subsidy'
+      fullPath: '/subsidy/'
+      preLoaderRoute: typeof AuthenticatedSubsidyIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/print/challan/$bookingId': {
+      id: '/_authenticated/print/challan/$bookingId'
+      path: '/print/challan/$bookingId'
+      fullPath: '/print/challan/$bookingId'
+      preLoaderRoute: typeof AuthenticatedPrintChallanBookingIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/print/documents/$customerId': {
+      id: '/_authenticated/print/documents/$customerId'
+      path: '/print/documents/$customerId'
+      fullPath: '/print/documents/$customerId'
+      preLoaderRoute: typeof AuthenticatedPrintDocumentsCustomerIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/print/receipt/$paymentId': {
+      id: '/_authenticated/print/receipt/$paymentId'
+      path: '/print/receipt/$paymentId'
+      fullPath: '/print/receipt/$paymentId'
+      preLoaderRoute: typeof AuthenticatedPrintReceiptPaymentIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
@@ -417,13 +557,20 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDeliveryBookingIdRoute: typeof AuthenticatedDeliveryBookingIdRoute
   AuthenticatedInquiriesInquiryIdRoute: typeof AuthenticatedInquiriesInquiryIdRoute
   AuthenticatedInquiriesNewRoute: typeof AuthenticatedInquiriesNewRoute
+  AuthenticatedPassingBookingIdRoute: typeof AuthenticatedPassingBookingIdRoute
   AuthenticatedStockStockIdRoute: typeof AuthenticatedStockStockIdRoute
   AuthenticatedAccountingIndexRoute: typeof AuthenticatedAccountingIndexRoute
   AuthenticatedBookingsIndexRoute: typeof AuthenticatedBookingsIndexRoute
   AuthenticatedCustomersIndexRoute: typeof AuthenticatedCustomersIndexRoute
   AuthenticatedDeliveryIndexRoute: typeof AuthenticatedDeliveryIndexRoute
   AuthenticatedInquiriesIndexRoute: typeof AuthenticatedInquiriesIndexRoute
+  AuthenticatedPassingIndexRoute: typeof AuthenticatedPassingIndexRoute
+  AuthenticatedProductsIndexRoute: typeof AuthenticatedProductsIndexRoute
   AuthenticatedStockIndexRoute: typeof AuthenticatedStockIndexRoute
+  AuthenticatedSubsidyIndexRoute: typeof AuthenticatedSubsidyIndexRoute
+  AuthenticatedPrintChallanBookingIdRoute: typeof AuthenticatedPrintChallanBookingIdRoute
+  AuthenticatedPrintDocumentsCustomerIdRoute: typeof AuthenticatedPrintDocumentsCustomerIdRoute
+  AuthenticatedPrintReceiptPaymentIdRoute: typeof AuthenticatedPrintReceiptPaymentIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -437,13 +584,23 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDeliveryBookingIdRoute: AuthenticatedDeliveryBookingIdRoute,
   AuthenticatedInquiriesInquiryIdRoute: AuthenticatedInquiriesInquiryIdRoute,
   AuthenticatedInquiriesNewRoute: AuthenticatedInquiriesNewRoute,
+  AuthenticatedPassingBookingIdRoute: AuthenticatedPassingBookingIdRoute,
   AuthenticatedStockStockIdRoute: AuthenticatedStockStockIdRoute,
   AuthenticatedAccountingIndexRoute: AuthenticatedAccountingIndexRoute,
   AuthenticatedBookingsIndexRoute: AuthenticatedBookingsIndexRoute,
   AuthenticatedCustomersIndexRoute: AuthenticatedCustomersIndexRoute,
   AuthenticatedDeliveryIndexRoute: AuthenticatedDeliveryIndexRoute,
   AuthenticatedInquiriesIndexRoute: AuthenticatedInquiriesIndexRoute,
+  AuthenticatedPassingIndexRoute: AuthenticatedPassingIndexRoute,
+  AuthenticatedProductsIndexRoute: AuthenticatedProductsIndexRoute,
   AuthenticatedStockIndexRoute: AuthenticatedStockIndexRoute,
+  AuthenticatedSubsidyIndexRoute: AuthenticatedSubsidyIndexRoute,
+  AuthenticatedPrintChallanBookingIdRoute:
+    AuthenticatedPrintChallanBookingIdRoute,
+  AuthenticatedPrintDocumentsCustomerIdRoute:
+    AuthenticatedPrintDocumentsCustomerIdRoute,
+  AuthenticatedPrintReceiptPaymentIdRoute:
+    AuthenticatedPrintReceiptPaymentIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

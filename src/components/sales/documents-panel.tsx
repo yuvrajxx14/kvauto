@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Clock, FileText, Upload, XCircle } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCustomerDocuments, useDocumentChecklist } from "@/lib/erp";
@@ -103,6 +104,14 @@ export function DocumentsPanel({ customerId }: { customerId: string }) {
     <Card className="shadow-card">
       <CardHeader className="flex flex-row items-center justify-between pb-3">
         <CardTitle className="text-base">Documents</CardTitle>
+        <Link
+          to="/print/documents/$customerId"
+          params={{ customerId }}
+          target="_blank"
+          className="text-xs text-primary hover:underline"
+        >
+          Print documents
+        </Link>
         <span
           className={cn(
             "rounded-full border px-2.5 py-0.5 text-xs font-semibold",
