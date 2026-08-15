@@ -37,7 +37,7 @@ import {
 import { useMe } from "@/lib/auth";
 import { fmtDate } from "@/lib/sales";
 
-type Search = { stockId?: string; refId?: string };
+type Search = { stockId?: string | undefined; refId?: string | undefined };
 
 export const Route = createFileRoute("/_authenticated/documents/chassis-print")({
   validateSearch: (s: Record<string, unknown>): Search => ({
