@@ -48,8 +48,8 @@ function DeliveryDetail() {
       use_type: string;
       application_status: string;
       approval_status: string;
-      application_date: string | null;
-      approval_date: string | null;
+      application_date: string | undefined;
+      approval_date: string | undefined;
     }) => {
       const { data, error } = await supabase.rpc("complete_delivery_atomic", {
         _booking_id: bookingId,
@@ -170,8 +170,8 @@ function DeliveryDetail() {
                     use_type: useType,
                     application_status: agri ? applicationStatus : "NOT_APPLICABLE",
                     approval_status: agri && applicationStatus === "DONE" ? approvalStatus : "NOT_APPLICABLE",
-                    application_date: agri && appDate ? appDate : null,
-                    approval_date: agri && apprDate ? apprDate : null,
+                    application_date: agri && appDate ? appDate : undefined,
+                    approval_date: agri && apprDate ? apprDate : undefined,
                   });
                 }}
               >
