@@ -15,7 +15,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useDemandVsStock, useStock } from "@/lib/erp";
 import { useMe } from "@/lib/auth";
 import { STOCK_STATUSES, STOCK_STATUS_LABEL, STOCK_LOCATIONS, TRACTOR_COLOURS, type StockStatus } from "@/lib/stock";
-import { TRACTOR_MODELS, VARIANTS } from "@/lib/sales";
+import { VARIANTS } from "@/lib/sales";
+import { ModelSelect } from "@/components/sales/model-select";
 
 export const Route = createFileRoute("/_authenticated/stock/")({
   head: () => ({
@@ -116,10 +117,7 @@ function StockPage() {
               <div><Label>Engine number</Label><Input name="engine_number" required /></div>
               <div>
                 <Label>Model</Label>
-                <Select name="model" defaultValue={TRACTOR_MODELS[0].model}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{TRACTOR_MODELS.map((t) => <SelectItem key={t.model} value={t.model}>{t.model}</SelectItem>)}</SelectContent>
-                </Select>
+                <ModelSelect name="model" />
               </div>
               <div>
                 <Label>Variant</Label>
