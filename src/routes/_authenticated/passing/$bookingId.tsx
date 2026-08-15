@@ -187,10 +187,10 @@ function PassingDetail() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-card lg:col-span-3">
+          <Card className="print-area shadow-card lg:col-span-3">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-base">Subsidy file checklist</CardTitle>
-              <Button size="sm" variant="outline" onClick={() => window.print()}>
+              <Button size="sm" variant="outline" data-print-hide onClick={() => window.print()}>
                 <Printer className="mr-1 h-4 w-4" /> Print checklist
               </Button>
             </CardHeader>
