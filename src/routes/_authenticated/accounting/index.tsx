@@ -92,16 +92,22 @@ function AccountingPage() {
                   <TableHead>Customer</TableHead>
                   <TableHead>Mode</TableHead>
                   <TableHead className="text-right">Amount</TableHead>
+                  <TableHead className="text-right">Print</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {(payments ?? []).length === 0 && <TableRow><TableCell colSpan={4} className="text-sm text-muted-foreground">No receipts yet.</TableCell></TableRow>}
+                {(payments ?? []).length === 0 && <TableRow><TableCell colSpan={5} className="text-sm text-muted-foreground">No receipts yet.</TableCell></TableRow>}
                 {(payments ?? []).slice(0, 20).map((p) => (
                   <TableRow key={p.id}>
                     <TableCell className="text-xs">{fmtDate(p.payment_date)}</TableCell>
                     <TableCell>{p.booking?.customer?.customer_name ?? "\u2014"}</TableCell>
                     <TableCell className="text-xs">{p.payment_mode}</TableCell>
                     <TableCell className="text-right">{inr(p.amount)}</TableCell>
+                    <TableCell className="text-right">
+                      <Link to="/print/receipt/$paymentId" params={{ paymentId: p.id }} target="_blank" className="text-xs text-primary hover:underline">
+                        Receipt
+                      </Link>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
