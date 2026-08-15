@@ -1158,6 +1158,123 @@ export type Database = {
           },
         ]
       }
+      tax_invoices: {
+        Row: {
+          booking_id: string
+          buyer_address: string | null
+          buyer_gstin: string | null
+          buyer_mobile: string | null
+          buyer_name: string
+          cgst: number
+          chassis_number: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          description: string
+          engine_number: string | null
+          fy_code: string
+          grand_total: number
+          gst_rate: number
+          hpa_hypo: string | null
+          hsn_code: string
+          id: string
+          invoice_date: string
+          invoice_number: string
+          month_code: string
+          place_of_supply: string
+          prefix: string
+          quantity: number
+          rate: number
+          remarks: string | null
+          round_off: number
+          seq: number
+          sgst: number
+          taxable_value: number
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          buyer_address?: string | null
+          buyer_gstin?: string | null
+          buyer_mobile?: string | null
+          buyer_name: string
+          cgst: number
+          chassis_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id: string
+          description: string
+          engine_number?: string | null
+          fy_code: string
+          grand_total: number
+          gst_rate?: number
+          hpa_hypo?: string | null
+          hsn_code?: string
+          id?: string
+          invoice_date?: string
+          invoice_number: string
+          month_code: string
+          place_of_supply?: string
+          prefix?: string
+          quantity?: number
+          rate: number
+          remarks?: string | null
+          round_off?: number
+          seq: number
+          sgst: number
+          taxable_value: number
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          buyer_address?: string | null
+          buyer_gstin?: string | null
+          buyer_mobile?: string | null
+          buyer_name?: string
+          cgst?: number
+          chassis_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string
+          description?: string
+          engine_number?: string | null
+          fy_code?: string
+          grand_total?: number
+          gst_rate?: number
+          hpa_hypo?: string | null
+          hsn_code?: string
+          id?: string
+          invoice_date?: string
+          invoice_number?: string
+          month_code?: string
+          place_of_supply?: string
+          prefix?: string
+          quantity?: number
+          rate?: number
+          remarks?: string | null
+          round_off?: number
+          seq?: number
+          sgst?: number
+          taxable_value?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tax_invoices_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tax_invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tractor_allocations: {
         Row: {
           allocated_by: string | null
@@ -1429,6 +1546,22 @@ export type Database = {
       }
       is_management: { Args: { _user_id: string }; Returns: boolean }
       is_receptionist: { Args: { _user_id: string }; Returns: boolean }
+      issue_tax_invoice: {
+        Args: {
+          _booking_id: string
+          _buyer_address: string
+          _buyer_gstin: string
+          _description: string
+          _gst_rate: number
+          _hpa_hypo: string
+          _hsn_code: string
+          _invoice_date: string
+          _place_of_supply: string
+          _prefix?: string
+          _rate: number
+        }
+        Returns: string
+      }
       log_activity: {
         Args: {
           _action: string
