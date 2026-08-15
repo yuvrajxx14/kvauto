@@ -221,6 +221,13 @@
     box-shadow: none;
   }
 
+  /* The chassis sheet is scaled to fit on screen — print it full size */
+  [data-chassis-scale] {
+    transform: none !important;
+    width: auto !important;
+    height: auto !important;
+  }
+
   .print-area {
     color: #000 !important;
     -webkit-print-color-adjust: exact;

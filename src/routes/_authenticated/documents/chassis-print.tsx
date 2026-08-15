@@ -372,11 +372,13 @@ function ChassisPrintPage() {
             >
               <div
                 className="mx-auto"
+                data-chassis-scale
                 style={{ width: `${794 * scale}px`, height: `${1123 * scale}px` }}
               >
                 <div
                   ref={sheetRef}
                   className="origin-top-left shadow-sm print:shadow-none"
+                  data-chassis-scale
                   style={{ transform: `scale(${scale})` }}
                 >
                   <ChassisSheet data={sheetData} appearance={appearance} />
