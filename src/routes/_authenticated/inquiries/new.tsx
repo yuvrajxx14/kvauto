@@ -322,27 +322,13 @@ function NewInquiry() {
 
             <div className="space-y-1.5">
               <Label>Tractor model</Label>
-              <Select
-                name="model"
-                defaultValue={TRACTOR_MODELS[0].model}
-                onValueChange={(v) => setModelIdx(TRACTOR_MODELS.findIndex((m) => m.model === v))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {TRACTOR_MODELS.map((m) => (
-                    <SelectItem key={m.model} value={m.model}>
-                      {m.model}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ModelSelect name="model" onValueChange={(v) => setSelectedModel(v)} />
             </div>
             <div className="space-y-1.5">
               <Label>HP</Label>
-              <Input name="hp" defaultValue={TRACTOR_MODELS[modelIdx]?.hp} key={modelIdx} maxLength={20} />
+              <Input name="hp" defaultValue={selectedHp} key={selectedHp} maxLength={20} />
             </div>
+
             <div className="space-y-1.5">
               <Label>Variant</Label>
               <Select name="variant" defaultValue="2WD">
