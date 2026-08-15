@@ -30,24 +30,16 @@ function BookingsPage() {
   const [status, setStatus] = useState<string>("all");
   const { data, isLoading } = useBookings(search);
 
-  const rows = (data ?? []).filter((b) => (status === "all" ? true : b.status === status));
-  const totals = rows.reduce(
-    (acc, b) => {
-      acc.deal += Number(b.final_price ?? 0);
-      acc.received += Number(b.amount_received ?? 0);
-      return acc;
-    },
-    { deal: 0, received: 0 },
+  const rows = (data ?? []).filter((b) =>
+    status === "all" ? !["DELIVERED", "CANCELLED"].includes(b.status) : b.status === status,
   );
 
   return (
     <div>
-      <PageHeader title="Bookings" subtitle="Every confirmed tractor deal with live collection status" />
+      <PageHeader title="Bookings" subtitle="Active tractor bookings awaiting delivery" />
 
       <div className="mb-4 grid gap-3 sm:grid-cols-3">
-        <Metric label="Bookings" value={String(rows.length)} />
-        <Metric label="Deal value" value={inr(totals.deal)} />
-        <Metric label="Outstanding" value={inr(Math.max(0, totals.deal - totals.received))} />
+        <Metric label="Active bookings" value={String(rows.length)} />
       </div>
 
       <div className="mb-3 flex flex-wrap gap-2">
