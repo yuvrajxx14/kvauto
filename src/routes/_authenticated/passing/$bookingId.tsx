@@ -135,7 +135,7 @@ function PassingDetail() {
   const approved = !agri || subsidy?.approval_status === "APPROVED";
   const canPrintSet = applicationDone && approved && paymentOk;
 
-  const r = rec as (typeof rec & Record<string, never>) | null;
+  const r = rec;
 
   return (
     <div>
