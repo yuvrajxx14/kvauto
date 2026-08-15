@@ -46,9 +46,10 @@ function StockDetail() {
         pdi_remarks: p.remarks,
         delivery_check_remarks: p.remarks,
       };
-      // Only move stock status when the unit is not already reserved/allocated/sold.
-      if (u && ["AVAILABLE", "IN_TRANSIT", "HOLD", "RECEIVED"].includes(String(u.status))) {
-        patch['status'] = bothPassed ? "AVAILABLE" : "HOLD";
+      // Only move stock status when the unit is not already reserved/allocated/delivered.
+      const movable = ["ORDERED", "IN_TRANSIT", "RECEIVED", "INSPECTION_PENDING", "PDI_PENDING", "INSPECTION_FAILED", "HOLD", "AVAILABLE"];
+      if (u && movable.includes(String(u.status))) {
+        patch['status'] = bothPassed ? "AVAILABLE" : "INSPECTION_FAILED";
       }
       const { error } = await supabase.from("tractor_stock").update(patch as never).eq("id", stockId);
       if (error) throw error;
