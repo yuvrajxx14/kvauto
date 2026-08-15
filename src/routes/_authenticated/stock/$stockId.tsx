@@ -72,11 +72,6 @@ function StockDetail() {
         actions={
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline" size="sm">
-              <Link to="/documents/chassis-print" search={{ stockId }}>
-                <ScanLine className="mr-1 h-4 w-4" /> Generate chassis print
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
               <Link to="/stock"><ArrowLeft className="mr-1 h-4 w-4" /> All stock</Link>
             </Button>
           </div>
