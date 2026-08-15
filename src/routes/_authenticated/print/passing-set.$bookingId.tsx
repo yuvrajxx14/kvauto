@@ -121,15 +121,7 @@ function PassingSetPrint() {
               <p className="mb-1 text-sm font-semibold uppercase tracking-wide">{s.label}</p>
               <p className="mb-3 text-xs text-muted-foreground">{s.note}</p>
               {s.key === "FORM22" ? (
-                <Form22
-                  customer={b.customer?.customer_name ?? "—"}
-                  village={b.customer?.village ?? "—"}
-                  model={`${b.tractor_model} ${b.variant ?? ""}`}
-                  chassis={alloc?.chassis_number ?? "—"}
-                  engine={alloc?.engine_number ?? "—"}
-                  invoiceNo={invoice?.invoice_number ?? "—"}
-                  invoiceDate={fmtDate(invoice?.invoice_date ?? null)}
-                />
+                <Form22 />
               ) : s.url ? (
                 <img src={s.url} alt={s.label} className="max-h-[950px] w-full object-contain" />
               ) : (
@@ -154,28 +146,95 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-function Form22(p: { customer: string; village: string; model: string; chassis: string; engine: string; invoiceNo: string; invoiceDate: string }) {
+/** Form 22 replica of the Mahindra & Mahindra Ltd. (Tractor Division) certificate.
+ *  Vehicle-specific fields (chassis / engine) are left blank to be filled by hand. */
+function Form22() {
+  const cell = "border border-black px-2 py-1 align-middle";
   return (
-    <div className="rounded-md border p-4 text-sm">
-      <p className="text-center text-base font-bold">FORM 22</p>
-      <p className="mb-3 text-center text-xs text-muted-foreground">
-        Initial certificate of compliance with pollution standards, safety standards of components and roadworthiness
-      </p>
-      <div className="space-y-1">
-        <Row label="Purchaser" value={p.customer} />
-        <Row label="Address" value={p.village} />
-        <Row label="Make / Model" value={`Mahindra ${p.model}`} />
-        <Row label="Chassis number" value={p.chassis} />
-        <Row label="Engine number" value={p.engine} />
-        <Row label="Invoice number" value={p.invoiceNo} />
-        <Row label="Invoice date" value={p.invoiceDate} />
+    <div className="mx-auto max-w-[780px] text-[11px] leading-snug text-black">
+      <div className="text-center">
+        <p className="text-[19px] font-bold tracking-wide">MAHINDRA &amp; MAHINDRA LTD.</p>
+        <p className="mt-1 text-[12px] font-bold tracking-wide">TRACTOR DIVISION</p>
+        <p className="mt-1">Mahindra &amp; Mahindra Ltd. (Farm Equipment Sector)</p>
+        <p>C/o. Deepak Diesel Pvt. Ltd., Survey no. 287/1, Shapar Village Main Road,</p>
+        <p>Shapar (veraval), Dist: Rajkot - 360 024</p>
+        <p className="mt-4 text-[15px] font-bold tracking-[0.35em] underline">FORM-22</p>
+        <p className="mt-2">[See rules 47 (1) (g), 115, 124 (2) and 127]</p>
+        <p className="mt-2 text-[12px] font-bold underline">
+          INITIAL CERTIFICATE OF COMPLAINCE WITH POLLUTION STANDARDS SAFETY
+        </p>
+        <p className="text-[12px] font-bold underline">STANDARS OF COMPNENTS AND ROAD WORTHINESS</p>
       </div>
-      <p className="mt-4 text-xs">
-        Certified that the vehicle described above complies with the provisions of the Motor Vehicles Act, 1988 and the rules made
-        thereunder in respect of pollution standards, safety standards of components and roadworthiness.
+
+      <p className="mt-4">
+        It is certified that the following vehicle complies with the emission values, including mass emission norms and noise
+        standards including noise level under the provisions of the Motor Vehicles Act, 1988, and the rules made thereunder as
+        specified below:
       </p>
-      <div className="mt-10 flex justify-end text-xs text-muted-foreground">
-        <span>For {DEALER.name}</span>
+
+      <ol className="mt-3 list-decimal space-y-1 pl-6">
+        <li>Brand Name of the vehicle: <span className="font-bold">MAHINDRA &amp; MAHINDRA LTD.</span></li>
+        <li>Chassis number: <span className="inline-block min-w-[220px] border-b border-dotted border-black">&nbsp;</span></li>
+        <li>Engine number: <span className="inline-block min-w-[220px] border-b border-dotted border-black">&nbsp;</span></li>
+        <li>Emission norms applicable: <span className="font-bold">BHARAT (TREM) STAGE III A</span></li>
+        <li>
+          The emission sound level noise values of the above vehicle model, obtained during Type Approval as per Canteral Motor
+          Vehicle Rules, 1989 are given below: -
+          <p className="mt-1 font-bold underline">(i) Emission values [refer rule 115 A (7)]:</p>
+          <p className="font-bold underline">a) For Diesel Vehicles (Agricultural Tractors)</p>
+        </li>
+      </ol>
+
+      <table className="mt-3 w-full border-collapse border border-black text-center">
+        <thead>
+          <tr>
+            <th className={`${cell} w-[9%]`} rowSpan={2}>Sr. No.</th>
+            <th className={`${cell} w-[31%]`} rowSpan={2}>Pollutant</th>
+            <th className={cell} colSpan={3}>Mass in gm/kWh</th>
+          </tr>
+          <tr>
+            <th className={cell}>8&lt;=kW&lt;19</th>
+            <th className={cell}>19&lt;=kW&lt;37</th>
+            <th className={cell}>37&lt;=kW&lt;56</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ["1", "Carbon Monoxide", "5.5", "5.5", "5.0"],
+            ["2", "Hydro Carbon", "NA", "NA", "NA"],
+            ["3", "Non-Methane HC", "NA", "NA", "NA"],
+            ["4", "NOx, (if applicable)", "NA", "NA", "NA"],
+            ["5", "HC + NOx (if applicable) - Maximum", "8.5", "7.5", "4.7"],
+            ["6", "PM", "0.8", "0.6", "0.4"],
+          ].map((row) => (
+            <tr key={row[0]}>
+              <td className={cell}>{row[0]}</td>
+              <td className={`${cell} text-left`}>{row[1]}</td>
+              <td className={cell}>{row[2]}</td>
+              <td className={cell}>{row[3]}</td>
+              <td className={cell}>{row[4]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <p className="mt-4 font-bold underline">(ii) Noise Level [rule 119 and 120 (3)]:</p>
+      <div className="mt-3 space-y-1">
+        <p>a) Horn (For all vehicles other than agricultural tractors &amp; construction equipment vehicles) <span className="ml-6 font-bold">NA</span></p>
+        <p>b) By stander&apos;s position ((For all vehicles other than agricultural tractors &amp; construction equipment vehicles) <span className="ml-2 font-bold">NA</span></p>
+        <p className="font-bold">c) Operator&apos;s ear level (for agricultural tractors &amp; construction equipment vehicles):</p>
+      </div>
+      <div className="mt-3 space-y-1">
+        <p>96dB(A) Maximum - as per Annexure I of AIS 115 Part 1 - 2009</p>
+        <p>Or</p>
+        <p>92dB(A) Maximum - as per Annexure II of AIS 115 Part 1 - 2009</p>
+      </div>
+
+      <div className="mt-16 text-right">
+        <p className="font-bold">MAHINDRA &amp; MAHINDRA LTD.</p>
+        <div className="h-16" />
+        <p className="font-bold">AUTHORISED SIGNATORY</p>
+        <p>(TRACTOR DIVISION)</p>
       </div>
     </div>
   );
