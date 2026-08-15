@@ -5,6 +5,7 @@ import { ArrowLeft, CheckCircle2, Printer, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
+import { VehicleDocumentsPanel } from "@/components/sales/vehicle-documents-panel";
 import { DocumentsPanel, documentProgress } from "@/components/sales/documents-panel";
 import { PaymentDialog } from "@/components/sales/payment-dialog";
 import { Button } from "@/components/ui/button";
@@ -238,6 +239,12 @@ function DeliveryDetail() {
         </Card>
 
         <DocumentsPanel customerId={b.customer_id} />
+
+        {stock?.id && (
+          <div className="lg:col-span-3">
+            <VehicleDocumentsPanel stockId={stock.id} />
+          </div>
+        )}
       </div>
     </div>
   );
