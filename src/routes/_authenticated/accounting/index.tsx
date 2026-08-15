@@ -3,6 +3,7 @@ import { PageHeader } from "@/components/sales/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useAllPayments, useBookings } from "@/lib/erp";
+import { PaymentDialog } from "@/components/sales/payment-dialog";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/accounting/")({
@@ -30,7 +31,7 @@ function AccountingPage() {
   const todayCollection = (payments ?? []).filter((p) => p.payment_date === today).reduce((s, p) => s + Number(p.amount), 0);
 
   const outstandingRows = open
-    .map((b) => ({ b, out: Math.max(0, Number(b.final_price ?? 0) - Number(b.amount_received ?? 0)) }))
+    .map((b) => ({ b, out: Math.max(0, Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0)) }))
     .filter((r) => r.out > 0)
     .sort((a, x) => x.out - a.out);
 
@@ -55,10 +56,11 @@ function AccountingPage() {
                   <TableHead>Customer</TableHead>
                   <TableHead>Booking</TableHead>
                   <TableHead className="text-right">Outstanding</TableHead>
+                  <TableHead className="text-right">Receipt</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {outstandingRows.length === 0 && <TableRow><TableCell colSpan={3} className="text-sm text-muted-foreground">No outstanding balances.</TableCell></TableRow>}
+                {outstandingRows.length === 0 && <TableRow><TableCell colSpan={4} className="text-sm text-muted-foreground">No outstanding balances.</TableCell></TableRow>}
                 {outstandingRows.map(({ b, out }) => (
                   <TableRow key={b.id}>
                     <TableCell>
@@ -70,6 +72,9 @@ function AccountingPage() {
                       <Link to="/bookings/$bookingId" params={{ bookingId: b.id }} className="text-xs hover:underline">{b.booking_number}</Link>
                     </TableCell>
                     <TableCell className="text-right font-medium">{inr(out)}</TableCell>
+                    <TableCell className="text-right">
+                      <PaymentDialog bookingId={b.id} bookingNumber={b.booking_number} outstanding={out} />
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
