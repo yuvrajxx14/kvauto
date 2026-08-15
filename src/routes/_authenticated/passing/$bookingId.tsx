@@ -94,11 +94,17 @@ function PassingDetail() {
         actions={
           <div className="flex gap-2">
             <Button asChild variant="outline" size="sm"><Link to="/passing"><ArrowLeft className="mr-1 h-4 w-4" /> Passing list</Link></Button>
+            <Button asChild size="sm">
+              <Link to="/print/invoice/$bookingId" params={{ bookingId }} target="_blank">
+                <Printer className="mr-1 h-4 w-4" /> Tax invoice
+              </Link>
+            </Button>
             <Button asChild variant="outline" size="sm">
               <Link to="/print/documents/$customerId" params={{ customerId: b.customer_id }} target="_blank">
                 <Printer className="mr-1 h-4 w-4" /> Print documents
               </Link>
             </Button>
+
           </div>
         }
       />
