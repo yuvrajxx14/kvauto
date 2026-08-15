@@ -47,6 +47,60 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_cancellations: {
+        Row: {
+          booking_id: string
+          cancel_date: string
+          cancelled_by: string | null
+          created_at: string
+          customer_id: string
+          id: string
+          reason: string
+          refund_amount: number
+          refund_mode: string | null
+          remarks: string | null
+        }
+        Insert: {
+          booking_id: string
+          cancel_date?: string
+          cancelled_by?: string | null
+          created_at?: string
+          customer_id: string
+          id?: string
+          reason: string
+          refund_amount?: number
+          refund_mode?: string | null
+          remarks?: string | null
+        }
+        Update: {
+          booking_id?: string
+          cancel_date?: string
+          cancelled_by?: string | null
+          created_at?: string
+          customer_id?: string
+          id?: string
+          reason?: string
+          refund_amount?: number
+          refund_mode?: string | null
+          remarks?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_cancellations_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_cancellations_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       booking_payments: {
         Row: {
           amount: number
@@ -101,16 +155,21 @@ export type Database = {
           booking_amount: number
           booking_date: string
           booking_number: string
+          cancelled_at: string | null
           created_at: string
           customer_id: string
+          doc_charge_posted: boolean
           exchange_details: string | null
           exchange_required: boolean
           expected_delivery_date: string | null
+          extra_charges: number
           final_price: number
           finance_company: string | null
           finance_required: boolean
+          finance_type: string
           id: string
           inquiry_id: string
+          loan_amount: number
           payment_mode: string | null
           remarks: string | null
           salesman_id: string
@@ -126,16 +185,21 @@ export type Database = {
           booking_amount?: number
           booking_date?: string
           booking_number: string
+          cancelled_at?: string | null
           created_at?: string
           customer_id: string
+          doc_charge_posted?: boolean
           exchange_details?: string | null
           exchange_required?: boolean
           expected_delivery_date?: string | null
+          extra_charges?: number
           final_price?: number
           finance_company?: string | null
           finance_required?: boolean
+          finance_type?: string
           id?: string
           inquiry_id: string
+          loan_amount?: number
           payment_mode?: string | null
           remarks?: string | null
           salesman_id: string
@@ -151,16 +215,21 @@ export type Database = {
           booking_amount?: number
           booking_date?: string
           booking_number?: string
+          cancelled_at?: string | null
           created_at?: string
           customer_id?: string
+          doc_charge_posted?: boolean
           exchange_details?: string | null
           exchange_required?: boolean
           expected_delivery_date?: string | null
+          extra_charges?: number
           final_price?: number
           finance_company?: string | null
           finance_required?: boolean
+          finance_type?: string
           id?: string
           inquiry_id?: string
+          loan_amount?: number
           payment_mode?: string | null
           remarks?: string | null
           salesman_id?: string
@@ -306,6 +375,7 @@ export type Database = {
           odometer_hours: number | null
           remarks: string | null
           tractor_stock_id: string
+          use_type: string
         }
         Insert: {
           booking_id: string
@@ -317,6 +387,7 @@ export type Database = {
           odometer_hours?: number | null
           remarks?: string | null
           tractor_stock_id: string
+          use_type?: string
         }
         Update: {
           booking_id?: string
@@ -328,6 +399,7 @@ export type Database = {
           odometer_hours?: number | null
           remarks?: string | null
           tractor_stock_id?: string
+          use_type?: string
         }
         Relationships: [
           {
@@ -816,6 +888,134 @@ export type Database = {
           },
         ]
       }
+      passing_checklist: {
+        Row: {
+          created_at: string
+          id: string
+          is_done: boolean
+          item_key: string
+          label: string
+          passing_id: string
+          provided_by: string
+          remarks: string | null
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_done?: boolean
+          item_key: string
+          label: string
+          passing_id: string
+          provided_by?: string
+          remarks?: string | null
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_done?: boolean
+          item_key?: string
+          label?: string
+          passing_id?: string
+          provided_by?: string
+          remarks?: string | null
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "passing_checklist_passing_id_fkey"
+            columns: ["passing_id"]
+            isOneToOne: false
+            referencedRelation: "passing_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      passing_records: {
+        Row: {
+          booking_id: string
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          form22_printed: boolean
+          id: string
+          insurance_policy_number: string | null
+          insurance_received: boolean
+          invoice_date: string | null
+          invoice_number: string | null
+          remarks: string | null
+          rto_number: string | null
+          rto_receipt_received: boolean
+          screen_report_received: boolean
+          sent_to_insurance: boolean
+          set_sent_date: string | null
+          set_sent_for_passing: boolean
+          subsidy_file_created: boolean
+          subsidy_file_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          created_by?: string | null
+          customer_id: string
+          form22_printed?: boolean
+          id?: string
+          insurance_policy_number?: string | null
+          insurance_received?: boolean
+          invoice_date?: string | null
+          invoice_number?: string | null
+          remarks?: string | null
+          rto_number?: string | null
+          rto_receipt_received?: boolean
+          screen_report_received?: boolean
+          sent_to_insurance?: boolean
+          set_sent_date?: string | null
+          set_sent_for_passing?: boolean
+          subsidy_file_created?: boolean
+          subsidy_file_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string
+          form22_printed?: boolean
+          id?: string
+          insurance_policy_number?: string | null
+          insurance_received?: boolean
+          invoice_date?: string | null
+          invoice_number?: string | null
+          remarks?: string | null
+          rto_number?: string | null
+          rto_receipt_received?: boolean
+          screen_report_received?: boolean
+          sent_to_insurance?: boolean
+          set_sent_date?: string | null
+          set_sent_for_passing?: boolean
+          subsidy_file_created?: boolean
+          subsidy_file_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "passing_records_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "passing_records_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           active: boolean
@@ -875,6 +1075,88 @@ export type Database = {
           phone?: string | null
         }
         Relationships: []
+      }
+      subsidy_cases: {
+        Row: {
+          application_date: string | null
+          application_status: string
+          approval_date: string | null
+          approval_status: string
+          booking_id: string
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          delivery_date: string | null
+          delivery_id: string | null
+          id: string
+          insurance_amount: number
+          insurance_charged: boolean
+          insurance_required: boolean
+          remarks: string | null
+          updated_at: string
+          use_type: string
+        }
+        Insert: {
+          application_date?: string | null
+          application_status?: string
+          approval_date?: string | null
+          approval_status?: string
+          booking_id: string
+          created_at?: string
+          created_by?: string | null
+          customer_id: string
+          delivery_date?: string | null
+          delivery_id?: string | null
+          id?: string
+          insurance_amount?: number
+          insurance_charged?: boolean
+          insurance_required?: boolean
+          remarks?: string | null
+          updated_at?: string
+          use_type?: string
+        }
+        Update: {
+          application_date?: string | null
+          application_status?: string
+          approval_date?: string | null
+          approval_status?: string
+          booking_id?: string
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string
+          delivery_date?: string | null
+          delivery_id?: string | null
+          id?: string
+          insurance_amount?: number
+          insurance_charged?: boolean
+          insurance_required?: boolean
+          remarks?: string | null
+          updated_at?: string
+          use_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subsidy_cases_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subsidy_cases_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subsidy_cases_delivery_id_fkey"
+            columns: ["delivery_id"]
+            isOneToOne: false
+            referencedRelation: "deliveries"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tractor_allocations: {
         Row: {
@@ -1099,8 +1381,27 @@ export type Database = {
         Args: { _booking_id: string; _tractor_stock_id: string }
         Returns: string
       }
+      cancel_booking_atomic: {
+        Args: {
+          _booking_id: string
+          _reason: string
+          _refund_amount: number
+          _refund_mode: string
+          _remarks: string
+        }
+        Returns: string
+      }
       complete_delivery_atomic: {
-        Args: { _booking_id: string; _delivery_date: string; _remarks: string }
+        Args: {
+          _application_date?: string
+          _application_status?: string
+          _approval_date?: string
+          _approval_status?: string
+          _booking_id: string
+          _delivery_date: string
+          _remarks: string
+          _use_type?: string
+        }
         Returns: string
       }
       create_booking_atomic: {
@@ -1108,7 +1409,10 @@ export type Database = {
           _booking_amount: number
           _booking_date: string
           _final_price: number
+          _finance_type?: string
           _inquiry_id: string
+          _loan_amount?: number
+          _payment_mode?: string
           _remarks: string
           _salesman_id: string
           _tractor_model: string
@@ -1138,6 +1442,15 @@ export type Database = {
       owns_booking: { Args: { _booking_id: string }; Returns: boolean }
       owns_customer: { Args: { _customer_id: string }; Returns: boolean }
       owns_inquiry: { Args: { _inquiry_id: string }; Returns: boolean }
+      post_extra_charge_atomic: {
+        Args: {
+          _amount: number
+          _booking_id: string
+          _kind: string
+          _remarks: string
+        }
+        Returns: undefined
+      }
       receive_booking_payment_atomic: {
         Args: {
           _amount: number
