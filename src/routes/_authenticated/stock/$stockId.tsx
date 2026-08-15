@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ScanLine } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useStockItem } from "@/lib/erp";
+import { VehicleDocumentsPanel } from "@/components/sales/vehicle-documents-panel";
 import { type CheckStatus, type StockStatus } from "@/lib/stock";
 import { fmtDate } from "@/lib/sales";
 
@@ -71,11 +72,6 @@ function StockDetail() {
         subtitle={`${u.model} · ${u.variant ?? "—"} · ${u.location}`}
         actions={
           <div className="flex flex-wrap gap-2">
-            <Button asChild variant="outline" size="sm">
-              <Link to="/documents/chassis-print" search={{ stockId }}>
-                <ScanLine className="mr-1 h-4 w-4" /> Generate chassis print
-              </Link>
-            </Button>
             <Button asChild variant="outline" size="sm">
               <Link to="/stock"><ArrowLeft className="mr-1 h-4 w-4" /> All stock</Link>
             </Button>
@@ -139,6 +135,9 @@ function StockDetail() {
             </form>
           </CardContent>
         </Card>
+        <div className="lg:col-span-3">
+          <VehicleDocumentsPanel stockId={stockId} />
+        </div>
       </div>
     </div>
   );
