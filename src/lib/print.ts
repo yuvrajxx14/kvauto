@@ -29,9 +29,28 @@ export function amountInWords(value: number): string {
   return `${parts.join(" ")} Rupees Only`;
 }
 
+/** Words including paise, e.g. "Twenty Nine Thousand Six Hundred Forty Three And Forty Paise Only". */
+export function amountInWordsPaise(value: number): string {
+  const abs = Math.abs(Number(value) || 0);
+  const rupees = Math.floor(abs);
+  const paise = Math.round((abs - rupees) * 100);
+  const base = amountInWords(rupees).replace(" Rupees Only", "");
+  if (!paise) return `${rupees === 0 ? "Zero" : base} Only`;
+  return `${rupees === 0 ? "Zero" : base} And ${twoDigits(paise)} Paise Only`;
+}
+
 export const DEALER = {
-  name: "KrushiVidhya Automobiles",
+  name: "KRUSHIVIDHYA AUTOMOBILES",
   tagline: "Authorised Mahindra Tractor Dealership",
-  address: "Main Showroom, Maharashtra, India",
-  phone: "",
+  address: "Opp. Swaminarayan Temple, Gokhlana Chowkdi, Jasdan - 360050",
+  phone: "9909023939",
+  gstin: "24ABEFK3152A1ZZ",
+  bank: {
+    name: "HDFC BANK LTD.",
+    branch: "AMBEDKAR CHOWK BRANCH RAJKOT",
+    account: "99909909023939",
+    ifsc: "HDFC0004776",
+  },
+  jurisdiction: "Rajkot",
 };
+

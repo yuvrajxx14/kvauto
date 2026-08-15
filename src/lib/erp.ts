@@ -338,7 +338,26 @@ export function usePayment(paymentId: string) {
   });
 }
 
+/* ---------- Tax invoice (RTO) ---------- */
+
+export function useTaxInvoice(bookingId: string) {
+  return useQuery({
+    queryKey: ["tax-invoice", bookingId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tax_invoices")
+        .select("*, booking:bookings(*, customer:customers(*))")
+        .eq("booking_id", bookingId)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!bookingId,
+  });
+}
+
 /** Total due on a booking: deal price + extra charges (loan doc charge, insurance). */
 export function bookingDue(b: { final_price: number | null; extra_charges?: number | null }) {
   return Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0);
 }
+
