@@ -73,6 +73,20 @@ function ChassisPrintPage() {
   const [manual, setManual] = useState({ model: "", engine: "", customer: "", bookingNumber: "" });
   const [nonce, setNonce] = useState(0);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const previewBoxRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  // Fit the A4 sheet (794px at 96dpi) into the preview column.
+  useEffect(() => {
+    const el = previewBoxRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => {
+      const w = el.clientWidth - 32;
+      setScale(Math.min(1, Math.max(0.3, w / 794)));
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const { data: vehicles, isLoading: searching } = useVehicleSearch(term);
   const { data: vehicle } = useVehicleForChassisPrint(selectedId);
@@ -352,9 +366,23 @@ function ChassisPrintPage() {
               </p>
             </div>
 
-            <div className="overflow-auto rounded-lg border bg-muted/30 p-4 print:border-0 print:bg-transparent print:p-0">
-              <div ref={sheetRef} className="mx-auto origin-top shadow-sm print:shadow-none">
-                <ChassisSheet data={sheetData} appearance={appearance} />
+            <div
+              ref={previewBoxRef}
+              className="overflow-hidden rounded-lg border bg-muted/30 p-4 print:border-0 print:bg-transparent print:p-0"
+            >
+              <div
+                className="mx-auto"
+                data-chassis-scale
+                style={{ width: `${794 * scale}px`, height: `${1123 * scale}px` }}
+              >
+                <div
+                  ref={sheetRef}
+                  className="origin-top-left shadow-sm print:shadow-none"
+                  data-chassis-scale
+                  style={{ transform: `scale(${scale})` }}
+                >
+                  <ChassisSheet data={sheetData} appearance={appearance} />
+                </div>
               </div>
             </div>
           </div>

@@ -133,7 +133,7 @@ export function ChassisSheet({
           })}
         </div>
 
-        {grain > 0 && (
+        {grain > 0 && chars.length > 0 && (
           <div
             aria-hidden
             style={{
