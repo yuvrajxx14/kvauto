@@ -58,8 +58,8 @@ function DeliveryDetail() {
         _use_type: payload.use_type,
         _application_status: payload.application_status,
         _approval_status: payload.approval_status,
-        _application_date: payload.application_date,
-        _approval_date: payload.approval_date,
+        ...(payload.application_date ? { _application_date: payload.application_date } : {}),
+        ...(payload.approval_date ? { _approval_date: payload.approval_date } : {}),
       });
       if (error) throw error;
       return data;
