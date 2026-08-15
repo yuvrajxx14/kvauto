@@ -41,6 +41,7 @@ function InquiriesPage() {
   const today = todayISO();
 
   const filtered = (data ?? [])
+    .filter((i) => status !== "all" || !["DELIVERED", "LOST"].includes(i.status))
     .filter((i) => {
       const s = q.trim().toLowerCase();
       if (!s) return true;
@@ -62,7 +63,7 @@ function InquiriesPage() {
     <div>
       <PageHeader
         title="Inquiries"
-        subtitle={`${filtered.length} inquiries`}
+        subtitle={`${filtered.length} ongoing inquiries`}
         actions={
           <Button asChild>
             <Link to="/inquiries/new">

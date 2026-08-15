@@ -253,11 +253,13 @@ export function useProducts(activeOnly = false) {
   return useQuery({
     queryKey: ["products", activeOnly],
     queryFn: async (): Promise<Product[]> => {
-      let q = supabase.from("products").select("id, model, hp, category, sort_order, active").order("sort_order").order("model");
+      let q = supabase.from("products").select("id, model, hp, category, sort_order, active");
       if (activeOnly) q = q.eq("active", true);
       const { data, error } = await q;
       if (error) throw error;
-      return (data ?? []) as Product[];
+      return ((data ?? []) as Product[]).sort((a, b) =>
+        a.model.localeCompare(b.model, undefined, { numeric: true, sensitivity: "base" }),
+      );
     },
     staleTime: 60_000,
   });
