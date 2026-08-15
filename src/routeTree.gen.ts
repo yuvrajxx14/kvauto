@@ -23,6 +23,7 @@ import { Route as AuthenticatedCustomersIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedCustomersCustomerIdRouteImport } from './routes/_authenticated/customers/$customerId'
 import { Route as AuthenticatedDeliveryIndexRouteImport } from './routes/_authenticated/delivery/index'
 import { Route as AuthenticatedDeliveryBookingIdRouteImport } from './routes/_authenticated/delivery/$bookingId'
+import { Route as AuthenticatedDocumentsChassisPrintRouteImport } from './routes/_authenticated/documents/chassis-print'
 import { Route as AuthenticatedInquiriesIndexRouteImport } from './routes/_authenticated/inquiries/index'
 import { Route as AuthenticatedInquiriesInquiryIdRouteImport } from './routes/_authenticated/inquiries/$inquiryId'
 import { Route as AuthenticatedInquiriesNewRouteImport } from './routes/_authenticated/inquiries/new'
@@ -115,6 +116,12 @@ const AuthenticatedDeliveryBookingIdRoute =
     path: '/delivery/$bookingId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDocumentsChassisPrintRoute =
+  AuthenticatedDocumentsChassisPrintRouteImport.update({
+    id: '/documents/chassis-print',
+    path: '/documents/chassis-print',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedInquiriesIndexRoute =
   AuthenticatedInquiriesIndexRouteImport.update({
     id: '/inquiries/',
@@ -203,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/bookings/new': typeof AuthenticatedBookingsNewRoute
   '/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
   '/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
+  '/documents/chassis-print': typeof AuthenticatedDocumentsChassisPrintRoute
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
@@ -231,6 +239,7 @@ export interface FileRoutesByTo {
   '/bookings/new': typeof AuthenticatedBookingsNewRoute
   '/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
   '/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
+  '/documents/chassis-print': typeof AuthenticatedDocumentsChassisPrintRoute
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
@@ -261,6 +270,7 @@ export interface FileRoutesById {
   '/_authenticated/bookings/new': typeof AuthenticatedBookingsNewRoute
   '/_authenticated/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
   '/_authenticated/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
+  '/_authenticated/documents/chassis-print': typeof AuthenticatedDocumentsChassisPrintRoute
   '/_authenticated/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/_authenticated/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/_authenticated/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
@@ -291,6 +301,7 @@ export interface FileRouteTypes {
     | '/bookings/new'
     | '/customers/$customerId'
     | '/delivery/$bookingId'
+    | '/documents/chassis-print'
     | '/inquiries/$inquiryId'
     | '/inquiries/new'
     | '/passing/$bookingId'
@@ -319,6 +330,7 @@ export interface FileRouteTypes {
     | '/bookings/new'
     | '/customers/$customerId'
     | '/delivery/$bookingId'
+    | '/documents/chassis-print'
     | '/inquiries/$inquiryId'
     | '/inquiries/new'
     | '/passing/$bookingId'
@@ -348,6 +360,7 @@ export interface FileRouteTypes {
     | '/_authenticated/bookings/new'
     | '/_authenticated/customers/$customerId'
     | '/_authenticated/delivery/$bookingId'
+    | '/_authenticated/documents/chassis-print'
     | '/_authenticated/inquiries/$inquiryId'
     | '/_authenticated/inquiries/new'
     | '/_authenticated/passing/$bookingId'
@@ -473,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDeliveryBookingIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/documents/chassis-print': {
+      id: '/_authenticated/documents/chassis-print'
+      path: '/documents/chassis-print'
+      fullPath: '/documents/chassis-print'
+      preLoaderRoute: typeof AuthenticatedDocumentsChassisPrintRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/inquiries/': {
       id: '/_authenticated/inquiries/'
       path: '/inquiries'
@@ -575,6 +595,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBookingsNewRoute: typeof AuthenticatedBookingsNewRoute
   AuthenticatedCustomersCustomerIdRoute: typeof AuthenticatedCustomersCustomerIdRoute
   AuthenticatedDeliveryBookingIdRoute: typeof AuthenticatedDeliveryBookingIdRoute
+  AuthenticatedDocumentsChassisPrintRoute: typeof AuthenticatedDocumentsChassisPrintRoute
   AuthenticatedInquiriesInquiryIdRoute: typeof AuthenticatedInquiriesInquiryIdRoute
   AuthenticatedInquiriesNewRoute: typeof AuthenticatedInquiriesNewRoute
   AuthenticatedPassingBookingIdRoute: typeof AuthenticatedPassingBookingIdRoute
@@ -603,6 +624,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBookingsNewRoute: AuthenticatedBookingsNewRoute,
   AuthenticatedCustomersCustomerIdRoute: AuthenticatedCustomersCustomerIdRoute,
   AuthenticatedDeliveryBookingIdRoute: AuthenticatedDeliveryBookingIdRoute,
+  AuthenticatedDocumentsChassisPrintRoute:
+    AuthenticatedDocumentsChassisPrintRoute,
   AuthenticatedInquiriesInquiryIdRoute: AuthenticatedInquiriesInquiryIdRoute,
   AuthenticatedInquiriesNewRoute: AuthenticatedInquiriesNewRoute,
   AuthenticatedPassingBookingIdRoute: AuthenticatedPassingBookingIdRoute,

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
@@ -70,9 +70,16 @@ function StockDetail() {
         title={u.chassis_number}
         subtitle={`${u.model} · ${u.variant ?? "—"} · ${u.location}`}
         actions={
-          <Button asChild variant="outline" size="sm">
-            <Link to="/stock"><ArrowLeft className="mr-1 h-4 w-4" /> All stock</Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/documents/chassis-print" search={{ stockId }}>
+                <ScanLine className="mr-1 h-4 w-4" /> Generate chassis print
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm">
+              <Link to="/stock"><ArrowLeft className="mr-1 h-4 w-4" /> All stock</Link>
+            </Button>
+          </div>
         }
       />
 
