@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useBooking, usePassingRecord, useSubsidyCase } from "@/lib/erp";
 import { PASSING_STEPS, SUBSIDY_CHECKLIST } from "@/lib/passing";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
+import { VehicleDocumentsPanel } from "@/components/sales/vehicle-documents-panel";
 
 export const Route = createFileRoute("/_authenticated/passing/$bookingId")({
   head: () => ({
@@ -82,6 +83,8 @@ function PassingDetail() {
 
   const outstanding = Math.max(0, Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0));
   const blocked = outstanding >= 1;
+  const allocRaw = (b as unknown as { allocation?: unknown }).allocation;
+  const alloc = (Array.isArray(allocRaw) ? allocRaw[0] : allocRaw) as { tractor_stock_id?: string } | undefined;
   const checklist = [...((rec?.checklist as Array<{ id: string; label: string; provided_by: string; is_done: boolean; sort_order: number }>) ?? [])].sort(
     (x, y) => x.sort_order - y.sort_order,
   );
@@ -186,6 +189,12 @@ function PassingDetail() {
               </div>
             </CardContent>
           </Card>
+
+          {alloc?.tractor_stock_id && (
+            <div className="lg:col-span-3">
+              <VehicleDocumentsPanel stockId={alloc.tractor_stock_id} readOnly />
+            </div>
+          )}
 
           <Card className="print-area shadow-card lg:col-span-3">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
