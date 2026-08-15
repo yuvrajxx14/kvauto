@@ -75,6 +75,7 @@ function DeliveryDetail() {
   if (!b) return <PageHeader title="Booking not found" />;
 
   const alloc = Array.isArray(b.allocation) ? b.allocation[0] : b.allocation;
+  const stock = alloc ? (Array.isArray(alloc.stock) ? alloc.stock[0] : alloc.stock) : null;
   const delivery = Array.isArray(b.delivery) ? b.delivery[0] : b.delivery;
   const isLoan = b.finance_type === "LOAN";
   const docCharge = isLoan && !b.doc_charge_posted ? Math.round(Number(b.loan_amount ?? 0) * 0.02) : 0;
