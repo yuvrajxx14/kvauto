@@ -75,6 +75,7 @@ function DeliveryDetail() {
   if (!b) return <PageHeader title="Booking not found" />;
 
   const alloc = Array.isArray(b.allocation) ? b.allocation[0] : b.allocation;
+  const stock = alloc ? (Array.isArray(alloc.stock) ? alloc.stock[0] : alloc.stock) : null;
   const delivery = Array.isArray(b.delivery) ? b.delivery[0] : b.delivery;
   const isLoan = b.finance_type === "LOAN";
   const docCharge = isLoan && !b.doc_charge_posted ? Math.round(Number(b.loan_amount ?? 0) * 0.02) : 0;
@@ -83,8 +84,8 @@ function DeliveryDetail() {
   const progress = documentProgress(checklist ?? [], docs ?? []);
   const checks = [
     { label: "Tractor allocated", ok: !!alloc },
-    { label: "PDI passed", ok: alloc?.stock?.pdi_status === "PASSED" },
-    { label: "NTIR inspection passed", ok: alloc?.stock?.inspection_status === "PASSED" },
+    { label: "PDI passed", ok: stock?.pdi_status === "PASSED" },
+    { label: "NTIR inspection passed", ok: stock?.inspection_status === "PASSED" },
     {
       label: isLoan ? "Deal price + 2% loan document charge received" : "Full deal price received",
       ok: outstanding < 1,
