@@ -938,21 +938,34 @@ export type Database = {
           created_at: string
           created_by: string | null
           customer_id: string
+          fitment_date: string | null
           form22_printed: boolean
           id: string
           insurance_policy_number: string | null
           insurance_received: boolean
           invoice_date: string | null
           invoice_number: string | null
+          number_plate_ordered: boolean
+          number_plate_ordered_date: string | null
+          number_plate_received: boolean
+          number_plate_received_date: string | null
+          passing_set_printed: boolean
+          passing_set_printed_date: string | null
           remarks: string | null
           rto_number: string | null
           rto_receipt_received: boolean
           screen_report_received: boolean
           sent_to_insurance: boolean
+          sent_to_rto: boolean
+          sent_to_rto_date: string | null
           set_sent_date: string | null
           set_sent_for_passing: boolean
           subsidy_file_created: boolean
           subsidy_file_date: string | null
+          subsidy_file_printed: boolean
+          subsidy_file_printed_date: string | null
+          subsidy_file_status: string
+          subsidy_file_uploaded_date: string | null
           updated_at: string
         }
         Insert: {
@@ -960,21 +973,34 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           customer_id: string
+          fitment_date?: string | null
           form22_printed?: boolean
           id?: string
           insurance_policy_number?: string | null
           insurance_received?: boolean
           invoice_date?: string | null
           invoice_number?: string | null
+          number_plate_ordered?: boolean
+          number_plate_ordered_date?: string | null
+          number_plate_received?: boolean
+          number_plate_received_date?: string | null
+          passing_set_printed?: boolean
+          passing_set_printed_date?: string | null
           remarks?: string | null
           rto_number?: string | null
           rto_receipt_received?: boolean
           screen_report_received?: boolean
           sent_to_insurance?: boolean
+          sent_to_rto?: boolean
+          sent_to_rto_date?: string | null
           set_sent_date?: string | null
           set_sent_for_passing?: boolean
           subsidy_file_created?: boolean
           subsidy_file_date?: string | null
+          subsidy_file_printed?: boolean
+          subsidy_file_printed_date?: string | null
+          subsidy_file_status?: string
+          subsidy_file_uploaded_date?: string | null
           updated_at?: string
         }
         Update: {
@@ -982,21 +1008,34 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           customer_id?: string
+          fitment_date?: string | null
           form22_printed?: boolean
           id?: string
           insurance_policy_number?: string | null
           insurance_received?: boolean
           invoice_date?: string | null
           invoice_number?: string | null
+          number_plate_ordered?: boolean
+          number_plate_ordered_date?: string | null
+          number_plate_received?: boolean
+          number_plate_received_date?: string | null
+          passing_set_printed?: boolean
+          passing_set_printed_date?: string | null
           remarks?: string | null
           rto_number?: string | null
           rto_receipt_received?: boolean
           screen_report_received?: boolean
           sent_to_insurance?: boolean
+          sent_to_rto?: boolean
+          sent_to_rto_date?: string | null
           set_sent_date?: string | null
           set_sent_for_passing?: boolean
           subsidy_file_created?: boolean
           subsidy_file_date?: string | null
+          subsidy_file_printed?: boolean
+          subsidy_file_printed_date?: string | null
+          subsidy_file_status?: string
+          subsidy_file_uploaded_date?: string | null
           updated_at?: string
         }
         Relationships: [
