@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
