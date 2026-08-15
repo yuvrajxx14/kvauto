@@ -10,7 +10,7 @@ export function ModelSelect({
 }: {
   name?: string;
   defaultValue?: string | undefined;
-  onValueChange?: (v: string) => void;
+  onValueChange?: ((v: string) => void) | undefined;
   placeholder?: string;
 }) {
   const { data: products } = useProducts(true);
@@ -18,7 +18,12 @@ export function ModelSelect({
   const initial = defaultValue && defaultValue.length > 0 ? defaultValue : list[0]?.model;
 
   return (
-    <Select name={name} defaultValue={initial} onValueChange={onValueChange} key={initial ?? "empty"}>
+    <Select
+      name={name}
+      {...(initial ? { defaultValue: initial } : {})}
+      {...(onValueChange ? { onValueChange } : {})}
+      key={initial ?? "empty"}
+    >
       <SelectTrigger><SelectValue placeholder={placeholder} /></SelectTrigger>
       <SelectContent>
         {list.length === 0 && <SelectItem value="__none" disabled>No products yet</SelectItem>}
