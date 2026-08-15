@@ -100,7 +100,7 @@ function DocumentsPrint() {
       </div>
 
       {ready && (
-        <div className="mt-6 space-y-6 print:mt-0">
+        <div className="print-area mt-6 space-y-6 print:mt-0">
           <div className="border-b pb-3 text-center">
             <h2 className="text-xl font-bold">{DEALER.name}</h2>
             <p className="text-xs text-muted-foreground">{DEALER.tagline}</p>

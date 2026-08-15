@@ -103,7 +103,7 @@ function InvoicePrint() {
         <Button size="sm" onClick={() => window.print()}><Printer className="mr-1 h-4 w-4" /> Print</Button>
       </div>
 
-      <div className="border border-foreground text-[12px] leading-tight">
+      <div className="print-area border border-foreground text-[12px] leading-tight">
         <div className="border-b border-foreground px-2 py-2 text-center">
           <h1 className="text-2xl font-bold tracking-tight">{DEALER.name}</h1>
           <p>{DEALER.address}</p>

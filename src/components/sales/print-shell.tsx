@@ -11,7 +11,7 @@ export function PrintShell({ title, children }: { title: string; children: React
           <Printer className="mr-1 h-4 w-4" /> Print
         </Button>
       </div>
-      <div className="rounded-lg border bg-card p-6 print:rounded-none print:border-0 print:p-0">
+      <div className="print-area rounded-lg border bg-card p-6 print:rounded-none print:border-0 print:p-0">
         <header className="mb-4 border-b pb-3 text-center">
           <h1 className="text-xl font-bold">{DEALER.name}</h1>
           <p className="text-xs text-muted-foreground">{DEALER.tagline}</p>
