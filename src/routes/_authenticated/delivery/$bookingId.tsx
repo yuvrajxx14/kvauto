@@ -84,8 +84,8 @@ function DeliveryDetail() {
   const progress = documentProgress(checklist ?? [], docs ?? []);
   const checks = [
     { label: "Tractor allocated", ok: !!alloc },
-    { label: "PDI passed", ok: alloc?.stock?.pdi_status === "PASSED" },
-    { label: "NTIR inspection passed", ok: alloc?.stock?.inspection_status === "PASSED" },
+    { label: "PDI passed", ok: stock?.pdi_status === "PASSED" },
+    { label: "NTIR inspection passed", ok: stock?.inspection_status === "PASSED" },
     {
       label: isLoan ? "Deal price + 2% loan document charge received" : "Full deal price received",
       ok: outstanding < 1,
