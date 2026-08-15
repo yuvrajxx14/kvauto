@@ -29,6 +29,10 @@ const OPS_ITEMS = [
   { title: "Accounting", url: "/accounting", icon: IndianRupee },
 ];
 
+const DOCUMENT_ITEMS = [
+  { title: "Chassis Print Generator", url: "/documents/chassis-print", icon: ScanLine },
+];
+
 const MASTER_ITEMS = [{ title: "Products", url: "/products", icon: Package }];
 
 
