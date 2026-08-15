@@ -263,6 +263,96 @@ export type Database = {
           },
         ]
       }
+      chassis_print_references: {
+        Row: {
+          appearance_settings: Json
+          booking_id: string | null
+          chassis_number: string
+          created_at: string
+          customer_id: string | null
+          delivery_id: string | null
+          engine_number: string | null
+          generated_at: string
+          generated_by: string | null
+          id: string
+          model: string | null
+          remarks: string | null
+          tractor_stock_id: string | null
+          updated_at: string
+          variant: string | null
+        }
+        Insert: {
+          appearance_settings?: Json
+          booking_id?: string | null
+          chassis_number: string
+          created_at?: string
+          customer_id?: string | null
+          delivery_id?: string | null
+          engine_number?: string | null
+          generated_at?: string
+          generated_by?: string | null
+          id?: string
+          model?: string | null
+          remarks?: string | null
+          tractor_stock_id?: string | null
+          updated_at?: string
+          variant?: string | null
+        }
+        Update: {
+          appearance_settings?: Json
+          booking_id?: string | null
+          chassis_number?: string
+          created_at?: string
+          customer_id?: string | null
+          delivery_id?: string | null
+          engine_number?: string | null
+          generated_at?: string
+          generated_by?: string | null
+          id?: string
+          model?: string | null
+          remarks?: string | null
+          tractor_stock_id?: string | null
+          updated_at?: string
+          variant?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chassis_print_references_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chassis_print_references_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chassis_print_references_delivery_id_fkey"
+            columns: ["delivery_id"]
+            isOneToOne: false
+            referencedRelation: "deliveries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chassis_print_references_generated_by_fkey"
+            columns: ["generated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chassis_print_references_tractor_stock_id_fkey"
+            columns: ["tractor_stock_id"]
+            isOneToOne: false
+            referencedRelation: "tractor_stock"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customer_documents: {
         Row: {
           created_at: string
