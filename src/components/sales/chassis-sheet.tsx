@@ -31,7 +31,7 @@ export function ChassisSheet({
   const chars = data.chassis.split("");
   const spacing = SPACING_MM[appearance.spacing as 1 | 2 | 3] ?? SPACING_MM[2];
   const stretch = appearance.stretch / 100;
-  let fontMm = SIZE_MM[appearance.size as 1 | 2 | 3] ?? SIZE_MM[2];
+  let fontMm: number = SIZE_MM[appearance.size as 1 | 2 | 3] ?? SIZE_MM[2];
 
   // Fit-to-width: never truncate, shrink until the whole number fits the page.
   const widthFor = (f: number) => chars.length * (f * 0.62 * stretch + spacing);
