@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PrintShell, PrintRow } from "@/components/sales/print-shell";
-import { useBooking } from "@/lib/erp";
+import { useBooking, useGatePass } from "@/lib/erp";
 import { fmtDate, inr } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/print/challan/$bookingId")({
@@ -20,9 +20,17 @@ export const Route = createFileRoute("/_authenticated/print/challan/$bookingId")
 function ChallanPrint() {
   const { bookingId } = Route.useParams();
   const { data: b, isLoading } = useBooking(bookingId);
+  const { data: gp, isLoading: gpLoading } = useGatePass(bookingId);
 
-  if (isLoading) return <p className="p-6 text-sm text-muted-foreground">Loading…</p>;
+  if (isLoading || gpLoading) return <p className="p-6 text-sm text-muted-foreground">Loading…</p>;
   if (!b) return <p className="p-6 text-sm text-muted-foreground">Booking not found.</p>;
+  if (!gp)
+    return (
+      <p className="p-6 text-sm text-muted-foreground">
+        Delivery challan is prepared from the gate pass. Issue the gate pass first (allowed only after full payment is
+        received) from the delivery page.
+      </p>
+    );
 
   const alloc = Array.isArray(b.allocation) ? b.allocation[0] : b.allocation;
   const delivery = Array.isArray(b.delivery) ? b.delivery[0] : b.delivery;
@@ -32,6 +40,7 @@ function ChallanPrint() {
     <PrintShell title="Delivery Challan">
       <div className="space-y-1">
         <PrintRow label="Challan no." value={b.booking_number} />
+        <PrintRow label="Gate pass no." value={`${gp.gatepass_number} · ${fmtDate(gp.issue_date)}`} />
         <PrintRow label="Delivery date" value={fmtDate(delivery?.delivery_date ?? null)} />
         <PrintRow label="Customer" value={b.customer?.customer_name ?? "—"} />
         <PrintRow label="Mobile" value={b.customer?.mobile ?? "—"} />

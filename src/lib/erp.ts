@@ -361,3 +361,20 @@ export function bookingDue(b: { final_price: number | null; extra_charges?: numb
   return Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0);
 }
 
+
+/** Gate pass issued for a booking (one per booking), if any. */
+export function useGatePass(bookingId: string) {
+  return useQuery({
+    queryKey: ["gate-pass", bookingId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("gate_passes")
+        .select("*, customer:customers(id, customer_name, mobile, village), booking:bookings(*)")
+        .eq("booking_id", bookingId)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!bookingId,
+  });
+}

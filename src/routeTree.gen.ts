@@ -34,6 +34,7 @@ import { Route as AuthenticatedStockStockIdRouteImport } from './routes/_authent
 import { Route as AuthenticatedSubsidyIndexRouteImport } from './routes/_authenticated/subsidy/index'
 import { Route as AuthenticatedPrintChallanBookingIdRouteImport } from './routes/_authenticated/print/challan.$bookingId'
 import { Route as AuthenticatedPrintDocumentsCustomerIdRouteImport } from './routes/_authenticated/print/documents.$customerId'
+import { Route as AuthenticatedPrintGatepassBookingIdRouteImport } from './routes/_authenticated/print/gatepass.$bookingId'
 import { Route as AuthenticatedPrintInvoiceBookingIdRouteImport } from './routes/_authenticated/print/invoice.$bookingId'
 import { Route as AuthenticatedPrintPassingSetBookingIdRouteImport } from './routes/_authenticated/print/passing-set.$bookingId'
 import { Route as AuthenticatedPrintReceiptPaymentIdRouteImport } from './routes/_authenticated/print/receipt.$paymentId'
@@ -182,6 +183,12 @@ const AuthenticatedPrintDocumentsCustomerIdRoute =
     path: '/print/documents/$customerId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPrintGatepassBookingIdRoute =
+  AuthenticatedPrintGatepassBookingIdRouteImport.update({
+    id: '/print/gatepass/$bookingId',
+    path: '/print/gatepass/$bookingId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPrintInvoiceBookingIdRoute =
   AuthenticatedPrintInvoiceBookingIdRouteImport.update({
     id: '/print/invoice/$bookingId',
@@ -232,6 +239,7 @@ export interface FileRoutesByFullPath {
   '/subsidy/': typeof AuthenticatedSubsidyIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
   '/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
+  '/print/gatepass/$bookingId': typeof AuthenticatedPrintGatepassBookingIdRoute
   '/print/invoice/$bookingId': typeof AuthenticatedPrintInvoiceBookingIdRoute
   '/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
   '/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
@@ -262,6 +270,7 @@ export interface FileRoutesByTo {
   '/subsidy': typeof AuthenticatedSubsidyIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
   '/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
+  '/print/gatepass/$bookingId': typeof AuthenticatedPrintGatepassBookingIdRoute
   '/print/invoice/$bookingId': typeof AuthenticatedPrintInvoiceBookingIdRoute
   '/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
   '/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
@@ -294,6 +303,7 @@ export interface FileRoutesById {
   '/_authenticated/subsidy/': typeof AuthenticatedSubsidyIndexRoute
   '/_authenticated/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
   '/_authenticated/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
+  '/_authenticated/print/gatepass/$bookingId': typeof AuthenticatedPrintGatepassBookingIdRoute
   '/_authenticated/print/invoice/$bookingId': typeof AuthenticatedPrintInvoiceBookingIdRoute
   '/_authenticated/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
   '/_authenticated/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
@@ -326,6 +336,7 @@ export interface FileRouteTypes {
     | '/subsidy/'
     | '/print/challan/$bookingId'
     | '/print/documents/$customerId'
+    | '/print/gatepass/$bookingId'
     | '/print/invoice/$bookingId'
     | '/print/passing-set/$bookingId'
     | '/print/receipt/$paymentId'
@@ -356,6 +367,7 @@ export interface FileRouteTypes {
     | '/subsidy'
     | '/print/challan/$bookingId'
     | '/print/documents/$customerId'
+    | '/print/gatepass/$bookingId'
     | '/print/invoice/$bookingId'
     | '/print/passing-set/$bookingId'
     | '/print/receipt/$paymentId'
@@ -387,6 +399,7 @@ export interface FileRouteTypes {
     | '/_authenticated/subsidy/'
     | '/_authenticated/print/challan/$bookingId'
     | '/_authenticated/print/documents/$customerId'
+    | '/_authenticated/print/gatepass/$bookingId'
     | '/_authenticated/print/invoice/$bookingId'
     | '/_authenticated/print/passing-set/$bookingId'
     | '/_authenticated/print/receipt/$paymentId'
@@ -576,6 +589,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPrintDocumentsCustomerIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/print/gatepass/$bookingId': {
+      id: '/_authenticated/print/gatepass/$bookingId'
+      path: '/print/gatepass/$bookingId'
+      fullPath: '/print/gatepass/$bookingId'
+      preLoaderRoute: typeof AuthenticatedPrintGatepassBookingIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/print/invoice/$bookingId': {
       id: '/_authenticated/print/invoice/$bookingId'
       path: '/print/invoice/$bookingId'
@@ -630,6 +650,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSubsidyIndexRoute: typeof AuthenticatedSubsidyIndexRoute
   AuthenticatedPrintChallanBookingIdRoute: typeof AuthenticatedPrintChallanBookingIdRoute
   AuthenticatedPrintDocumentsCustomerIdRoute: typeof AuthenticatedPrintDocumentsCustomerIdRoute
+  AuthenticatedPrintGatepassBookingIdRoute: typeof AuthenticatedPrintGatepassBookingIdRoute
   AuthenticatedPrintInvoiceBookingIdRoute: typeof AuthenticatedPrintInvoiceBookingIdRoute
   AuthenticatedPrintPassingSetBookingIdRoute: typeof AuthenticatedPrintPassingSetBookingIdRoute
   AuthenticatedPrintReceiptPaymentIdRoute: typeof AuthenticatedPrintReceiptPaymentIdRoute
@@ -662,6 +683,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedPrintChallanBookingIdRoute,
   AuthenticatedPrintDocumentsCustomerIdRoute:
     AuthenticatedPrintDocumentsCustomerIdRoute,
+  AuthenticatedPrintGatepassBookingIdRoute:
+    AuthenticatedPrintGatepassBookingIdRoute,
   AuthenticatedPrintInvoiceBookingIdRoute:
     AuthenticatedPrintInvoiceBookingIdRoute,
   AuthenticatedPrintPassingSetBookingIdRoute:

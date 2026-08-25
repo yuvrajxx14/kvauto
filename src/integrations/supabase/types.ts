@@ -602,6 +602,69 @@ export type Database = {
           },
         ]
       }
+      gate_passes: {
+        Row: {
+          booking_id: string
+          chassis_number: string | null
+          created_at: string
+          customer_id: string
+          engine_number: string | null
+          gatepass_number: string
+          id: string
+          issue_date: string
+          issued_by: string | null
+          model: string | null
+          remarks: string | null
+          updated_at: string
+          variant: string | null
+        }
+        Insert: {
+          booking_id: string
+          chassis_number?: string | null
+          created_at?: string
+          customer_id: string
+          engine_number?: string | null
+          gatepass_number: string
+          id?: string
+          issue_date?: string
+          issued_by?: string | null
+          model?: string | null
+          remarks?: string | null
+          updated_at?: string
+          variant?: string | null
+        }
+        Update: {
+          booking_id?: string
+          chassis_number?: string | null
+          created_at?: string
+          customer_id?: string
+          engine_number?: string | null
+          gatepass_number?: string
+          id?: string
+          issue_date?: string
+          issued_by?: string | null
+          model?: string | null
+          remarks?: string | null
+          updated_at?: string
+          variant?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gate_passes_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gate_passes_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inquiries: {
         Row: {
           budget: number | null
@@ -1640,6 +1703,10 @@ export type Database = {
       is_management: { Args: { _user_id: string }; Returns: boolean }
       is_receptionist: { Args: { _user_id: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      issue_gate_pass: {
+        Args: { _booking_id: string; _issue_date?: string; _remarks?: string }
+        Returns: string
+      }
       issue_tax_invoice: {
         Args: {
           _booking_id: string

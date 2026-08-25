@@ -11,7 +11,7 @@ import { PaymentDialog } from "@/components/sales/payment-dialog";
 import { CancelBookingDialog } from "@/components/sales/cancel-booking-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useBooking, useBookingPayments, useStock } from "@/lib/erp";
+import { useBooking, useBookingPayments, useGatePass, useStock } from "@/lib/erp";
 import {
   BOOKING_STATUS_LABEL,
   PAYMENT_TYPE_LABEL,
@@ -45,6 +45,7 @@ function BookingDetail() {
   const paymentsQuery = useBookingPayments(bookingId);
   const b = bookingQuery.data;
   const availableStock = useStock({ status: "AVAILABLE", model: b?.tractor_model });
+  const { data: gatePass } = useGatePass(bookingId);
 
   const allocate = useMutation({
     mutationFn: async (stockId: string) => {
@@ -83,11 +84,20 @@ function BookingDetail() {
             <Button asChild variant="outline" size="sm">
               <Link to="/bookings"><ArrowLeft className="mr-1 h-4 w-4" /> All bookings</Link>
             </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/print/challan/$bookingId" params={{ bookingId }} target="_blank">
-                <Printer className="mr-1 h-4 w-4" /> Challan
-              </Link>
-            </Button>
+            {gatePass && (
+              <>
+                <Button asChild variant="outline" size="sm">
+                  <Link to="/print/gatepass/$bookingId" params={{ bookingId }} target="_blank">
+                    <Printer className="mr-1 h-4 w-4" /> Gate pass
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <Link to="/print/challan/$bookingId" params={{ bookingId }} target="_blank">
+                    <Printer className="mr-1 h-4 w-4" /> Challan
+                  </Link>
+                </Button>
+              </>
+            )}
             {status !== "DELIVERED" && status !== "CANCELLED" && (
               <CancelBookingDialog bookingId={bookingId} received={Number(b.amount_received ?? 0)} />
             )}
