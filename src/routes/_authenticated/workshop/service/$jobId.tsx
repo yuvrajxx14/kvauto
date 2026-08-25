@@ -198,7 +198,7 @@ function JobDetailPage() {
                 )}
                 <div>
                   <Label>Mechanic</Label>
-                  <Select name="assigned_to" defaultValue={job.assigned_to ?? undefined}>
+                  <Select name="assigned_to" {...(job.assigned_to ? { defaultValue: job.assigned_to } : {})}>
                     <SelectTrigger><SelectValue placeholder="Unassigned" /></SelectTrigger>
                     <SelectContent>
                       {(staff ?? []).map((p) => (
