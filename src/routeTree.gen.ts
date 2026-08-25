@@ -41,6 +41,7 @@ import { Route as AuthenticatedPrintInvoiceBookingIdRouteImport } from './routes
 import { Route as AuthenticatedPrintJobCardJobIdRouteImport } from './routes/_authenticated/print/job-card.$jobId'
 import { Route as AuthenticatedPrintPassingSetBookingIdRouteImport } from './routes/_authenticated/print/passing-set.$bookingId'
 import { Route as AuthenticatedPrintReceiptPaymentIdRouteImport } from './routes/_authenticated/print/receipt.$paymentId'
+import { Route as AuthenticatedPrintRouteSheetRouteIdRouteImport } from './routes/_authenticated/print/route-sheet.$routeId'
 import { Route as AuthenticatedPrintSubsidyFileBookingIdRouteImport } from './routes/_authenticated/print/subsidy-file.$bookingId'
 import { Route as AuthenticatedWorkshopServiceIndexRouteImport } from './routes/_authenticated/workshop/service/index'
 import { Route as AuthenticatedWorkshopServiceJobIdRouteImport } from './routes/_authenticated/workshop/service/$jobId'
@@ -230,6 +231,12 @@ const AuthenticatedPrintReceiptPaymentIdRoute =
     path: '/print/receipt/$paymentId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPrintRouteSheetRouteIdRoute =
+  AuthenticatedPrintRouteSheetRouteIdRouteImport.update({
+    id: '/print/route-sheet/$routeId',
+    path: '/print/route-sheet/$routeId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPrintSubsidyFileBookingIdRoute =
   AuthenticatedPrintSubsidyFileBookingIdRouteImport.update({
     id: '/print/subsidy-file/$bookingId',
@@ -281,6 +288,7 @@ export interface FileRoutesByFullPath {
   '/print/job-card/$jobId': typeof AuthenticatedPrintJobCardJobIdRoute
   '/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
   '/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
+  '/print/route-sheet/$routeId': typeof AuthenticatedPrintRouteSheetRouteIdRoute
   '/print/subsidy-file/$bookingId': typeof AuthenticatedPrintSubsidyFileBookingIdRoute
   '/workshop/service/$jobId': typeof AuthenticatedWorkshopServiceJobIdRoute
   '/workshop/service/': typeof AuthenticatedWorkshopServiceIndexRoute
@@ -317,6 +325,7 @@ export interface FileRoutesByTo {
   '/print/job-card/$jobId': typeof AuthenticatedPrintJobCardJobIdRoute
   '/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
   '/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
+  '/print/route-sheet/$routeId': typeof AuthenticatedPrintRouteSheetRouteIdRoute
   '/print/subsidy-file/$bookingId': typeof AuthenticatedPrintSubsidyFileBookingIdRoute
   '/workshop/service/$jobId': typeof AuthenticatedWorkshopServiceJobIdRoute
   '/workshop/service': typeof AuthenticatedWorkshopServiceIndexRoute
@@ -355,6 +364,7 @@ export interface FileRoutesById {
   '/_authenticated/print/job-card/$jobId': typeof AuthenticatedPrintJobCardJobIdRoute
   '/_authenticated/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
   '/_authenticated/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
+  '/_authenticated/print/route-sheet/$routeId': typeof AuthenticatedPrintRouteSheetRouteIdRoute
   '/_authenticated/print/subsidy-file/$bookingId': typeof AuthenticatedPrintSubsidyFileBookingIdRoute
   '/_authenticated/workshop/service/$jobId': typeof AuthenticatedWorkshopServiceJobIdRoute
   '/_authenticated/workshop/service/': typeof AuthenticatedWorkshopServiceIndexRoute
@@ -393,6 +403,7 @@ export interface FileRouteTypes {
     | '/print/job-card/$jobId'
     | '/print/passing-set/$bookingId'
     | '/print/receipt/$paymentId'
+    | '/print/route-sheet/$routeId'
     | '/print/subsidy-file/$bookingId'
     | '/workshop/service/$jobId'
     | '/workshop/service/'
@@ -429,6 +440,7 @@ export interface FileRouteTypes {
     | '/print/job-card/$jobId'
     | '/print/passing-set/$bookingId'
     | '/print/receipt/$paymentId'
+    | '/print/route-sheet/$routeId'
     | '/print/subsidy-file/$bookingId'
     | '/workshop/service/$jobId'
     | '/workshop/service'
@@ -466,6 +478,7 @@ export interface FileRouteTypes {
     | '/_authenticated/print/job-card/$jobId'
     | '/_authenticated/print/passing-set/$bookingId'
     | '/_authenticated/print/receipt/$paymentId'
+    | '/_authenticated/print/route-sheet/$routeId'
     | '/_authenticated/print/subsidy-file/$bookingId'
     | '/_authenticated/workshop/service/$jobId'
     | '/_authenticated/workshop/service/'
@@ -703,6 +716,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPrintReceiptPaymentIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/print/route-sheet/$routeId': {
+      id: '/_authenticated/print/route-sheet/$routeId'
+      path: '/print/route-sheet/$routeId'
+      fullPath: '/print/route-sheet/$routeId'
+      preLoaderRoute: typeof AuthenticatedPrintRouteSheetRouteIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/print/subsidy-file/$bookingId': {
       id: '/_authenticated/print/subsidy-file/$bookingId'
       path: '/print/subsidy-file/$bookingId'
@@ -757,6 +777,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPrintJobCardJobIdRoute: typeof AuthenticatedPrintJobCardJobIdRoute
   AuthenticatedPrintPassingSetBookingIdRoute: typeof AuthenticatedPrintPassingSetBookingIdRoute
   AuthenticatedPrintReceiptPaymentIdRoute: typeof AuthenticatedPrintReceiptPaymentIdRoute
+  AuthenticatedPrintRouteSheetRouteIdRoute: typeof AuthenticatedPrintRouteSheetRouteIdRoute
   AuthenticatedPrintSubsidyFileBookingIdRoute: typeof AuthenticatedPrintSubsidyFileBookingIdRoute
   AuthenticatedWorkshopServiceJobIdRoute: typeof AuthenticatedWorkshopServiceJobIdRoute
   AuthenticatedWorkshopServiceIndexRoute: typeof AuthenticatedWorkshopServiceIndexRoute
@@ -800,6 +821,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedPrintPassingSetBookingIdRoute,
   AuthenticatedPrintReceiptPaymentIdRoute:
     AuthenticatedPrintReceiptPaymentIdRoute,
+  AuthenticatedPrintRouteSheetRouteIdRoute:
+    AuthenticatedPrintRouteSheetRouteIdRoute,
   AuthenticatedPrintSubsidyFileBookingIdRoute:
     AuthenticatedPrintSubsidyFileBookingIdRoute,
   AuthenticatedWorkshopServiceJobIdRoute:
