@@ -109,10 +109,11 @@ function DeliveryDetail() {
       label: isLoan ? "Deal price + 2% loan document charge received" : "Full deal price received",
       ok: outstanding < 1,
     },
-    { label: "Required documents verified", ok: progress.complete },
     { label: "Gate pass issued", ok: !!gatePass },
   ];
   const ready = checks.every((c) => c.ok);
+  const docsPending = !progress.complete;
+
 
   return (
     <div>
