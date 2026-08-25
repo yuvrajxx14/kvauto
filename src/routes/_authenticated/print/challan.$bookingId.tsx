@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PrintShell, PrintRow } from "@/components/sales/print-shell";
-import { useBooking } from "@/lib/erp";
+import { useBooking, useGatePass } from "@/lib/erp";
 import { fmtDate, inr } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/print/challan/$bookingId")({
