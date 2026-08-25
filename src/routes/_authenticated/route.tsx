@@ -24,6 +24,8 @@ const ROLE_LABEL: Record<string, string> = {
   manager: "Manager",
   salesman: "Salesman",
   receptionist: "Receptionist",
+  workshop_manager: "Workshop Manager",
+  mechanic: "Mechanic",
 };
 
 function AuthenticatedLayout() {
