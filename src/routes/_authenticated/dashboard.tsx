@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ClipboardList, CalendarClock, Users } from "lucide-react";
+import { AlertTriangle, ClipboardList, CalendarClock, FileWarning, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/lib/auth";
+import { usePendingDocumentCustomers } from "@/lib/erp";
 import { KpiCard, PageHeader, EmptyState } from "@/components/sales/ui";
 import { StatusBadge } from "@/components/sales/badges";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
