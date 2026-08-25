@@ -89,7 +89,7 @@ function NewServiceJobPage() {
         complaint: form.complaint.trim() || null,
         created_by: auth.user?.id ?? null,
       };
-      const { data, error } = await supabase.from("service_jobs").insert(payload).select("id").single();
+      const { data, error } = await supabase.from("service_jobs").insert(payload as never).select("id").single();
       if (error) throw error;
       await seedServiceChecklist(data.id);
       return data.id;

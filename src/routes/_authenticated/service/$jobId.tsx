@@ -76,7 +76,7 @@ function ServiceJobPage() {
 
   const patch = useMutation({
     mutationFn: async (values: Record<string, unknown>) => {
-      const { error } = await supabase.from("service_jobs").update(values).eq("id", jobId);
+      const { error } = await supabase.from("service_jobs").update(values as never).eq("id", jobId);
       if (error) throw error;
     },
     onSuccess: refresh,
@@ -139,7 +139,7 @@ function ServiceJobPage() {
               <div className="mb-4 flex flex-wrap items-center gap-1.5">
                 {SERVICE_STATUSES.filter((s) => s !== "CANCELLED").map((s, i, arr) => {
                   const current = s === status;
-                  const passed = arr.indexOf(status) > i;
+                  const passed = arr.indexOf(status as never) > i;
                   return (
                     <div key={s} className="flex items-center gap-1.5">
                       <span
