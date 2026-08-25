@@ -34,6 +34,7 @@ import { Route as AuthenticatedServiceJobIdRouteImport } from './routes/_authent
 import { Route as AuthenticatedServiceJobcardsRouteImport } from './routes/_authenticated/service/jobcards'
 import { Route as AuthenticatedServiceNewRouteImport } from './routes/_authenticated/service/new'
 import { Route as AuthenticatedServiceRoutesRouteImport } from './routes/_authenticated/service/routes'
+import { Route as AuthenticatedSparesIndexRouteImport } from './routes/_authenticated/spares/index'
 import { Route as AuthenticatedStockIndexRouteImport } from './routes/_authenticated/stock/index'
 import { Route as AuthenticatedStockStockIdRouteImport } from './routes/_authenticated/stock/$stockId'
 import { Route as AuthenticatedSubsidyIndexRouteImport } from './routes/_authenticated/subsidy/index'
@@ -188,6 +189,12 @@ const AuthenticatedServiceRoutesRoute =
     path: '/service/routes',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSparesIndexRoute =
+  AuthenticatedSparesIndexRouteImport.update({
+    id: '/spares/',
+    path: '/spares/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedStockIndexRoute = AuthenticatedStockIndexRouteImport.update({
   id: '/stock/',
   path: '/stock/',
@@ -274,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/passing/': typeof AuthenticatedPassingIndexRoute
   '/products/': typeof AuthenticatedProductsIndexRoute
   '/service/': typeof AuthenticatedServiceIndexRoute
+  '/spares/': typeof AuthenticatedSparesIndexRoute
   '/stock/': typeof AuthenticatedStockIndexRoute
   '/subsidy/': typeof AuthenticatedSubsidyIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
@@ -310,6 +318,7 @@ export interface FileRoutesByTo {
   '/passing': typeof AuthenticatedPassingIndexRoute
   '/products': typeof AuthenticatedProductsIndexRoute
   '/service': typeof AuthenticatedServiceIndexRoute
+  '/spares': typeof AuthenticatedSparesIndexRoute
   '/stock': typeof AuthenticatedStockIndexRoute
   '/subsidy': typeof AuthenticatedSubsidyIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
@@ -348,6 +357,7 @@ export interface FileRoutesById {
   '/_authenticated/passing/': typeof AuthenticatedPassingIndexRoute
   '/_authenticated/products/': typeof AuthenticatedProductsIndexRoute
   '/_authenticated/service/': typeof AuthenticatedServiceIndexRoute
+  '/_authenticated/spares/': typeof AuthenticatedSparesIndexRoute
   '/_authenticated/stock/': typeof AuthenticatedStockIndexRoute
   '/_authenticated/subsidy/': typeof AuthenticatedSubsidyIndexRoute
   '/_authenticated/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
@@ -386,6 +396,7 @@ export interface FileRouteTypes {
     | '/passing/'
     | '/products/'
     | '/service/'
+    | '/spares/'
     | '/stock/'
     | '/subsidy/'
     | '/print/challan/$bookingId'
@@ -422,6 +433,7 @@ export interface FileRouteTypes {
     | '/passing'
     | '/products'
     | '/service'
+    | '/spares'
     | '/stock'
     | '/subsidy'
     | '/print/challan/$bookingId'
@@ -459,6 +471,7 @@ export interface FileRouteTypes {
     | '/_authenticated/passing/'
     | '/_authenticated/products/'
     | '/_authenticated/service/'
+    | '/_authenticated/spares/'
     | '/_authenticated/stock/'
     | '/_authenticated/subsidy/'
     | '/_authenticated/print/challan/$bookingId'
@@ -653,6 +666,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedServiceRoutesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/spares/': {
+      id: '/_authenticated/spares/'
+      path: '/spares'
+      fullPath: '/spares/'
+      preLoaderRoute: typeof AuthenticatedSparesIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/stock/': {
       id: '/_authenticated/stock/'
       path: '/stock'
@@ -750,6 +770,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPassingIndexRoute: typeof AuthenticatedPassingIndexRoute
   AuthenticatedProductsIndexRoute: typeof AuthenticatedProductsIndexRoute
   AuthenticatedServiceIndexRoute: typeof AuthenticatedServiceIndexRoute
+  AuthenticatedSparesIndexRoute: typeof AuthenticatedSparesIndexRoute
   AuthenticatedStockIndexRoute: typeof AuthenticatedStockIndexRoute
   AuthenticatedSubsidyIndexRoute: typeof AuthenticatedSubsidyIndexRoute
   AuthenticatedPrintChallanBookingIdRoute: typeof AuthenticatedPrintChallanBookingIdRoute
@@ -786,6 +807,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPassingIndexRoute: AuthenticatedPassingIndexRoute,
   AuthenticatedProductsIndexRoute: AuthenticatedProductsIndexRoute,
   AuthenticatedServiceIndexRoute: AuthenticatedServiceIndexRoute,
+  AuthenticatedSparesIndexRoute: AuthenticatedSparesIndexRoute,
   AuthenticatedStockIndexRoute: AuthenticatedStockIndexRoute,
   AuthenticatedSubsidyIndexRoute: AuthenticatedSubsidyIndexRoute,
   AuthenticatedPrintChallanBookingIdRoute:
