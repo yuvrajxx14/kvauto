@@ -48,7 +48,7 @@ function DeliveryDetail() {
       const { data, error } = await supabase.rpc("issue_gate_pass", {
         _booking_id: bookingId,
         _issue_date: payload.issue_date,
-        _remarks: payload.remarks || null,
+        _remarks: payload.remarks || undefined,
       });
       if (error) throw error;
       return data;
