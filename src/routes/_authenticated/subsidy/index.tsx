@@ -32,9 +32,25 @@ function daysBetween(a: string | null, b: string | null) {
   return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86_400_000);
 }
 
+type StageKey = "APPLICATION" | "APPROVAL" | "PAYMENT" | "PASSING" | "FILE_CHECK" | "DONE";
+
+const STAGES: { key: StageKey | "ALL"; label: string }[] = [
+  { key: "ALL", label: "All delivered" },
+  { key: "APPLICATION", label: "Online application pending" },
+  { key: "APPROVAL", label: "Awaiting govt approval" },
+  { key: "PAYMENT", label: "Payment pending" },
+  { key: "PASSING", label: "Ready for passing" },
+  { key: "FILE_CHECK", label: "Subsidy file check" },
+  { key: "DONE", label: "Completed" },
+];
+
 function SubsidyPage() {
   const { data: cases, isLoading } = useSubsidyCases();
+  const { data: passing } = usePassingRecords();
+  const [stage, setStage] = useState<StageKey | "ALL">("ALL");
   const qc = useQueryClient();
+
+  const passingByBooking = new Map((passing ?? []).map((p) => [p.booking_id, p]));
 
   const update = useMutation({
     mutationFn: async (p: { id: string; patch: Record<string, string | null> }) => {
