@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Route as RouteIcon } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Cog, Route as RouteIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -33,7 +33,9 @@ const SERVICE_ITEMS = [
   { title: "Service Register", url: "/service", icon: Wrench },
   { title: "Job Cards", url: "/service/jobcards", icon: ClipboardCheck },
   { title: "Route Planner", url: "/service/routes", icon: RouteIcon },
+  { title: "Spare Parts", url: "/spares", icon: Cog },
 ];
+
 
 const MASTER_ITEMS = [{ title: "Products", url: "/products", icon: Package }];
 
