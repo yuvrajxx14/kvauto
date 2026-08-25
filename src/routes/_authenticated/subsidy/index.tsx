@@ -117,14 +117,15 @@ function SubsidyPage() {
                 <TableHead>Use</TableHead>
                 <TableHead>Application</TableHead>
                 <TableHead>Approval</TableHead>
+                <TableHead>Stage</TableHead>
                 <TableHead>Delivered</TableHead>
                 <TableHead className="text-right">Insurance</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && <TableRow><TableCell colSpan={7} className="text-sm text-muted-foreground">Loading…</TableCell></TableRow>}
+              {isLoading && <TableRow><TableCell colSpan={8} className="text-sm text-muted-foreground">Loading…</TableCell></TableRow>}
               {!isLoading && rows.length === 0 && (
-                <TableRow><TableCell colSpan={7} className="text-sm text-muted-foreground">No delivered bookings yet.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} className="text-sm text-muted-foreground">No customers in this stage.</TableCell></TableRow>
               )}
               {rows.map((r) => {
                 const lateApproval =
