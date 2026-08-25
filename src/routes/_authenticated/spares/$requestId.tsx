@@ -70,12 +70,16 @@ function SpareRequestDetailPage() {
         if (error) throw error;
       }
       const next = derivedStatus(updated);
-      const patch: Record<string, unknown> = { remarks: note.trim() || null };
-      if (next) {
-        patch['status'] = next;
-        patch['issued_at'] = new Date().toISOString();
-        patch['issued_by'] = (await supabase.auth.getUser()).data.user?.id ?? null;
-      }
+      const patch = {
+        remarks: note.trim() || null,
+        ...(next
+          ? {
+              status: next as string,
+              issued_at: new Date().toISOString(),
+              issued_by: (await supabase.auth.getUser()).data.user?.id ?? null,
+            }
+          : {}),
+      };
       const { error } = await supabase.from("spare_requests").update(patch).eq("id", requestId);
       if (error) throw error;
     },
@@ -89,10 +93,12 @@ function SpareRequestDetailPage() {
 
   const setStatus = useMutation({
     mutationFn: async (status: SpareStatus) => {
-      const patch: Record<string, unknown> = { status };
-      if (status === "APPROVED") {
-        patch['approved_by'] = (await supabase.auth.getUser()).data.user?.id ?? null;
-      }
+      const patch = {
+        status: status as string,
+        ...(status === "APPROVED"
+          ? { approved_by: (await supabase.auth.getUser()).data.user?.id ?? null }
+          : {}),
+      };
       const { error } = await supabase.from("spare_requests").update(patch).eq("id", requestId);
       if (error) throw error;
     },
