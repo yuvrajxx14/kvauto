@@ -1639,6 +1639,7 @@ export type Database = {
       }
       is_management: { Args: { _user_id: string }; Returns: boolean }
       is_receptionist: { Args: { _user_id: string }; Returns: boolean }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
       issue_tax_invoice: {
         Args: {
           _booking_id: string
@@ -1688,6 +1689,15 @@ export type Database = {
           _remarks: string
         }
         Returns: string
+      }
+      staff_directory: {
+        Args: never
+        Returns: {
+          email: string
+          full_name: string
+          id: string
+          phone: string
+        }[]
       }
     }
     Enums: {
