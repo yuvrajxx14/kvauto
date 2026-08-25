@@ -3,7 +3,13 @@ import type { Session, User } from "@supabase/supabase-js";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "ceo" | "manager" | "salesman" | "receptionist";
+export type AppRole =
+  | "ceo"
+  | "manager"
+  | "salesman"
+  | "receptionist"
+  | "workshop_manager"
+  | "mechanic";
 
 type AuthCtx = {
   session: Session | null;
