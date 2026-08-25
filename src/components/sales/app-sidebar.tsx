@@ -29,6 +29,8 @@ const OPS_ITEMS = [
   { title: "Accounting", url: "/accounting", icon: IndianRupee },
 ];
 
+const SERVICE_ITEMS = [{ title: "Service Jobs", url: "/service", icon: Wrench }];
+
 const MASTER_ITEMS = [{ title: "Products", url: "/products", icon: Package }];
 
 
