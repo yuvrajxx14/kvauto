@@ -32,19 +32,13 @@ import { Route as AuthenticatedProductsIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedStockIndexRouteImport } from './routes/_authenticated/stock/index'
 import { Route as AuthenticatedStockStockIdRouteImport } from './routes/_authenticated/stock/$stockId'
 import { Route as AuthenticatedSubsidyIndexRouteImport } from './routes/_authenticated/subsidy/index'
-import { Route as AuthenticatedWorkshopIndexRouteImport } from './routes/_authenticated/workshop/index'
-import { Route as AuthenticatedWorkshopRoutePlannerRouteImport } from './routes/_authenticated/workshop/route-planner'
 import { Route as AuthenticatedPrintChallanBookingIdRouteImport } from './routes/_authenticated/print/challan.$bookingId'
 import { Route as AuthenticatedPrintDocumentsCustomerIdRouteImport } from './routes/_authenticated/print/documents.$customerId'
 import { Route as AuthenticatedPrintGatepassBookingIdRouteImport } from './routes/_authenticated/print/gatepass.$bookingId'
 import { Route as AuthenticatedPrintInvoiceBookingIdRouteImport } from './routes/_authenticated/print/invoice.$bookingId'
-import { Route as AuthenticatedPrintJobCardJobIdRouteImport } from './routes/_authenticated/print/job-card.$jobId'
 import { Route as AuthenticatedPrintPassingSetBookingIdRouteImport } from './routes/_authenticated/print/passing-set.$bookingId'
 import { Route as AuthenticatedPrintReceiptPaymentIdRouteImport } from './routes/_authenticated/print/receipt.$paymentId'
-import { Route as AuthenticatedPrintRouteSheetRouteIdRouteImport } from './routes/_authenticated/print/route-sheet.$routeId'
 import { Route as AuthenticatedPrintSubsidyFileBookingIdRouteImport } from './routes/_authenticated/print/subsidy-file.$bookingId'
-import { Route as AuthenticatedWorkshopServiceIndexRouteImport } from './routes/_authenticated/workshop/service/index'
-import { Route as AuthenticatedWorkshopServiceJobIdRouteImport } from './routes/_authenticated/workshop/service/$jobId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -177,18 +171,6 @@ const AuthenticatedSubsidyIndexRoute =
     path: '/subsidy/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedWorkshopIndexRoute =
-  AuthenticatedWorkshopIndexRouteImport.update({
-    id: '/workshop/',
-    path: '/workshop/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedWorkshopRoutePlannerRoute =
-  AuthenticatedWorkshopRoutePlannerRouteImport.update({
-    id: '/workshop/route-planner',
-    path: '/workshop/route-planner',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedPrintChallanBookingIdRoute =
   AuthenticatedPrintChallanBookingIdRouteImport.update({
     id: '/print/challan/$bookingId',
@@ -213,12 +195,6 @@ const AuthenticatedPrintInvoiceBookingIdRoute =
     path: '/print/invoice/$bookingId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedPrintJobCardJobIdRoute =
-  AuthenticatedPrintJobCardJobIdRouteImport.update({
-    id: '/print/job-card/$jobId',
-    path: '/print/job-card/$jobId',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedPrintPassingSetBookingIdRoute =
   AuthenticatedPrintPassingSetBookingIdRouteImport.update({
     id: '/print/passing-set/$bookingId',
@@ -231,28 +207,10 @@ const AuthenticatedPrintReceiptPaymentIdRoute =
     path: '/print/receipt/$paymentId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedPrintRouteSheetRouteIdRoute =
-  AuthenticatedPrintRouteSheetRouteIdRouteImport.update({
-    id: '/print/route-sheet/$routeId',
-    path: '/print/route-sheet/$routeId',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedPrintSubsidyFileBookingIdRoute =
   AuthenticatedPrintSubsidyFileBookingIdRouteImport.update({
     id: '/print/subsidy-file/$bookingId',
     path: '/print/subsidy-file/$bookingId',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedWorkshopServiceIndexRoute =
-  AuthenticatedWorkshopServiceIndexRouteImport.update({
-    id: '/workshop/service/',
-    path: '/workshop/service/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedWorkshopServiceJobIdRoute =
-  AuthenticatedWorkshopServiceJobIdRouteImport.update({
-    id: '/workshop/service/$jobId',
-    path: '/workshop/service/$jobId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
@@ -270,7 +228,6 @@ export interface FileRoutesByFullPath {
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
-  '/workshop/route-planner': typeof AuthenticatedWorkshopRoutePlannerRoute
   '/accounting/': typeof AuthenticatedAccountingIndexRoute
   '/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/customers/': typeof AuthenticatedCustomersIndexRoute
@@ -280,18 +237,13 @@ export interface FileRoutesByFullPath {
   '/products/': typeof AuthenticatedProductsIndexRoute
   '/stock/': typeof AuthenticatedStockIndexRoute
   '/subsidy/': typeof AuthenticatedSubsidyIndexRoute
-  '/workshop/': typeof AuthenticatedWorkshopIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
   '/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
   '/print/gatepass/$bookingId': typeof AuthenticatedPrintGatepassBookingIdRoute
   '/print/invoice/$bookingId': typeof AuthenticatedPrintInvoiceBookingIdRoute
-  '/print/job-card/$jobId': typeof AuthenticatedPrintJobCardJobIdRoute
   '/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
   '/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
-  '/print/route-sheet/$routeId': typeof AuthenticatedPrintRouteSheetRouteIdRoute
   '/print/subsidy-file/$bookingId': typeof AuthenticatedPrintSubsidyFileBookingIdRoute
-  '/workshop/service/$jobId': typeof AuthenticatedWorkshopServiceJobIdRoute
-  '/workshop/service/': typeof AuthenticatedWorkshopServiceIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -307,7 +259,6 @@ export interface FileRoutesByTo {
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
-  '/workshop/route-planner': typeof AuthenticatedWorkshopRoutePlannerRoute
   '/accounting': typeof AuthenticatedAccountingIndexRoute
   '/bookings': typeof AuthenticatedBookingsIndexRoute
   '/customers': typeof AuthenticatedCustomersIndexRoute
@@ -317,18 +268,13 @@ export interface FileRoutesByTo {
   '/products': typeof AuthenticatedProductsIndexRoute
   '/stock': typeof AuthenticatedStockIndexRoute
   '/subsidy': typeof AuthenticatedSubsidyIndexRoute
-  '/workshop': typeof AuthenticatedWorkshopIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
   '/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
   '/print/gatepass/$bookingId': typeof AuthenticatedPrintGatepassBookingIdRoute
   '/print/invoice/$bookingId': typeof AuthenticatedPrintInvoiceBookingIdRoute
-  '/print/job-card/$jobId': typeof AuthenticatedPrintJobCardJobIdRoute
   '/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
   '/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
-  '/print/route-sheet/$routeId': typeof AuthenticatedPrintRouteSheetRouteIdRoute
   '/print/subsidy-file/$bookingId': typeof AuthenticatedPrintSubsidyFileBookingIdRoute
-  '/workshop/service/$jobId': typeof AuthenticatedWorkshopServiceJobIdRoute
-  '/workshop/service': typeof AuthenticatedWorkshopServiceIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -346,7 +292,6 @@ export interface FileRoutesById {
   '/_authenticated/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/_authenticated/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
   '/_authenticated/stock/$stockId': typeof AuthenticatedStockStockIdRoute
-  '/_authenticated/workshop/route-planner': typeof AuthenticatedWorkshopRoutePlannerRoute
   '/_authenticated/accounting/': typeof AuthenticatedAccountingIndexRoute
   '/_authenticated/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/_authenticated/customers/': typeof AuthenticatedCustomersIndexRoute
@@ -356,18 +301,13 @@ export interface FileRoutesById {
   '/_authenticated/products/': typeof AuthenticatedProductsIndexRoute
   '/_authenticated/stock/': typeof AuthenticatedStockIndexRoute
   '/_authenticated/subsidy/': typeof AuthenticatedSubsidyIndexRoute
-  '/_authenticated/workshop/': typeof AuthenticatedWorkshopIndexRoute
   '/_authenticated/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
   '/_authenticated/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
   '/_authenticated/print/gatepass/$bookingId': typeof AuthenticatedPrintGatepassBookingIdRoute
   '/_authenticated/print/invoice/$bookingId': typeof AuthenticatedPrintInvoiceBookingIdRoute
-  '/_authenticated/print/job-card/$jobId': typeof AuthenticatedPrintJobCardJobIdRoute
   '/_authenticated/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
   '/_authenticated/print/receipt/$paymentId': typeof AuthenticatedPrintReceiptPaymentIdRoute
-  '/_authenticated/print/route-sheet/$routeId': typeof AuthenticatedPrintRouteSheetRouteIdRoute
   '/_authenticated/print/subsidy-file/$bookingId': typeof AuthenticatedPrintSubsidyFileBookingIdRoute
-  '/_authenticated/workshop/service/$jobId': typeof AuthenticatedWorkshopServiceJobIdRoute
-  '/_authenticated/workshop/service/': typeof AuthenticatedWorkshopServiceIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -385,7 +325,6 @@ export interface FileRouteTypes {
     | '/inquiries/new'
     | '/passing/$bookingId'
     | '/stock/$stockId'
-    | '/workshop/route-planner'
     | '/accounting/'
     | '/bookings/'
     | '/customers/'
@@ -395,18 +334,13 @@ export interface FileRouteTypes {
     | '/products/'
     | '/stock/'
     | '/subsidy/'
-    | '/workshop/'
     | '/print/challan/$bookingId'
     | '/print/documents/$customerId'
     | '/print/gatepass/$bookingId'
     | '/print/invoice/$bookingId'
-    | '/print/job-card/$jobId'
     | '/print/passing-set/$bookingId'
     | '/print/receipt/$paymentId'
-    | '/print/route-sheet/$routeId'
     | '/print/subsidy-file/$bookingId'
-    | '/workshop/service/$jobId'
-    | '/workshop/service/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -422,7 +356,6 @@ export interface FileRouteTypes {
     | '/inquiries/new'
     | '/passing/$bookingId'
     | '/stock/$stockId'
-    | '/workshop/route-planner'
     | '/accounting'
     | '/bookings'
     | '/customers'
@@ -432,18 +365,13 @@ export interface FileRouteTypes {
     | '/products'
     | '/stock'
     | '/subsidy'
-    | '/workshop'
     | '/print/challan/$bookingId'
     | '/print/documents/$customerId'
     | '/print/gatepass/$bookingId'
     | '/print/invoice/$bookingId'
-    | '/print/job-card/$jobId'
     | '/print/passing-set/$bookingId'
     | '/print/receipt/$paymentId'
-    | '/print/route-sheet/$routeId'
     | '/print/subsidy-file/$bookingId'
-    | '/workshop/service/$jobId'
-    | '/workshop/service'
   id:
     | '__root__'
     | '/'
@@ -460,7 +388,6 @@ export interface FileRouteTypes {
     | '/_authenticated/inquiries/new'
     | '/_authenticated/passing/$bookingId'
     | '/_authenticated/stock/$stockId'
-    | '/_authenticated/workshop/route-planner'
     | '/_authenticated/accounting/'
     | '/_authenticated/bookings/'
     | '/_authenticated/customers/'
@@ -470,18 +397,13 @@ export interface FileRouteTypes {
     | '/_authenticated/products/'
     | '/_authenticated/stock/'
     | '/_authenticated/subsidy/'
-    | '/_authenticated/workshop/'
     | '/_authenticated/print/challan/$bookingId'
     | '/_authenticated/print/documents/$customerId'
     | '/_authenticated/print/gatepass/$bookingId'
     | '/_authenticated/print/invoice/$bookingId'
-    | '/_authenticated/print/job-card/$jobId'
     | '/_authenticated/print/passing-set/$bookingId'
     | '/_authenticated/print/receipt/$paymentId'
-    | '/_authenticated/print/route-sheet/$routeId'
     | '/_authenticated/print/subsidy-file/$bookingId'
-    | '/_authenticated/workshop/service/$jobId'
-    | '/_authenticated/workshop/service/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -653,20 +575,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSubsidyIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/workshop/': {
-      id: '/_authenticated/workshop/'
-      path: '/workshop'
-      fullPath: '/workshop/'
-      preLoaderRoute: typeof AuthenticatedWorkshopIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/workshop/route-planner': {
-      id: '/_authenticated/workshop/route-planner'
-      path: '/workshop/route-planner'
-      fullPath: '/workshop/route-planner'
-      preLoaderRoute: typeof AuthenticatedWorkshopRoutePlannerRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/print/challan/$bookingId': {
       id: '/_authenticated/print/challan/$bookingId'
       path: '/print/challan/$bookingId'
@@ -695,13 +603,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPrintInvoiceBookingIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/print/job-card/$jobId': {
-      id: '/_authenticated/print/job-card/$jobId'
-      path: '/print/job-card/$jobId'
-      fullPath: '/print/job-card/$jobId'
-      preLoaderRoute: typeof AuthenticatedPrintJobCardJobIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/print/passing-set/$bookingId': {
       id: '/_authenticated/print/passing-set/$bookingId'
       path: '/print/passing-set/$bookingId'
@@ -716,32 +617,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPrintReceiptPaymentIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/print/route-sheet/$routeId': {
-      id: '/_authenticated/print/route-sheet/$routeId'
-      path: '/print/route-sheet/$routeId'
-      fullPath: '/print/route-sheet/$routeId'
-      preLoaderRoute: typeof AuthenticatedPrintRouteSheetRouteIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/print/subsidy-file/$bookingId': {
       id: '/_authenticated/print/subsidy-file/$bookingId'
       path: '/print/subsidy-file/$bookingId'
       fullPath: '/print/subsidy-file/$bookingId'
       preLoaderRoute: typeof AuthenticatedPrintSubsidyFileBookingIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/workshop/service/': {
-      id: '/_authenticated/workshop/service/'
-      path: '/workshop/service'
-      fullPath: '/workshop/service/'
-      preLoaderRoute: typeof AuthenticatedWorkshopServiceIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/workshop/service/$jobId': {
-      id: '/_authenticated/workshop/service/$jobId'
-      path: '/workshop/service/$jobId'
-      fullPath: '/workshop/service/$jobId'
-      preLoaderRoute: typeof AuthenticatedWorkshopServiceJobIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
@@ -759,7 +639,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInquiriesNewRoute: typeof AuthenticatedInquiriesNewRoute
   AuthenticatedPassingBookingIdRoute: typeof AuthenticatedPassingBookingIdRoute
   AuthenticatedStockStockIdRoute: typeof AuthenticatedStockStockIdRoute
-  AuthenticatedWorkshopRoutePlannerRoute: typeof AuthenticatedWorkshopRoutePlannerRoute
   AuthenticatedAccountingIndexRoute: typeof AuthenticatedAccountingIndexRoute
   AuthenticatedBookingsIndexRoute: typeof AuthenticatedBookingsIndexRoute
   AuthenticatedCustomersIndexRoute: typeof AuthenticatedCustomersIndexRoute
@@ -769,18 +648,13 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedProductsIndexRoute: typeof AuthenticatedProductsIndexRoute
   AuthenticatedStockIndexRoute: typeof AuthenticatedStockIndexRoute
   AuthenticatedSubsidyIndexRoute: typeof AuthenticatedSubsidyIndexRoute
-  AuthenticatedWorkshopIndexRoute: typeof AuthenticatedWorkshopIndexRoute
   AuthenticatedPrintChallanBookingIdRoute: typeof AuthenticatedPrintChallanBookingIdRoute
   AuthenticatedPrintDocumentsCustomerIdRoute: typeof AuthenticatedPrintDocumentsCustomerIdRoute
   AuthenticatedPrintGatepassBookingIdRoute: typeof AuthenticatedPrintGatepassBookingIdRoute
   AuthenticatedPrintInvoiceBookingIdRoute: typeof AuthenticatedPrintInvoiceBookingIdRoute
-  AuthenticatedPrintJobCardJobIdRoute: typeof AuthenticatedPrintJobCardJobIdRoute
   AuthenticatedPrintPassingSetBookingIdRoute: typeof AuthenticatedPrintPassingSetBookingIdRoute
   AuthenticatedPrintReceiptPaymentIdRoute: typeof AuthenticatedPrintReceiptPaymentIdRoute
-  AuthenticatedPrintRouteSheetRouteIdRoute: typeof AuthenticatedPrintRouteSheetRouteIdRoute
   AuthenticatedPrintSubsidyFileBookingIdRoute: typeof AuthenticatedPrintSubsidyFileBookingIdRoute
-  AuthenticatedWorkshopServiceJobIdRoute: typeof AuthenticatedWorkshopServiceJobIdRoute
-  AuthenticatedWorkshopServiceIndexRoute: typeof AuthenticatedWorkshopServiceIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -796,8 +670,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInquiriesNewRoute: AuthenticatedInquiriesNewRoute,
   AuthenticatedPassingBookingIdRoute: AuthenticatedPassingBookingIdRoute,
   AuthenticatedStockStockIdRoute: AuthenticatedStockStockIdRoute,
-  AuthenticatedWorkshopRoutePlannerRoute:
-    AuthenticatedWorkshopRoutePlannerRoute,
   AuthenticatedAccountingIndexRoute: AuthenticatedAccountingIndexRoute,
   AuthenticatedBookingsIndexRoute: AuthenticatedBookingsIndexRoute,
   AuthenticatedCustomersIndexRoute: AuthenticatedCustomersIndexRoute,
@@ -807,7 +679,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProductsIndexRoute: AuthenticatedProductsIndexRoute,
   AuthenticatedStockIndexRoute: AuthenticatedStockIndexRoute,
   AuthenticatedSubsidyIndexRoute: AuthenticatedSubsidyIndexRoute,
-  AuthenticatedWorkshopIndexRoute: AuthenticatedWorkshopIndexRoute,
   AuthenticatedPrintChallanBookingIdRoute:
     AuthenticatedPrintChallanBookingIdRoute,
   AuthenticatedPrintDocumentsCustomerIdRoute:
@@ -816,19 +687,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedPrintGatepassBookingIdRoute,
   AuthenticatedPrintInvoiceBookingIdRoute:
     AuthenticatedPrintInvoiceBookingIdRoute,
-  AuthenticatedPrintJobCardJobIdRoute: AuthenticatedPrintJobCardJobIdRoute,
   AuthenticatedPrintPassingSetBookingIdRoute:
     AuthenticatedPrintPassingSetBookingIdRoute,
   AuthenticatedPrintReceiptPaymentIdRoute:
     AuthenticatedPrintReceiptPaymentIdRoute,
-  AuthenticatedPrintRouteSheetRouteIdRoute:
-    AuthenticatedPrintRouteSheetRouteIdRoute,
   AuthenticatedPrintSubsidyFileBookingIdRoute:
     AuthenticatedPrintSubsidyFileBookingIdRoute,
-  AuthenticatedWorkshopServiceJobIdRoute:
-    AuthenticatedWorkshopServiceJobIdRoute,
-  AuthenticatedWorkshopServiceIndexRoute:
-    AuthenticatedWorkshopServiceIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
