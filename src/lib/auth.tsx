@@ -104,6 +104,13 @@ export function useMe() {
         profile,
         roles: roleList,
         isManagement: roleList.includes("ceo") || roleList.includes("manager"),
+        isWorkshop:
+          roleList.includes("ceo") ||
+          roleList.includes("manager") ||
+          roleList.includes("workshop_manager") ||
+          roleList.includes("mechanic"),
+        isWorkshopManager: roleList.includes("workshop_manager"),
+        isMechanic: roleList.includes("mechanic"),
         isReceptionist: roleList.includes("receptionist"),
         isSalesman: roleList.includes("salesman"),
         hasRole: roleList.length > 0,
