@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.15"
+    PostgrestVersion: "14.17"
   }
   public: {
     Tables: {
@@ -1178,6 +1178,218 @@ export type Database = {
         }
         Relationships: []
       }
+      service_jobs: {
+        Row: {
+          assigned_to: string | null
+          chassis_number: string | null
+          complaint: string | null
+          completed_date: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          customer_name: string
+          hours_reading: number | null
+          id: string
+          job_number: string
+          labour_amount: number
+          mobile: string
+          model: string | null
+          parts_amount: number
+          parts_details: string | null
+          planned_visit_date: string | null
+          priority: string
+          problem_category: string | null
+          promised_date: string | null
+          received_date: string
+          registration_number: string | null
+          remarks: string | null
+          service_mode: string
+          service_type: string
+          status: string
+          taluka: string | null
+          total_amount: number
+          updated_at: string
+          village: string
+          work_done: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          chassis_number?: string | null
+          complaint?: string | null
+          completed_date?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          customer_name: string
+          hours_reading?: number | null
+          id?: string
+          job_number: string
+          labour_amount?: number
+          mobile: string
+          model?: string | null
+          parts_amount?: number
+          parts_details?: string | null
+          planned_visit_date?: string | null
+          priority?: string
+          problem_category?: string | null
+          promised_date?: string | null
+          received_date?: string
+          registration_number?: string | null
+          remarks?: string | null
+          service_mode?: string
+          service_type?: string
+          status?: string
+          taluka?: string | null
+          total_amount?: number
+          updated_at?: string
+          village: string
+          work_done?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          chassis_number?: string | null
+          complaint?: string | null
+          completed_date?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          customer_name?: string
+          hours_reading?: number | null
+          id?: string
+          job_number?: string
+          labour_amount?: number
+          mobile?: string
+          model?: string | null
+          parts_amount?: number
+          parts_details?: string | null
+          planned_visit_date?: string | null
+          priority?: string
+          problem_category?: string | null
+          promised_date?: string | null
+          received_date?: string
+          registration_number?: string | null
+          remarks?: string | null
+          service_mode?: string
+          service_type?: string
+          status?: string
+          taluka?: string | null
+          total_amount?: number
+          updated_at?: string
+          village?: string
+          work_done?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_jobs_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_jobs_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_route_stops: {
+        Row: {
+          created_at: string
+          done: boolean
+          id: string
+          remarks: string | null
+          route_id: string
+          service_job_id: string
+          village: string
+          visit_order: number
+        }
+        Insert: {
+          created_at?: string
+          done?: boolean
+          id?: string
+          remarks?: string | null
+          route_id: string
+          service_job_id: string
+          village: string
+          visit_order?: number
+        }
+        Update: {
+          created_at?: string
+          done?: boolean
+          id?: string
+          remarks?: string | null
+          route_id?: string
+          service_job_id?: string
+          village?: string
+          visit_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_route_stops_route_id_fkey"
+            columns: ["route_id"]
+            isOneToOne: false
+            referencedRelation: "service_routes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_route_stops_service_job_id_fkey"
+            columns: ["service_job_id"]
+            isOneToOne: false
+            referencedRelation: "service_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_routes: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          remarks: string | null
+          route_number: string
+          status: string
+          updated_at: string
+          villages: string[]
+          visit_date: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          remarks?: string | null
+          route_number: string
+          status?: string
+          updated_at?: string
+          villages?: string[]
+          visit_date?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          remarks?: string | null
+          route_number?: string
+          status?: string
+          updated_at?: string
+          villages?: string[]
+          visit_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_routes_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stock_documents: {
         Row: {
           created_at: string
@@ -1703,6 +1915,7 @@ export type Database = {
       is_management: { Args: { _user_id: string }; Returns: boolean }
       is_receptionist: { Args: { _user_id: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      is_workshop: { Args: { _user_id: string }; Returns: boolean }
       issue_gate_pass: {
         Args: { _booking_id: string; _issue_date?: string; _remarks?: string }
         Returns: string
@@ -1768,7 +1981,13 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "ceo" | "manager" | "salesman" | "receptionist"
+      app_role:
+        | "ceo"
+        | "manager"
+        | "salesman"
+        | "receptionist"
+        | "workshop_manager"
+        | "mechanic"
       booking_status:
         | "BOOKED"
         | "ALLOCATED"
@@ -1924,7 +2143,14 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["ceo", "manager", "salesman", "receptionist"],
+      app_role: [
+        "ceo",
+        "manager",
+        "salesman",
+        "receptionist",
+        "workshop_manager",
+        "mechanic",
+      ],
       booking_status: [
         "BOOKED",
         "ALLOCATED",
