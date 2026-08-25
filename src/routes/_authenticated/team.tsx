@@ -45,12 +45,17 @@ function TeamPage() {
     queryKey: ["team"],
     queryFn: async () => {
       const [{ data: profiles, error: pErr }, { data: roles, error: rErr }] = await Promise.all([
-        supabase.from("profiles").select("id, full_name, email, phone").order("full_name"),
+        supabase.rpc("staff_directory" as never),
         supabase.from("user_roles").select("id, user_id, role"),
       ]);
+
       if (pErr) throw pErr;
       if (rErr) throw rErr;
-      return { profiles: profiles ?? [], roles: roles ?? [] };
+      return {
+        profiles: (profiles ?? []) as unknown as { id: string; full_name: string; email: string | null; phone: string | null }[],
+        roles: roles ?? [],
+      };
+
     },
   });
 

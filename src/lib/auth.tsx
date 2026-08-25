@@ -57,7 +57,7 @@ export function useMe() {
       // Ensure a profile row exists for this staff member.
       const { data: existing } = await supabase
         .from("profiles")
-        .select("*")
+        .select("id, full_name, created_at")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -71,11 +71,12 @@ export function useMe() {
             email: user.email ?? null,
             phone: (user.user_metadata?.['phone'] as string) ?? null,
           })
-          .select()
+          .select("id, full_name, created_at")
           .single();
         if (error) throw error;
         profile = inserted;
       }
+
 
       let { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
 
