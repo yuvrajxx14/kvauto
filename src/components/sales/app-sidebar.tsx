@@ -29,6 +29,12 @@ const OPS_ITEMS = [
   { title: "Accounting", url: "/accounting", icon: IndianRupee },
 ];
 
+const WORKSHOP_ITEMS = [
+  { title: "Workshop", url: "/workshop", icon: Wrench },
+  { title: "Service Register", url: "/workshop/service", icon: ListChecks },
+  { title: "Route Planner", url: "/workshop/route-planner", icon: Map },
+];
+
 const MASTER_ITEMS = [{ title: "Products", url: "/products", icon: Package }];
 
 
