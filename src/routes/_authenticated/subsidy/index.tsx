@@ -1,13 +1,15 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useSubsidyCases } from "@/lib/erp";
+import { useSubsidyCases, usePassingRecords } from "@/lib/erp";
 import { InsuranceChargeDialog } from "@/components/sales/insurance-dialog";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 
@@ -30,9 +32,25 @@ function daysBetween(a: string | null, b: string | null) {
   return Math.round((new Date(b).getTime() - new Date(a).getTime()) / 86_400_000);
 }
 
+type StageKey = "APPLICATION" | "APPROVAL" | "PAYMENT" | "PASSING" | "FILE_CHECK" | "DONE";
+
+const STAGES: { key: StageKey | "ALL"; label: string }[] = [
+  { key: "ALL", label: "All delivered" },
+  { key: "APPLICATION", label: "Online application pending" },
+  { key: "APPROVAL", label: "Awaiting govt approval" },
+  { key: "PAYMENT", label: "Payment pending" },
+  { key: "PASSING", label: "Ready for passing" },
+  { key: "FILE_CHECK", label: "Subsidy file check" },
+  { key: "DONE", label: "Completed" },
+];
+
 function SubsidyPage() {
   const { data: cases, isLoading } = useSubsidyCases();
+  const { data: passing } = usePassingRecords();
+  const [stage, setStage] = useState<StageKey | "ALL">("ALL");
   const qc = useQueryClient();
+
+  const passingByBooking = new Map((passing ?? []).map((p) => [p.booking_id, p]));
 
   const update = useMutation({
     mutationFn: async (p: { id: string; patch: Record<string, string | null> }) => {
@@ -46,20 +64,46 @@ function SubsidyPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const rows = cases ?? [];
-  const agri = rows.filter((r) => r.use_type === "AGRICULTURE");
-  const appPending = agri.filter((r) => r.application_status !== "DONE").length;
-  const apprPending = agri.filter((r) => r.application_status === "DONE" && r.approval_status !== "APPROVED").length;
-  const approved = agri.filter((r) => r.approval_status === "APPROVED").length;
+  const all = cases ?? [];
+  const withStage = all.map((r) => {
+    const p = passingByBooking.get(r.booking_id);
+    const b = r.booking;
+    const outstanding = b
+      ? Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0)
+      : 0;
+    const paid = outstanding < 1;
+    const passingDone = !!p?.rto_number || !!p?.number_plate_received;
+    const fileDone = p?.subsidy_file_status === "UPLOADED";
+    let stage: StageKey = "APPLICATION";
+    if (r.application_status === "DONE") stage = "APPROVAL";
+    if (r.application_status === "DONE" && r.approval_status === "APPROVED") stage = "PAYMENT";
+    if (stage === "PAYMENT" && paid) stage = "PASSING";
+    if (stage === "PASSING" && passingDone) stage = "FILE_CHECK";
+    if (stage === "FILE_CHECK" && fileDone) stage = "DONE";
+    return { ...r, stage, paid, outstanding: Math.max(0, outstanding), passingDone, fileDone };
+  });
+
+  const count = (s: StageKey) => withStage.filter((r) => r.stage === s).length;
+  const rows = stage === "ALL" ? withStage : withStage.filter((r) => r.stage === stage);
 
   return (
     <div>
-      <PageHeader title="Subsidy tracking" subtitle="Online application, government approval and insurance follow-up" />
+      <PageHeader title="Subsidy tracking" subtitle="Delivered customers moving through application → approval → payment → passing → file check" />
 
-      <div className="mb-4 grid gap-3 sm:grid-cols-3">
-        <Metric label="Application pending" value={String(appPending)} />
-        <Metric label="Approval pending" value={String(apprPending)} />
-        <Metric label="Approved" value={String(approved)} />
+      <div className="mb-4 flex flex-wrap gap-2">
+        {STAGES.map((s) => (
+          <Button
+            key={s.key}
+            size="sm"
+            variant={stage === s.key ? "default" : "outline"}
+            onClick={() => setStage(s.key)}
+          >
+            {s.label}
+            <span className="ml-2 text-xs opacity-70">
+              {s.key === "ALL" ? withStage.length : count(s.key)}
+            </span>
+          </Button>
+        ))}
       </div>
 
       <Card className="shadow-card">
@@ -73,14 +117,15 @@ function SubsidyPage() {
                 <TableHead>Use</TableHead>
                 <TableHead>Application</TableHead>
                 <TableHead>Approval</TableHead>
+                <TableHead>Stage</TableHead>
                 <TableHead>Delivered</TableHead>
                 <TableHead className="text-right">Insurance</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && <TableRow><TableCell colSpan={7} className="text-sm text-muted-foreground">Loading…</TableCell></TableRow>}
+              {isLoading && <TableRow><TableCell colSpan={8} className="text-sm text-muted-foreground">Loading…</TableCell></TableRow>}
               {!isLoading && rows.length === 0 && (
-                <TableRow><TableCell colSpan={7} className="text-sm text-muted-foreground">No delivered bookings yet.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} className="text-sm text-muted-foreground">No customers in this stage.</TableCell></TableRow>
               )}
               {rows.map((r) => {
                 const lateApproval =
@@ -137,6 +182,20 @@ function SubsidyPage() {
                           </SelectContent>
                         </Select>
                       ) : "—"}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={r.stage === "DONE" ? "default" : "secondary"} className="text-xs">
+                        {STAGES.find((s) => s.key === r.stage)?.label ?? r.stage}
+                      </Badge>
+                      {(r.stage === "PASSING" || r.stage === "FILE_CHECK") && (
+                        <Link
+                          to="/passing/$bookingId"
+                          params={{ bookingId: r.booking_id }}
+                          className="mt-1 block text-xs text-primary hover:underline"
+                        >
+                          {r.stage === "PASSING" ? "Proceed for passing →" : "Subsidy file check →"}
+                        </Link>
+                      )}
                     </TableCell>
                     <TableCell className="text-xs">{fmtDate(r.delivery_date)}</TableCell>
                     <TableCell className="text-right">
