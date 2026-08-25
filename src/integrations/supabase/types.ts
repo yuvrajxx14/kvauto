@@ -1178,6 +1178,50 @@ export type Database = {
         }
         Relationships: []
       }
+      service_checklist: {
+        Row: {
+          created_at: string
+          id: string
+          is_done: boolean
+          item_key: string
+          label: string
+          remarks: string | null
+          service_job_id: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_done?: boolean
+          item_key: string
+          label: string
+          remarks?: string | null
+          service_job_id: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_done?: boolean
+          item_key?: string
+          label?: string
+          remarks?: string | null
+          service_job_id?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_checklist_service_job_id_fkey"
+            columns: ["service_job_id"]
+            isOneToOne: false
+            referencedRelation: "service_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_jobs: {
         Row: {
           assigned_to: string | null
