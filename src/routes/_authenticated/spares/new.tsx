@@ -199,7 +199,7 @@ function NewSpareRequestPage() {
             <div>
               <Label>Tractor model</Label>
               <div className="mt-1">
-                <ModelSelect value={model} onChange={setModel} />
+                <ModelSelect defaultValue={model} onValueChange={setModel} placeholder="Select model" />
               </div>
             </div>
             <div>
