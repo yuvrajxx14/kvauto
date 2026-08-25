@@ -151,3 +151,85 @@ export async function seedServiceChecklist(jobId: string) {
   });
   if (error) throw error;
 }
+
+/* ---------------- Route planner ---------------- */
+
+import { DEALER } from "@/lib/print";
+
+/** Dealership start/end point for every field-visit route. */
+export const DEALERSHIP_ORIGIN = `${DEALER.name}, ${DEALER.address}`;
+
+export const ROUTE_STATUSES = ["PLANNED", "IN_PROGRESS", "COMPLETED", "CANCELLED"] as const;
+export const ROUTE_STATUS_LABEL: Record<string, string> = {
+  PLANNED: "Planned",
+  IN_PROGRESS: "On the road",
+  COMPLETED: "Completed",
+  CANCELLED: "Cancelled",
+};
+
+/** Google Maps directions: dealership → each village in order → back to dealership. */
+export function googleMapsRouteUrl(villages: string[], region = "Gujarat, India") {
+  const stops = villages.filter(Boolean).map((v) => `${v}, ${region}`);
+  const params = new URLSearchParams({
+    api: "1",
+    origin: DEALERSHIP_ORIGIN,
+    destination: DEALERSHIP_ORIGIN,
+    travelmode: "driving",
+  });
+  if (stops.length) params.set("waypoints", stops.join("|"));
+  return `https://www.google.com/maps/dir/?${params.toString()}`;
+}
+
+export function googleMapsEmbedUrl(villages: string[], region = "Gujarat, India") {
+  return googleMapsRouteUrl(villages, region);
+}
+
+export const ROUTE_SELECT =
+  "*, technician:profiles!service_routes_assigned_to_fkey(id, full_name)";
+
+export function useServiceRoutes() {
+  return useQuery({
+    queryKey: ["service-routes"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("service_routes")
+        .select(ROUTE_SELECT)
+        .order("visit_date", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export function useRouteStops(routeId: string) {
+  return useQuery({
+    queryKey: ["service-route-stops", routeId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("service_route_stops")
+        .select("*, job:service_jobs(id, job_number, customer_name, mobile, village, status, complaint)")
+        .eq("route_id", routeId)
+        .order("visit_order");
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!routeId,
+  });
+}
+
+/** Field-visit jobs that still need to be visited, for route planning. */
+export function usePendingFieldJobs() {
+  return useQuery({
+    queryKey: ["service-field-jobs"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("service_jobs")
+        .select("id, job_number, customer_name, mobile, village, taluka, status, priority, complaint, planned_visit_date")
+        .eq("service_mode", "FIELD_VISIT")
+        .not("status", "in", "(COMPLETED,DELIVERED,CANCELLED)")
+        .order("village");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
