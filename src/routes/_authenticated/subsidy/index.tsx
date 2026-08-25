@@ -183,6 +183,20 @@ function SubsidyPage() {
                         </Select>
                       ) : "—"}
                     </TableCell>
+                    <TableCell>
+                      <Badge variant={r.stage === "DONE" ? "default" : "secondary"} className="text-xs">
+                        {STAGES.find((s) => s.key === r.stage)?.label ?? r.stage}
+                      </Badge>
+                      {(r.stage === "PASSING" || r.stage === "FILE_CHECK") && (
+                        <Link
+                          to="/passing/$bookingId"
+                          params={{ bookingId: r.booking_id }}
+                          className="mt-1 block text-xs text-primary hover:underline"
+                        >
+                          {r.stage === "PASSING" ? "Proceed for passing →" : "Subsidy file check →"}
+                        </Link>
+                      )}
+                    </TableCell>
                     <TableCell className="text-xs">{fmtDate(r.delivery_date)}</TableCell>
                     <TableCell className="text-right">
                       {r.insurance_charged ? (
