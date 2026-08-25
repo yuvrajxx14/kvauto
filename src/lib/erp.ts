@@ -378,3 +378,65 @@ export function useGatePass(bookingId: string) {
     enabled: !!bookingId,
   });
 }
+
+/* ---------- Physical document collection reminders ---------- */
+
+export type PendingDocCustomer = {
+  customerId: string;
+  customerName: string;
+  mobile: string | null;
+  village: string | null;
+  deliveryDate: string;
+  missing: string[];
+};
+
+/** Delivered customers whose required physical documents are still not collected. */
+export function usePendingDocumentCustomers() {
+  return useQuery({
+    queryKey: ["pending-doc-customers"],
+    queryFn: async (): Promise<PendingDocCustomer[]> => {
+      const [checklistRes, deliveriesRes, docsRes] = await Promise.all([
+        supabase.from("document_checklist").select("doc_type, label, is_required").eq("active", true).order("sort_order"),
+        supabase
+          .from("deliveries")
+          .select("delivery_date, customer:customers(id, customer_name, mobile, village)")
+          .order("delivery_date", { ascending: false }),
+        supabase.from("customer_documents").select("customer_id, doc_type, verification_status"),
+      ]);
+      if (checklistRes.error) throw checklistRes.error;
+      if (deliveriesRes.error) throw deliveriesRes.error;
+      if (docsRes.error) throw docsRes.error;
+
+      const required = (checklistRes.data ?? []).filter((c) => c.is_required);
+      const docs = docsRes.data ?? [];
+      const seen = new Set<string>();
+      const out: PendingDocCustomer[] = [];
+
+      for (const d of deliveriesRes.data ?? []) {
+        const c = Array.isArray(d.customer) ? d.customer[0] : d.customer;
+        if (!c || seen.has(c.id)) continue;
+        seen.add(c.id);
+        const missing = required
+          .filter(
+            (r) =>
+              !docs.some(
+                (doc) =>
+                  doc.customer_id === c.id && doc.doc_type === r.doc_type && doc.verification_status === "RECEIVED",
+              ),
+          )
+          .map((r) => r.label);
+        if (missing.length) {
+          out.push({
+            customerId: c.id,
+            customerName: c.customer_name,
+            mobile: c.mobile ?? null,
+            village: c.village ?? null,
+            deliveryDate: d.delivery_date,
+            missing,
+          });
+        }
+      }
+      return out;
+    },
+  });
+}
