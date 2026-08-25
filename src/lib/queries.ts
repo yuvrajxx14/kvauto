@@ -7,16 +7,15 @@ export function useProfiles() {
   return useQuery({
     queryKey: ["profiles"],
     queryFn: async (): Promise<Profile[]> => {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, full_name, email, phone")
-        .order("full_name");
+      // Contact details come back only for management (or your own row) — enforced server-side.
+      const { data, error } = await supabase.rpc("staff_directory" as never);
       if (error) throw error;
-      return data ?? [];
+      return (data ?? []) as unknown as Profile[];
     },
     staleTime: 60_000,
   });
 }
+
 
 export function useProfileMap() {
   const { data } = useProfiles();
