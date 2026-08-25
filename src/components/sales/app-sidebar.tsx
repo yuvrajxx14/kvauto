@@ -101,6 +101,30 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        {me?.isWorkshop && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Workshop</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {WORKSHOP_ITEMS.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={item.url === "/workshop" ? pathname === "/workshop" : isActive(item.url)}
+                      tooltip={item.title}
+                    >
+                      <Link to={item.url} className="flex items-center gap-2">
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
         <SidebarGroup>
           <SidebarGroupLabel>Master</SidebarGroupLabel>
           <SidebarGroupContent>
