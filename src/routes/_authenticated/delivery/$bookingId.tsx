@@ -109,10 +109,11 @@ function DeliveryDetail() {
       label: isLoan ? "Deal price + 2% loan document charge received" : "Full deal price received",
       ok: outstanding < 1,
     },
-    { label: "Required documents verified", ok: progress.complete },
     { label: "Gate pass issued", ok: !!gatePass },
   ];
   const ready = checks.every((c) => c.ok);
+  const docsPending = !progress.complete;
+
 
   return (
     <div>
@@ -258,9 +259,35 @@ function DeliveryDetail() {
 
                 <div><Label>Delivery date</Label><Input name="delivery_date" type="date" defaultValue={todayISO()} required /></div>
                 <div><Label>Remarks</Label><Textarea name="remarks" rows={3} /></div>
-                <Button className="w-full" disabled={!ready || complete.isPending}>
-                  {complete.isPending ? "Completing…" : ready ? "Complete Delivery" : "Checklist incomplete"}
+                {docsPending && (
+                  <p className="rounded-md border border-warning/40 bg-warning/10 p-2 text-xs font-medium text-warning-foreground">
+                    Warning: customer documents not fully collected — {progress.missingLabels.join(", ")}. You can still
+                    deliver, but this customer will keep showing in the pending-documents reminder until collected.
+                  </p>
+                )}
+                <Button
+                  className="w-full"
+                  disabled={!ready || complete.isPending}
+                  onClick={(e) => {
+                    if (
+                      docsPending &&
+                      !window.confirm(
+                        `Documents pending: ${progress.missingLabels.join(", ")}.\n\nContinue with delivery and collect them later?`,
+                      )
+                    ) {
+                      e.preventDefault();
+                    }
+                  }}
+                >
+                  {complete.isPending
+                    ? "Completing…"
+                    : !ready
+                      ? "Checklist incomplete"
+                      : docsPending
+                        ? "Complete Delivery (documents pending)"
+                        : "Complete Delivery"}
                 </Button>
+
               </form>
             )}
           </CardContent>

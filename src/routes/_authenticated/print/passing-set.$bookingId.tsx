@@ -41,14 +41,14 @@ function PassingSetPrint() {
 
   const rows = PASSING_SET_DOCS.map((d) => {
     if (d.source === "CUSTOMER") {
-      const doc = (custDocs ?? []).find((c) => c.doc_type === d.key);
-      return { ...d, available: !!doc, note: doc ? `${doc.file_name ?? "File"} · ${fmtDate(doc.created_at)}` : "Not uploaded", path: doc?.file_path ?? null, bucket: "customer-documents" as const };
+      const doc = (custDocs ?? []).find((c) => c.doc_type === d.key && c.verification_status === "RECEIVED");
+      return { ...d, available: !!doc, note: doc ? `Collected in customer file · ${fmtDate(doc.created_at)}` : "Not collected — attach the physical copy", path: null, bucket: "vehicle-documents" as const };
     }
     if (d.source === "VEHICLE") {
       const doc = (vehDocs ?? []).find((v) => v.doc_type === d.key);
       return { ...d, available: !!doc, note: doc ? `${doc.file_name ?? "File"} · ${fmtDate(doc.created_at)}` : "Not attached to this chassis", path: doc?.file_path ?? null, bucket: "vehicle-documents" as const };
     }
-    return { ...d, available: true, note: d.key === "INVOICE" ? (invoice?.invoice_number ?? "Invoice not issued yet") : "Printed from vehicle details", path: null, bucket: "customer-documents" as const };
+    return { ...d, available: true, note: d.key === "INVOICE" ? (invoice?.invoice_number ?? "Invoice not issued yet") : "Printed from vehicle details", path: null, bucket: "vehicle-documents" as const };
   });
 
   async function build() {

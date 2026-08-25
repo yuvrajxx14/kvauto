@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, ClipboardList, CalendarClock, Users } from "lucide-react";
+import { AlertTriangle, ClipboardList, CalendarClock, FileWarning, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/lib/auth";
+import { usePendingDocumentCustomers } from "@/lib/erp";
 import { KpiCard, PageHeader, EmptyState } from "@/components/sales/ui";
 import { StatusBadge } from "@/components/sales/badges";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -141,9 +142,48 @@ function Dashboard() {
         <AlertList title="Due today" items={dueToday} today={today} />
         <AlertList title="No follow-up date set" items={missingNext} today={today} tone="warning" />
       </section>
+
+      <section className="mt-6">
+        <PendingDocumentsCard />
+      </section>
     </div>
   );
 }
+
+function PendingDocumentsCard() {
+  const { data, isLoading } = usePendingDocumentCustomers();
+  const rows = data ?? [];
+  return (
+    <Card className="shadow-card">
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-base text-warning">
+          <FileWarning className="h-4 w-4" /> Documents to collect ({rows.length})
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2">
+        {isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+        {!isLoading && rows.length === 0 && <EmptyState title="All delivered customers' documents are collected" />}
+        {rows.map((r) => (
+          <Link
+            key={r.customerId}
+            to="/customers/$customerId"
+            params={{ customerId: r.customerId }}
+            className="block rounded-md border p-3 transition-colors hover:bg-muted"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-sm font-medium">
+                {r.customerName} <span className="text-muted-foreground">· {r.village ?? "—"}</span>
+              </p>
+              <span className="text-xs text-muted-foreground">Delivered {fmtDate(r.deliveryDate)}</span>
+            </div>
+            <p className="mt-1 text-xs text-warning-foreground">Pending: {r.missing.join(", ")}</p>
+          </Link>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
 
 function AlertList({
   title,

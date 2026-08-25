@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Printer } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useCustomerDocuments, useDocumentChecklist } from "@/lib/erp";
 import { DEALER } from "@/lib/print";
 import { fmtDate } from "@/lib/sales";
@@ -12,10 +10,10 @@ import { fmtDate } from "@/lib/sales";
 export const Route = createFileRoute("/_authenticated/print/documents/$customerId")({
   head: () => ({
     meta: [
-      { title: "Print documents · KrushiVidhya Automobiles" },
-      { name: "description", content: "Select and print the customer documents required for passing and subsidy." },
-      { property: "og:title", content: "Print documents · KrushiVidhya Automobiles" },
-      { property: "og:description", content: "Select and print customer documents." },
+      { title: "Document collection checklist · KrushiVidhya Automobiles" },
+      { name: "description", content: "Printable checklist of the physical documents to be collected from the customer." },
+      { property: "og:title", content: "Document collection checklist · KrushiVidhya Automobiles" },
+      { property: "og:description", content: "Printable customer document collection checklist." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -23,106 +21,106 @@ export const Route = createFileRoute("/_authenticated/print/documents/$customerI
   component: DocumentsPrint,
 });
 
-type Sheet = { docType: string; label: string; number: string | null; fileName: string | null; status: string; url: string | null; created: string };
-
 function DocumentsPrint() {
   const { customerId } = Route.useParams();
   const { data: checklist } = useDocumentChecklist();
   const { data: docs } = useCustomerDocuments(customerId);
-  const [selected, setSelected] = useState<Record<string, boolean>>({});
-  const [ready, setReady] = useState<Sheet[] | null>(null);
-  const [busy, setBusy] = useState(false);
 
   const { data: customer } = useQuery({
     queryKey: ["customer-basic", customerId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("customers").select("customer_name, mobile, village").eq("id", customerId).maybeSingle();
+      const { data, error } = await supabase
+        .from("customers")
+        .select("customer_name, mobile, village")
+        .eq("id", customerId)
+        .maybeSingle();
       if (error) throw error;
       return data;
     },
   });
 
-  const rows = (docs ?? []).map((d) => ({
-    id: d.id,
-    docType: d.doc_type,
-    label: (checklist ?? []).find((c) => c.doc_type === d.doc_type)?.label ?? d.doc_type,
-    number: d.document_number,
-    fileName: d.file_name,
-    filePath: d.file_path,
-    status: d.verification_status,
-    created: d.created_at,
-  }));
-
-  async function build() {
-    setBusy(true);
-    const chosen = rows.filter((r) => selected[r.id]);
-    const sheets: Sheet[] = [];
-    for (const r of chosen) {
-      let url: string | null = null;
-      if (r.filePath) {
-        const { data } = await supabase.storage.from("customer-documents").createSignedUrl(r.filePath, 600);
-        url = data?.signedUrl ?? null;
-      }
-      sheets.push({ docType: r.docType, label: r.label, number: r.number, fileName: r.fileName, status: r.status, url, created: r.created });
-    }
-    setReady(sheets);
-    setBusy(false);
-    setTimeout(() => window.print(), 400);
-  }
+  const rows = (checklist ?? []).map((c) => {
+    const doc = (docs ?? []).find((d) => d.doc_type === c.doc_type && d.verification_status === "RECEIVED");
+    return {
+      key: c.id,
+      label: c.label,
+      required: c.is_required,
+      number: doc?.document_number ?? null,
+      collected: !!doc,
+      collectedOn: doc ? fmtDate(doc.created_at) : null,
+    };
+  });
+  const pending = rows.filter((r) => r.required && !r.collected);
 
   return (
     <div className="mx-auto max-w-3xl p-6 print:p-0">
-      <div className="print:hidden">
-        <h1 className="page-title">Print documents</h1>
-        <p className="mb-4 text-sm text-muted-foreground">
-          Select the documents to include, then print the set.
-        </p>
-        <div className="space-y-2 rounded-lg border p-4">
-          {rows.length === 0 && <p className="text-sm text-muted-foreground">No documents uploaded for this customer.</p>}
-          {rows.map((r) => (
-            <label key={r.id} className="flex items-center gap-3 rounded-md border p-2 text-sm">
-              <Checkbox
-                checked={!!selected[r.id]}
-                onCheckedChange={(v) => setSelected((s) => ({ ...s, [r.id]: !!v }))}
-              />
-              <span className="flex-1">
-                <span className="font-medium">{r.label}</span>
-                <span className="block text-xs text-muted-foreground">
-                  {r.fileName ?? "No file"} · {r.status} · {fmtDate(r.created)}
-                </span>
-              </span>
-            </label>
-          ))}
-          <Button className="mt-2" size="sm" disabled={busy || rows.every((r) => !selected[r.id])} onClick={build}>
-            <Printer className="mr-1 h-4 w-4" /> {busy ? "Preparing…" : "Prepare & print"}
-          </Button>
+      <div className="print:hidden mb-4 flex items-center justify-between">
+        <div>
+          <h1 className="page-title">Document collection checklist</h1>
+          <p className="text-sm text-muted-foreground">
+            {customer?.customer_name ?? "—"} · {customer?.mobile ?? "—"} · {pending.length} pending
+          </p>
         </div>
+        <Button size="sm" onClick={() => window.print()}>
+          <Printer className="mr-1 h-4 w-4" /> Print
+        </Button>
       </div>
 
-      {ready && (
-        <div className="print-area mt-6 space-y-6 print:mt-0">
-          <div className="border-b pb-3 text-center">
-            <h2 className="text-xl font-bold">{DEALER.name}</h2>
-            <p className="text-xs text-muted-foreground">{DEALER.tagline}</p>
-            <p className="mt-2 text-sm font-semibold">
-              Document set · {customer?.customer_name ?? ""} · {customer?.mobile ?? ""}
-            </p>
-          </div>
-          {ready.map((s, i) => (
-            <div key={`${s.docType}-${i}`} className="break-after-page">
-              <p className="mb-2 text-sm font-semibold uppercase tracking-wide">{s.label}</p>
-              <p className="mb-2 text-xs text-muted-foreground">
-                {s.number ? `No. ${s.number} · ` : ""}{s.status} · uploaded {fmtDate(s.created)}
-              </p>
-              {s.url ? (
-                <img src={s.url} alt={s.label} className="max-h-[900px] w-full object-contain" />
-              ) : (
-                <p className="text-sm text-muted-foreground">No file attached.</p>
-              )}
-            </div>
-          ))}
+      <div className="print-area rounded-lg border p-6 print:rounded-none print:border-0 print:p-0">
+        <div className="border-b pb-3 text-center">
+          <h2 className="text-xl font-bold">{DEALER.name}</h2>
+          <p className="text-xs text-muted-foreground">{DEALER.tagline}</p>
+          <p className="mt-2 text-sm font-semibold uppercase tracking-wide">Customer document collection checklist</p>
         </div>
-      )}
+
+        <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+          <p><span className="text-muted-foreground">Customer:</span> {customer?.customer_name ?? "—"}</p>
+          <p><span className="text-muted-foreground">Mobile:</span> {customer?.mobile ?? "—"}</p>
+          <p><span className="text-muted-foreground">Village:</span> {customer?.village ?? "—"}</p>
+          <p><span className="text-muted-foreground">Printed on:</span> {fmtDate(new Date().toISOString())}</p>
+        </div>
+
+        <table className="mt-5 w-full border-collapse text-sm">
+          <thead>
+            <tr className="border-y bg-muted/40 text-left">
+              <th className="p-2 w-10">#</th>
+              <th className="p-2">Document</th>
+              <th className="p-2">Number</th>
+              <th className="p-2">Collected on</th>
+              <th className="p-2 w-24 text-center">Received</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr key={r.key} className="border-b align-top">
+                <td className="p-2">{i + 1}</td>
+                <td className="p-2">
+                  {r.label}
+                  {r.required && <span className="text-destructive"> *</span>}
+                </td>
+                <td className="p-2">{r.number ?? "—"}</td>
+                <td className="p-2">{r.collectedOn ?? "—"}</td>
+                <td className="p-2 text-center">{r.collected ? "✔" : "☐"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <p className="mt-4 text-xs text-muted-foreground">
+          * Mandatory documents. All documents are collected physically and kept in the customer file.
+        </p>
+
+        <div className="mt-10 flex justify-between text-xs">
+          <div>
+            <div className="h-10 w-40 border-b border-dotted" />
+            <p className="mt-1">Customer signature</p>
+          </div>
+          <div>
+            <div className="h-10 w-40 border-b border-dotted" />
+            <p className="mt-1">Received by (dealership)</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

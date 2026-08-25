@@ -40,18 +40,20 @@ function SubsidyFilePrint() {
 
   const rows = SUBSIDY_FILE_DOCS.map((d) => {
     const docType = (d as { docType?: string }).docType;
-    const doc = docType ? (custDocs ?? []).find((c) => c.doc_type === docType) : undefined;
+    const doc = docType
+      ? (custDocs ?? []).find((c) => c.doc_type === docType && c.verification_status === "RECEIVED")
+      : undefined;
     return {
       key: d.key,
       label: d.label,
       source: d.source,
-      path: doc?.file_path ?? null,
+      path: null as string | null,
       note: doc
-        ? `${doc.file_name ?? "File"} · ${fmtDate(doc.created_at)}`
+        ? `Collected in customer file · ${fmtDate(doc.created_at)}`
         : d.source === "GENERATED"
           ? "Printed from the system"
           : d.source === "CUSTOMER"
-            ? "Not uploaded — attach the customer copy"
+            ? "Not collected — attach the customer copy"
             : "Attach the physical copy",
       available: d.source === "GENERATED" || !!doc,
     };
