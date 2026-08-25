@@ -33,6 +33,7 @@ import { Route as AuthenticatedServiceIndexRouteImport } from './routes/_authent
 import { Route as AuthenticatedServiceJobIdRouteImport } from './routes/_authenticated/service/$jobId'
 import { Route as AuthenticatedServiceJobcardsRouteImport } from './routes/_authenticated/service/jobcards'
 import { Route as AuthenticatedServiceNewRouteImport } from './routes/_authenticated/service/new'
+import { Route as AuthenticatedServiceRoutesRouteImport } from './routes/_authenticated/service/routes'
 import { Route as AuthenticatedStockIndexRouteImport } from './routes/_authenticated/stock/index'
 import { Route as AuthenticatedStockStockIdRouteImport } from './routes/_authenticated/stock/$stockId'
 import { Route as AuthenticatedSubsidyIndexRouteImport } from './routes/_authenticated/subsidy/index'
@@ -181,6 +182,12 @@ const AuthenticatedServiceNewRoute = AuthenticatedServiceNewRouteImport.update({
   path: '/service/new',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedServiceRoutesRoute =
+  AuthenticatedServiceRoutesRouteImport.update({
+    id: '/service/routes',
+    path: '/service/routes',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedStockIndexRoute = AuthenticatedStockIndexRouteImport.update({
   id: '/stock/',
   path: '/stock/',
@@ -257,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/service/$jobId': typeof AuthenticatedServiceJobIdRoute
   '/service/jobcards': typeof AuthenticatedServiceJobcardsRoute
   '/service/new': typeof AuthenticatedServiceNewRoute
+  '/service/routes': typeof AuthenticatedServiceRoutesRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/accounting/': typeof AuthenticatedAccountingIndexRoute
   '/bookings/': typeof AuthenticatedBookingsIndexRoute
@@ -292,6 +300,7 @@ export interface FileRoutesByTo {
   '/service/$jobId': typeof AuthenticatedServiceJobIdRoute
   '/service/jobcards': typeof AuthenticatedServiceJobcardsRoute
   '/service/new': typeof AuthenticatedServiceNewRoute
+  '/service/routes': typeof AuthenticatedServiceRoutesRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/accounting': typeof AuthenticatedAccountingIndexRoute
   '/bookings': typeof AuthenticatedBookingsIndexRoute
@@ -329,6 +338,7 @@ export interface FileRoutesById {
   '/_authenticated/service/$jobId': typeof AuthenticatedServiceJobIdRoute
   '/_authenticated/service/jobcards': typeof AuthenticatedServiceJobcardsRoute
   '/_authenticated/service/new': typeof AuthenticatedServiceNewRoute
+  '/_authenticated/service/routes': typeof AuthenticatedServiceRoutesRoute
   '/_authenticated/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/_authenticated/accounting/': typeof AuthenticatedAccountingIndexRoute
   '/_authenticated/bookings/': typeof AuthenticatedBookingsIndexRoute
@@ -366,6 +376,7 @@ export interface FileRouteTypes {
     | '/service/$jobId'
     | '/service/jobcards'
     | '/service/new'
+    | '/service/routes'
     | '/stock/$stockId'
     | '/accounting/'
     | '/bookings/'
@@ -401,6 +412,7 @@ export interface FileRouteTypes {
     | '/service/$jobId'
     | '/service/jobcards'
     | '/service/new'
+    | '/service/routes'
     | '/stock/$stockId'
     | '/accounting'
     | '/bookings'
@@ -437,6 +449,7 @@ export interface FileRouteTypes {
     | '/_authenticated/service/$jobId'
     | '/_authenticated/service/jobcards'
     | '/_authenticated/service/new'
+    | '/_authenticated/service/routes'
     | '/_authenticated/stock/$stockId'
     | '/_authenticated/accounting/'
     | '/_authenticated/bookings/'
@@ -633,6 +646,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedServiceNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/service/routes': {
+      id: '/_authenticated/service/routes'
+      path: '/service/routes'
+      fullPath: '/service/routes'
+      preLoaderRoute: typeof AuthenticatedServiceRoutesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/stock/': {
       id: '/_authenticated/stock/'
       path: '/stock'
@@ -720,6 +740,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedServiceJobIdRoute: typeof AuthenticatedServiceJobIdRoute
   AuthenticatedServiceJobcardsRoute: typeof AuthenticatedServiceJobcardsRoute
   AuthenticatedServiceNewRoute: typeof AuthenticatedServiceNewRoute
+  AuthenticatedServiceRoutesRoute: typeof AuthenticatedServiceRoutesRoute
   AuthenticatedStockStockIdRoute: typeof AuthenticatedStockStockIdRoute
   AuthenticatedAccountingIndexRoute: typeof AuthenticatedAccountingIndexRoute
   AuthenticatedBookingsIndexRoute: typeof AuthenticatedBookingsIndexRoute
@@ -755,6 +776,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedServiceJobIdRoute: AuthenticatedServiceJobIdRoute,
   AuthenticatedServiceJobcardsRoute: AuthenticatedServiceJobcardsRoute,
   AuthenticatedServiceNewRoute: AuthenticatedServiceNewRoute,
+  AuthenticatedServiceRoutesRoute: AuthenticatedServiceRoutesRoute,
   AuthenticatedStockStockIdRoute: AuthenticatedStockStockIdRoute,
   AuthenticatedAccountingIndexRoute: AuthenticatedAccountingIndexRoute,
   AuthenticatedBookingsIndexRoute: AuthenticatedBookingsIndexRoute,
