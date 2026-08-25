@@ -21,15 +21,15 @@ import {
 export const Route = createFileRoute("/_authenticated/service/")({
   head: () => ({
     meta: [
-      { title: "Service Jobs · KrushiVidhya Automobiles" },
-      { name: "description", content: "Workshop service job cards, technician assignment and job status for KrushiVidhya Automobiles." },
-      { property: "og:title", content: "Service Jobs · KrushiVidhya Automobiles" },
-      { property: "og:description", content: "Track tractor service jobs from open to delivered." },
+      { title: "Service & Problem Register · KrushiVidhya Automobiles" },
+      { name: "description", content: "Register tractor service requests and breakdown complaints received at the KrushiVidhya Automobiles showroom." },
+      { property: "og:title", content: "Service & Problem Register · KrushiVidhya Automobiles" },
+      { property: "og:description", content: "Every service request and complaint recorded by showroom staff." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: ServiceListPage,
+  component: ServiceRegisterPage,
 });
 
 export function statusTone(status: ServiceStatus) {
@@ -48,33 +48,33 @@ export function statusTone(status: ServiceStatus) {
   }
 }
 
-function ServiceListPage() {
+function ServiceRegisterPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
   const { data, isLoading } = useServiceJobs({ search, status });
   const rows = data ?? [];
 
-  const count = (s: ServiceStatus) => rows.filter((r) => r.status === s).length;
+  const unassigned = rows.filter((r) => !r.assigned_to).length;
+  const field = rows.filter((r) => r.service_mode === "FIELD_VISIT").length;
 
   return (
     <div>
       <PageHeader
-        title="Service jobs"
-        subtitle="Workshop & field service job cards"
+        title="Service & problem register"
+        subtitle="Anyone in the showroom can register a service request or breakdown complaint here"
         actions={
           <Button asChild>
             <Link to="/service/new">
-              <Plus className="mr-1 h-4 w-4" /> New job card
+              <Plus className="mr-1 h-4 w-4" /> Register service
             </Link>
           </Button>
         }
       />
 
-      <div className="mb-4 grid gap-3 sm:grid-cols-4">
+      <div className="mb-4 grid gap-3 sm:grid-cols-3">
         <Metric label="Showing" value={String(rows.length)} />
-        <Metric label="Open" value={String(count("OPEN"))} />
-        <Metric label="In progress" value={String(count("IN_PROGRESS"))} />
-        <Metric label="Waiting parts" value={String(count("WAITING_PARTS"))} />
+        <Metric label="Waiting for mechanic" value={String(unassigned)} />
+        <Metric label="Field visits" value={String(field)} />
       </div>
 
       <div className="mb-3 flex flex-wrap gap-2">
@@ -90,8 +90,8 @@ function ServiceListPage() {
         <Select value={status} onValueChange={setStatus}>
           <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value="active">Active jobs</SelectItem>
-            <SelectItem value="all">All jobs</SelectItem>
+            <SelectItem value="active">Active entries</SelectItem>
+            <SelectItem value="all">All entries</SelectItem>
             {SERVICE_STATUSES.map((s) => (
               <SelectItem key={s} value={s}>{SERVICE_STATUS_LABEL[s]}</SelectItem>
             ))}
@@ -104,11 +104,11 @@ function ServiceListPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Job</TableHead>
+                <TableHead>Entry</TableHead>
                 <TableHead>Customer</TableHead>
                 <TableHead>Tractor</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Technician</TableHead>
+                <TableHead>Complaint</TableHead>
+                <TableHead>Mechanic</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
@@ -117,7 +117,7 @@ function ServiceListPage() {
                 <TableRow><TableCell colSpan={6} className="text-sm text-muted-foreground">Loading…</TableCell></TableRow>
               )}
               {!isLoading && rows.length === 0 && (
-                <TableRow><TableCell colSpan={6} className="text-sm text-muted-foreground">No service jobs yet.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="text-sm text-muted-foreground">Nothing registered yet.</TableCell></TableRow>
               )}
               {rows.map((j) => (
                 <TableRow key={j.id}>
@@ -125,7 +125,9 @@ function ServiceListPage() {
                     <Link to="/service/$jobId" params={{ jobId: j.id }} className="hover:underline">
                       {j.job_number}
                     </Link>
-                    <p className="text-xs text-muted-foreground">{fmtDate(j.received_date)}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {fmtDate(j.received_date)} · {SERVICE_TYPE_LABEL[j.service_type] ?? j.service_type}
+                    </p>
                   </TableCell>
                   <TableCell>
                     <p>{j.customer_name}</p>
@@ -135,11 +137,13 @@ function ServiceListPage() {
                     <p>{j.model ?? "—"}</p>
                     <p className="text-xs text-muted-foreground">{j.registration_number ?? j.chassis_number ?? ""}</p>
                   </TableCell>
-                  <TableCell className="text-sm">
-                    {SERVICE_TYPE_LABEL[j.service_type] ?? j.service_type}
+                  <TableCell className="max-w-64 text-sm">
+                    <p className="truncate">{j.complaint ?? "—"}</p>
                     <p className="text-xs text-muted-foreground">{SERVICE_MODE_LABEL[j.service_mode] ?? j.service_mode}</p>
                   </TableCell>
-                  <TableCell className="text-sm">{j.technician?.full_name ?? "Unassigned"}</TableCell>
+                  <TableCell className="text-sm">
+                    {j.technician?.full_name ?? <span className="text-muted-foreground">Not assigned</span>}
+                  </TableCell>
                   <TableCell>
                     <Badge variant="secondary" className={statusTone(j.status as ServiceStatus)}>
                       {SERVICE_STATUS_LABEL[j.status as ServiceStatus] ?? j.status}
