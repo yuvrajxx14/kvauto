@@ -1434,6 +1434,161 @@ export type Database = {
           },
         ]
       }
+      spare_request_items: {
+        Row: {
+          created_at: string
+          id: string
+          part_name: string
+          part_number: string | null
+          qty_issued: number
+          qty_requested: number
+          rate: number
+          remarks: string | null
+          request_id: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          part_name: string
+          part_number?: string | null
+          qty_issued?: number
+          qty_requested?: number
+          rate?: number
+          remarks?: string | null
+          request_id: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          part_name?: string
+          part_number?: string | null
+          qty_issued?: number
+          qty_requested?: number
+          rate?: number
+          remarks?: string | null
+          request_id?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spare_request_items_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "spare_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      spare_requests: {
+        Row: {
+          approved_by: string | null
+          chassis_number: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string | null
+          id: string
+          issued_at: string | null
+          issued_by: string | null
+          mobile: string | null
+          model: string | null
+          needed_by: string | null
+          priority: string
+          remarks: string | null
+          request_number: string
+          request_type: string
+          requested_by: string | null
+          requester_name: string
+          service_job_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          approved_by?: string | null
+          chassis_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          id?: string
+          issued_at?: string | null
+          issued_by?: string | null
+          mobile?: string | null
+          model?: string | null
+          needed_by?: string | null
+          priority?: string
+          remarks?: string | null
+          request_number?: string
+          request_type?: string
+          requested_by?: string | null
+          requester_name: string
+          service_job_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          approved_by?: string | null
+          chassis_number?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string | null
+          id?: string
+          issued_at?: string | null
+          issued_by?: string | null
+          mobile?: string | null
+          model?: string | null
+          needed_by?: string | null
+          priority?: string
+          remarks?: string | null
+          request_number?: string
+          request_type?: string
+          requested_by?: string | null
+          requester_name?: string
+          service_job_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spare_requests_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spare_requests_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spare_requests_issued_by_fkey"
+            columns: ["issued_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spare_requests_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spare_requests_service_job_id_fkey"
+            columns: ["service_job_id"]
+            isOneToOne: false
+            referencedRelation: "service_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stock_documents: {
         Row: {
           created_at: string
