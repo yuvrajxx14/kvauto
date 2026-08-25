@@ -213,6 +213,10 @@ function CustomerDetail() {
           </CardContent>
         </Card>
 
+        <div className="lg:col-span-2">
+          <DocumentsPanel customerId={customerId} />
+        </div>
+
         <Card className="shadow-card">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">Inquiry history ({data.inquiries.length})</CardTitle>
