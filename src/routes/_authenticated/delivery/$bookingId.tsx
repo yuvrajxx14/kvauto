@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, CheckCircle2, Printer, XCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Printer, ShieldCheck, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useBooking, useCustomerDocuments, useDocumentChecklist } from "@/lib/erp";
+import { useBooking, useCustomerDocuments, useDocumentChecklist, useGatePass } from "@/lib/erp";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/delivery/$bookingId")({
@@ -37,10 +37,28 @@ function DeliveryDetail() {
   const { data: b, isLoading } = useBooking(bookingId);
   const { data: checklist } = useDocumentChecklist();
   const { data: docs } = useCustomerDocuments(b?.customer_id ?? "");
+  const { data: gatePass } = useGatePass(bookingId);
 
   const [useType, setUseType] = useState("AGRICULTURE");
   const [applicationStatus, setApplicationStatus] = useState("PENDING");
   const [approvalStatus, setApprovalStatus] = useState("PENDING");
+
+  const issueGatePass = useMutation({
+    mutationFn: async (payload: { issue_date: string; remarks: string }) => {
+      const { data, error } = await supabase.rpc("issue_gate_pass", {
+        _booking_id: bookingId,
+        _issue_date: payload.issue_date,
+        _remarks: payload.remarks || null,
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      toast.success("Gate pass issued");
+      qc.invalidateQueries();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const complete = useMutation({
     mutationFn: async (payload: {
@@ -92,6 +110,7 @@ function DeliveryDetail() {
       ok: outstanding < 1,
     },
     { label: "Required documents verified", ok: progress.complete },
+    { label: "Gate pass issued", ok: !!gatePass },
   ];
   const ready = checks.every((c) => c.ok);
 
@@ -108,11 +127,20 @@ function DeliveryDetail() {
             {outstanding >= 1 && (
               <PaymentDialog bookingId={bookingId} bookingNumber={b.booking_number} outstanding={outstanding} />
             )}
-            <Button asChild variant="outline" size="sm">
-              <Link to="/print/challan/$bookingId" params={{ bookingId }} target="_blank">
-                <Printer className="mr-1 h-4 w-4" /> Challan
-              </Link>
-            </Button>
+            {gatePass && (
+              <>
+                <Button asChild variant="outline" size="sm">
+                  <Link to="/print/gatepass/$bookingId" params={{ bookingId }} target="_blank">
+                    <Printer className="mr-1 h-4 w-4" /> Gate pass
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <Link to="/print/challan/$bookingId" params={{ bookingId }} target="_blank">
+                    <Printer className="mr-1 h-4 w-4" /> Challan
+                  </Link>
+                </Button>
+              </>
+            )}
             <Button asChild variant="outline" size="sm">
               <Link to="/print/documents/$customerId" params={{ customerId: b.customer_id }} target="_blank">
                 <Printer className="mr-1 h-4 w-4" /> Documents
@@ -232,6 +260,63 @@ function DeliveryDetail() {
                 <div><Label>Remarks</Label><Textarea name="remarks" rows={3} /></div>
                 <Button className="w-full" disabled={!ready || complete.isPending}>
                   {complete.isPending ? "Completing…" : ready ? "Complete Delivery" : "Checklist incomplete"}
+                </Button>
+              </form>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <ShieldCheck className="h-4 w-4" /> Gate pass
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {gatePass ? (
+              <div className="space-y-2 text-sm">
+                <Field label="Gate pass no.">{gatePass.gatepass_number}</Field>
+                <Field label="Issued on">{fmtDate(gatePass.issue_date)}</Field>
+                <Field label="Chassis">{gatePass.chassis_number ?? "—"}</Field>
+                <Field label="Remarks">{gatePass.remarks || "—"}</Field>
+                <div className="flex gap-2 pt-2">
+                  <Button asChild size="sm" variant="outline">
+                    <Link to="/print/gatepass/$bookingId" params={{ bookingId }} target="_blank">
+                      <Printer className="mr-1 h-4 w-4" /> Print gate pass
+                    </Link>
+                  </Button>
+                  <Button asChild size="sm">
+                    <Link to="/print/challan/$bookingId" params={{ bookingId }} target="_blank">
+                      <Printer className="mr-1 h-4 w-4" /> Delivery challan
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            ) : outstanding >= 1 ? (
+              <p className="text-sm text-muted-foreground">
+                Gate pass can be issued only after the full payment is received. Outstanding {inr(outstanding)}.
+              </p>
+            ) : !alloc ? (
+              <p className="text-sm text-muted-foreground">Allocate a tractor before issuing the gate pass.</p>
+            ) : (
+              <form
+                className="space-y-3"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const fd = new FormData(e.currentTarget);
+                  issueGatePass.mutate({
+                    issue_date: String(fd.get("issue_date")),
+                    remarks: String(fd.get("gp_remarks") || ""),
+                  });
+                }}
+              >
+                <p className="rounded-md bg-muted p-2 text-xs text-muted-foreground">
+                  Full payment received. Issue the gate pass — the delivery challan is generated from it.
+                </p>
+                <div><Label>Gate pass date</Label><Input name="issue_date" type="date" defaultValue={todayISO()} required /></div>
+                <div><Label>Remarks</Label><Textarea name="gp_remarks" rows={2} /></div>
+                <Button className="w-full" disabled={issueGatePass.isPending}>
+                  {issueGatePass.isPending ? "Issuing…" : "Issue gate pass"}
                 </Button>
               </form>
             )}
