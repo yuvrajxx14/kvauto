@@ -51,7 +51,11 @@ function TeamPage() {
 
       if (pErr) throw pErr;
       if (rErr) throw rErr;
-      return { profiles: profiles ?? [], roles: roles ?? [] };
+      return {
+        profiles: (profiles ?? []) as unknown as { id: string; full_name: string; email: string | null; phone: string | null }[],
+        roles: roles ?? [],
+      };
+
     },
   });
 
