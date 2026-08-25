@@ -35,6 +35,7 @@ import { Route as AuthenticatedServiceJobcardsRouteImport } from './routes/_auth
 import { Route as AuthenticatedServiceNewRouteImport } from './routes/_authenticated/service/new'
 import { Route as AuthenticatedServiceRoutesRouteImport } from './routes/_authenticated/service/routes'
 import { Route as AuthenticatedSparesIndexRouteImport } from './routes/_authenticated/spares/index'
+import { Route as AuthenticatedSparesRequestIdRouteImport } from './routes/_authenticated/spares/$requestId'
 import { Route as AuthenticatedSparesNewRouteImport } from './routes/_authenticated/spares/new'
 import { Route as AuthenticatedStockIndexRouteImport } from './routes/_authenticated/stock/index'
 import { Route as AuthenticatedStockStockIdRouteImport } from './routes/_authenticated/stock/$stockId'
@@ -196,6 +197,12 @@ const AuthenticatedSparesIndexRoute =
     path: '/spares/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSparesRequestIdRoute =
+  AuthenticatedSparesRequestIdRouteImport.update({
+    id: '/spares/$requestId',
+    path: '/spares/$requestId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSparesNewRoute = AuthenticatedSparesNewRouteImport.update({
   id: '/spares/new',
   path: '/spares/new',
@@ -278,6 +285,7 @@ export interface FileRoutesByFullPath {
   '/service/jobcards': typeof AuthenticatedServiceJobcardsRoute
   '/service/new': typeof AuthenticatedServiceNewRoute
   '/service/routes': typeof AuthenticatedServiceRoutesRoute
+  '/spares/$requestId': typeof AuthenticatedSparesRequestIdRoute
   '/spares/new': typeof AuthenticatedSparesNewRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/accounting/': typeof AuthenticatedAccountingIndexRoute
@@ -316,6 +324,7 @@ export interface FileRoutesByTo {
   '/service/jobcards': typeof AuthenticatedServiceJobcardsRoute
   '/service/new': typeof AuthenticatedServiceNewRoute
   '/service/routes': typeof AuthenticatedServiceRoutesRoute
+  '/spares/$requestId': typeof AuthenticatedSparesRequestIdRoute
   '/spares/new': typeof AuthenticatedSparesNewRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/accounting': typeof AuthenticatedAccountingIndexRoute
@@ -356,6 +365,7 @@ export interface FileRoutesById {
   '/_authenticated/service/jobcards': typeof AuthenticatedServiceJobcardsRoute
   '/_authenticated/service/new': typeof AuthenticatedServiceNewRoute
   '/_authenticated/service/routes': typeof AuthenticatedServiceRoutesRoute
+  '/_authenticated/spares/$requestId': typeof AuthenticatedSparesRequestIdRoute
   '/_authenticated/spares/new': typeof AuthenticatedSparesNewRoute
   '/_authenticated/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/_authenticated/accounting/': typeof AuthenticatedAccountingIndexRoute
@@ -396,6 +406,7 @@ export interface FileRouteTypes {
     | '/service/jobcards'
     | '/service/new'
     | '/service/routes'
+    | '/spares/$requestId'
     | '/spares/new'
     | '/stock/$stockId'
     | '/accounting/'
@@ -434,6 +445,7 @@ export interface FileRouteTypes {
     | '/service/jobcards'
     | '/service/new'
     | '/service/routes'
+    | '/spares/$requestId'
     | '/spares/new'
     | '/stock/$stockId'
     | '/accounting'
@@ -473,6 +485,7 @@ export interface FileRouteTypes {
     | '/_authenticated/service/jobcards'
     | '/_authenticated/service/new'
     | '/_authenticated/service/routes'
+    | '/_authenticated/spares/$requestId'
     | '/_authenticated/spares/new'
     | '/_authenticated/stock/$stockId'
     | '/_authenticated/accounting/'
@@ -685,6 +698,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSparesIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/spares/$requestId': {
+      id: '/_authenticated/spares/$requestId'
+      path: '/spares/$requestId'
+      fullPath: '/spares/$requestId'
+      preLoaderRoute: typeof AuthenticatedSparesRequestIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/spares/new': {
       id: '/_authenticated/spares/new'
       path: '/spares/new'
@@ -780,6 +800,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedServiceJobcardsRoute: typeof AuthenticatedServiceJobcardsRoute
   AuthenticatedServiceNewRoute: typeof AuthenticatedServiceNewRoute
   AuthenticatedServiceRoutesRoute: typeof AuthenticatedServiceRoutesRoute
+  AuthenticatedSparesRequestIdRoute: typeof AuthenticatedSparesRequestIdRoute
   AuthenticatedSparesNewRoute: typeof AuthenticatedSparesNewRoute
   AuthenticatedStockStockIdRoute: typeof AuthenticatedStockStockIdRoute
   AuthenticatedAccountingIndexRoute: typeof AuthenticatedAccountingIndexRoute
@@ -818,6 +839,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedServiceJobcardsRoute: AuthenticatedServiceJobcardsRoute,
   AuthenticatedServiceNewRoute: AuthenticatedServiceNewRoute,
   AuthenticatedServiceRoutesRoute: AuthenticatedServiceRoutesRoute,
+  AuthenticatedSparesRequestIdRoute: AuthenticatedSparesRequestIdRoute,
   AuthenticatedSparesNewRoute: AuthenticatedSparesNewRoute,
   AuthenticatedStockStockIdRoute: AuthenticatedStockStockIdRoute,
   AuthenticatedAccountingIndexRoute: AuthenticatedAccountingIndexRoute,
