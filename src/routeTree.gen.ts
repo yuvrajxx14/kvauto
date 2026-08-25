@@ -29,6 +29,9 @@ import { Route as AuthenticatedInquiriesNewRouteImport } from './routes/_authent
 import { Route as AuthenticatedPassingIndexRouteImport } from './routes/_authenticated/passing/index'
 import { Route as AuthenticatedPassingBookingIdRouteImport } from './routes/_authenticated/passing/$bookingId'
 import { Route as AuthenticatedProductsIndexRouteImport } from './routes/_authenticated/products/index'
+import { Route as AuthenticatedServiceIndexRouteImport } from './routes/_authenticated/service/index'
+import { Route as AuthenticatedServiceJobIdRouteImport } from './routes/_authenticated/service/$jobId'
+import { Route as AuthenticatedServiceNewRouteImport } from './routes/_authenticated/service/new'
 import { Route as AuthenticatedStockIndexRouteImport } from './routes/_authenticated/stock/index'
 import { Route as AuthenticatedStockStockIdRouteImport } from './routes/_authenticated/stock/$stockId'
 import { Route as AuthenticatedSubsidyIndexRouteImport } from './routes/_authenticated/subsidy/index'
@@ -154,6 +157,23 @@ const AuthenticatedProductsIndexRoute =
     path: '/products/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedServiceIndexRoute =
+  AuthenticatedServiceIndexRouteImport.update({
+    id: '/service/',
+    path: '/service/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedServiceJobIdRoute =
+  AuthenticatedServiceJobIdRouteImport.update({
+    id: '/service/$jobId',
+    path: '/service/$jobId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedServiceNewRoute = AuthenticatedServiceNewRouteImport.update({
+  id: '/service/new',
+  path: '/service/new',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedStockIndexRoute = AuthenticatedStockIndexRouteImport.update({
   id: '/stock/',
   path: '/stock/',
@@ -227,6 +247,8 @@ export interface FileRoutesByFullPath {
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
+  '/service/$jobId': typeof AuthenticatedServiceJobIdRoute
+  '/service/new': typeof AuthenticatedServiceNewRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/accounting/': typeof AuthenticatedAccountingIndexRoute
   '/bookings/': typeof AuthenticatedBookingsIndexRoute
@@ -235,6 +257,7 @@ export interface FileRoutesByFullPath {
   '/inquiries/': typeof AuthenticatedInquiriesIndexRoute
   '/passing/': typeof AuthenticatedPassingIndexRoute
   '/products/': typeof AuthenticatedProductsIndexRoute
+  '/service/': typeof AuthenticatedServiceIndexRoute
   '/stock/': typeof AuthenticatedStockIndexRoute
   '/subsidy/': typeof AuthenticatedSubsidyIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
@@ -258,6 +281,8 @@ export interface FileRoutesByTo {
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
+  '/service/$jobId': typeof AuthenticatedServiceJobIdRoute
+  '/service/new': typeof AuthenticatedServiceNewRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/accounting': typeof AuthenticatedAccountingIndexRoute
   '/bookings': typeof AuthenticatedBookingsIndexRoute
@@ -266,6 +291,7 @@ export interface FileRoutesByTo {
   '/inquiries': typeof AuthenticatedInquiriesIndexRoute
   '/passing': typeof AuthenticatedPassingIndexRoute
   '/products': typeof AuthenticatedProductsIndexRoute
+  '/service': typeof AuthenticatedServiceIndexRoute
   '/stock': typeof AuthenticatedStockIndexRoute
   '/subsidy': typeof AuthenticatedSubsidyIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
@@ -291,6 +317,8 @@ export interface FileRoutesById {
   '/_authenticated/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
   '/_authenticated/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/_authenticated/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
+  '/_authenticated/service/$jobId': typeof AuthenticatedServiceJobIdRoute
+  '/_authenticated/service/new': typeof AuthenticatedServiceNewRoute
   '/_authenticated/stock/$stockId': typeof AuthenticatedStockStockIdRoute
   '/_authenticated/accounting/': typeof AuthenticatedAccountingIndexRoute
   '/_authenticated/bookings/': typeof AuthenticatedBookingsIndexRoute
@@ -299,6 +327,7 @@ export interface FileRoutesById {
   '/_authenticated/inquiries/': typeof AuthenticatedInquiriesIndexRoute
   '/_authenticated/passing/': typeof AuthenticatedPassingIndexRoute
   '/_authenticated/products/': typeof AuthenticatedProductsIndexRoute
+  '/_authenticated/service/': typeof AuthenticatedServiceIndexRoute
   '/_authenticated/stock/': typeof AuthenticatedStockIndexRoute
   '/_authenticated/subsidy/': typeof AuthenticatedSubsidyIndexRoute
   '/_authenticated/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
@@ -324,6 +353,8 @@ export interface FileRouteTypes {
     | '/inquiries/$inquiryId'
     | '/inquiries/new'
     | '/passing/$bookingId'
+    | '/service/$jobId'
+    | '/service/new'
     | '/stock/$stockId'
     | '/accounting/'
     | '/bookings/'
@@ -332,6 +363,7 @@ export interface FileRouteTypes {
     | '/inquiries/'
     | '/passing/'
     | '/products/'
+    | '/service/'
     | '/stock/'
     | '/subsidy/'
     | '/print/challan/$bookingId'
@@ -355,6 +387,8 @@ export interface FileRouteTypes {
     | '/inquiries/$inquiryId'
     | '/inquiries/new'
     | '/passing/$bookingId'
+    | '/service/$jobId'
+    | '/service/new'
     | '/stock/$stockId'
     | '/accounting'
     | '/bookings'
@@ -363,6 +397,7 @@ export interface FileRouteTypes {
     | '/inquiries'
     | '/passing'
     | '/products'
+    | '/service'
     | '/stock'
     | '/subsidy'
     | '/print/challan/$bookingId'
@@ -387,6 +422,8 @@ export interface FileRouteTypes {
     | '/_authenticated/inquiries/$inquiryId'
     | '/_authenticated/inquiries/new'
     | '/_authenticated/passing/$bookingId'
+    | '/_authenticated/service/$jobId'
+    | '/_authenticated/service/new'
     | '/_authenticated/stock/$stockId'
     | '/_authenticated/accounting/'
     | '/_authenticated/bookings/'
@@ -395,6 +432,7 @@ export interface FileRouteTypes {
     | '/_authenticated/inquiries/'
     | '/_authenticated/passing/'
     | '/_authenticated/products/'
+    | '/_authenticated/service/'
     | '/_authenticated/stock/'
     | '/_authenticated/subsidy/'
     | '/_authenticated/print/challan/$bookingId'
@@ -554,6 +592,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProductsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/service/': {
+      id: '/_authenticated/service/'
+      path: '/service'
+      fullPath: '/service/'
+      preLoaderRoute: typeof AuthenticatedServiceIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/service/$jobId': {
+      id: '/_authenticated/service/$jobId'
+      path: '/service/$jobId'
+      fullPath: '/service/$jobId'
+      preLoaderRoute: typeof AuthenticatedServiceJobIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/service/new': {
+      id: '/_authenticated/service/new'
+      path: '/service/new'
+      fullPath: '/service/new'
+      preLoaderRoute: typeof AuthenticatedServiceNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/stock/': {
       id: '/_authenticated/stock/'
       path: '/stock'
@@ -638,6 +697,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInquiriesInquiryIdRoute: typeof AuthenticatedInquiriesInquiryIdRoute
   AuthenticatedInquiriesNewRoute: typeof AuthenticatedInquiriesNewRoute
   AuthenticatedPassingBookingIdRoute: typeof AuthenticatedPassingBookingIdRoute
+  AuthenticatedServiceJobIdRoute: typeof AuthenticatedServiceJobIdRoute
+  AuthenticatedServiceNewRoute: typeof AuthenticatedServiceNewRoute
   AuthenticatedStockStockIdRoute: typeof AuthenticatedStockStockIdRoute
   AuthenticatedAccountingIndexRoute: typeof AuthenticatedAccountingIndexRoute
   AuthenticatedBookingsIndexRoute: typeof AuthenticatedBookingsIndexRoute
@@ -646,6 +707,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInquiriesIndexRoute: typeof AuthenticatedInquiriesIndexRoute
   AuthenticatedPassingIndexRoute: typeof AuthenticatedPassingIndexRoute
   AuthenticatedProductsIndexRoute: typeof AuthenticatedProductsIndexRoute
+  AuthenticatedServiceIndexRoute: typeof AuthenticatedServiceIndexRoute
   AuthenticatedStockIndexRoute: typeof AuthenticatedStockIndexRoute
   AuthenticatedSubsidyIndexRoute: typeof AuthenticatedSubsidyIndexRoute
   AuthenticatedPrintChallanBookingIdRoute: typeof AuthenticatedPrintChallanBookingIdRoute
@@ -669,6 +731,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInquiriesInquiryIdRoute: AuthenticatedInquiriesInquiryIdRoute,
   AuthenticatedInquiriesNewRoute: AuthenticatedInquiriesNewRoute,
   AuthenticatedPassingBookingIdRoute: AuthenticatedPassingBookingIdRoute,
+  AuthenticatedServiceJobIdRoute: AuthenticatedServiceJobIdRoute,
+  AuthenticatedServiceNewRoute: AuthenticatedServiceNewRoute,
   AuthenticatedStockStockIdRoute: AuthenticatedStockStockIdRoute,
   AuthenticatedAccountingIndexRoute: AuthenticatedAccountingIndexRoute,
   AuthenticatedBookingsIndexRoute: AuthenticatedBookingsIndexRoute,
@@ -677,6 +741,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInquiriesIndexRoute: AuthenticatedInquiriesIndexRoute,
   AuthenticatedPassingIndexRoute: AuthenticatedPassingIndexRoute,
   AuthenticatedProductsIndexRoute: AuthenticatedProductsIndexRoute,
+  AuthenticatedServiceIndexRoute: AuthenticatedServiceIndexRoute,
   AuthenticatedStockIndexRoute: AuthenticatedStockIndexRoute,
   AuthenticatedSubsidyIndexRoute: AuthenticatedSubsidyIndexRoute,
   AuthenticatedPrintChallanBookingIdRoute:

@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2 } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -28,6 +28,8 @@ const OPS_ITEMS = [
   { title: "Passing", url: "/passing", icon: FileCheck2 },
   { title: "Accounting", url: "/accounting", icon: IndianRupee },
 ];
+
+const SERVICE_ITEMS = [{ title: "Service Jobs", url: "/service", icon: Wrench }];
 
 const MASTER_ITEMS = [{ title: "Products", url: "/products", icon: Package }];
 
@@ -82,6 +84,24 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {OPS_ITEMS.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
+                    <Link to={item.url} className="flex items-center gap-2">
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Service</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {SERVICE_ITEMS.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
                     <Link to={item.url} className="flex items-center gap-2">
