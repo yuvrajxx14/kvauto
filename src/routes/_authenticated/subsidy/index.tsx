@@ -48,20 +48,46 @@ function SubsidyPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const rows = cases ?? [];
-  const agri = rows.filter((r) => r.use_type === "AGRICULTURE");
-  const appPending = agri.filter((r) => r.application_status !== "DONE").length;
-  const apprPending = agri.filter((r) => r.application_status === "DONE" && r.approval_status !== "APPROVED").length;
-  const approved = agri.filter((r) => r.approval_status === "APPROVED").length;
+  const all = cases ?? [];
+  const withStage = all.map((r) => {
+    const p = passingByBooking.get(r.booking_id);
+    const b = r.booking;
+    const outstanding = b
+      ? Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0)
+      : 0;
+    const paid = outstanding < 1;
+    const passingDone = !!p?.rto_number || !!p?.number_plate_received;
+    const fileDone = p?.subsidy_file_status === "UPLOADED";
+    let stage: StageKey = "APPLICATION";
+    if (r.application_status === "DONE") stage = "APPROVAL";
+    if (r.application_status === "DONE" && r.approval_status === "APPROVED") stage = "PAYMENT";
+    if (stage === "PAYMENT" && paid) stage = "PASSING";
+    if (stage === "PASSING" && passingDone) stage = "FILE_CHECK";
+    if (stage === "FILE_CHECK" && fileDone) stage = "DONE";
+    return { ...r, stage, paid, outstanding: Math.max(0, outstanding), passingDone, fileDone };
+  });
+
+  const count = (s: StageKey) => withStage.filter((r) => r.stage === s).length;
+  const rows = stage === "ALL" ? withStage : withStage.filter((r) => r.stage === stage);
 
   return (
     <div>
-      <PageHeader title="Subsidy tracking" subtitle="Online application, government approval and insurance follow-up" />
+      <PageHeader title="Subsidy tracking" subtitle="Delivered customers moving through application → approval → payment → passing → file check" />
 
-      <div className="mb-4 grid gap-3 sm:grid-cols-3">
-        <Metric label="Application pending" value={String(appPending)} />
-        <Metric label="Approval pending" value={String(apprPending)} />
-        <Metric label="Approved" value={String(approved)} />
+      <div className="mb-4 flex flex-wrap gap-2">
+        {STAGES.map((s) => (
+          <Button
+            key={s.key}
+            size="sm"
+            variant={stage === s.key ? "default" : "outline"}
+            onClick={() => setStage(s.key)}
+          >
+            {s.label}
+            <span className="ml-2 text-xs opacity-70">
+              {s.key === "ALL" ? withStage.length : count(s.key)}
+            </span>
+          </Button>
+        ))}
       </div>
 
       <Card className="shadow-card">
