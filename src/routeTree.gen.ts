@@ -33,6 +33,7 @@ import { Route as AuthenticatedStockIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedStockStockIdRouteImport } from './routes/_authenticated/stock/$stockId'
 import { Route as AuthenticatedSubsidyIndexRouteImport } from './routes/_authenticated/subsidy/index'
 import { Route as AuthenticatedWorkshopIndexRouteImport } from './routes/_authenticated/workshop/index'
+import { Route as AuthenticatedWorkshopRoutePlannerRouteImport } from './routes/_authenticated/workshop/route-planner'
 import { Route as AuthenticatedPrintChallanBookingIdRouteImport } from './routes/_authenticated/print/challan.$bookingId'
 import { Route as AuthenticatedPrintDocumentsCustomerIdRouteImport } from './routes/_authenticated/print/documents.$customerId'
 import { Route as AuthenticatedPrintGatepassBookingIdRouteImport } from './routes/_authenticated/print/gatepass.$bookingId'
@@ -180,6 +181,12 @@ const AuthenticatedWorkshopIndexRoute =
     path: '/workshop/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedWorkshopRoutePlannerRoute =
+  AuthenticatedWorkshopRoutePlannerRouteImport.update({
+    id: '/workshop/route-planner',
+    path: '/workshop/route-planner',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedPrintChallanBookingIdRoute =
   AuthenticatedPrintChallanBookingIdRouteImport.update({
     id: '/print/challan/$bookingId',
@@ -249,6 +256,7 @@ export interface FileRoutesByFullPath {
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
+  '/workshop/route-planner': typeof AuthenticatedWorkshopRoutePlannerRoute
   '/accounting/': typeof AuthenticatedAccountingIndexRoute
   '/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/customers/': typeof AuthenticatedCustomersIndexRoute
@@ -283,6 +291,7 @@ export interface FileRoutesByTo {
   '/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
   '/stock/$stockId': typeof AuthenticatedStockStockIdRoute
+  '/workshop/route-planner': typeof AuthenticatedWorkshopRoutePlannerRoute
   '/accounting': typeof AuthenticatedAccountingIndexRoute
   '/bookings': typeof AuthenticatedBookingsIndexRoute
   '/customers': typeof AuthenticatedCustomersIndexRoute
@@ -319,6 +328,7 @@ export interface FileRoutesById {
   '/_authenticated/inquiries/new': typeof AuthenticatedInquiriesNewRoute
   '/_authenticated/passing/$bookingId': typeof AuthenticatedPassingBookingIdRoute
   '/_authenticated/stock/$stockId': typeof AuthenticatedStockStockIdRoute
+  '/_authenticated/workshop/route-planner': typeof AuthenticatedWorkshopRoutePlannerRoute
   '/_authenticated/accounting/': typeof AuthenticatedAccountingIndexRoute
   '/_authenticated/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/_authenticated/customers/': typeof AuthenticatedCustomersIndexRoute
@@ -355,6 +365,7 @@ export interface FileRouteTypes {
     | '/inquiries/new'
     | '/passing/$bookingId'
     | '/stock/$stockId'
+    | '/workshop/route-planner'
     | '/accounting/'
     | '/bookings/'
     | '/customers/'
@@ -389,6 +400,7 @@ export interface FileRouteTypes {
     | '/inquiries/new'
     | '/passing/$bookingId'
     | '/stock/$stockId'
+    | '/workshop/route-planner'
     | '/accounting'
     | '/bookings'
     | '/customers'
@@ -424,6 +436,7 @@ export interface FileRouteTypes {
     | '/_authenticated/inquiries/new'
     | '/_authenticated/passing/$bookingId'
     | '/_authenticated/stock/$stockId'
+    | '/_authenticated/workshop/route-planner'
     | '/_authenticated/accounting/'
     | '/_authenticated/bookings/'
     | '/_authenticated/customers/'
@@ -621,6 +634,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWorkshopIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/workshop/route-planner': {
+      id: '/_authenticated/workshop/route-planner'
+      path: '/workshop/route-planner'
+      fullPath: '/workshop/route-planner'
+      preLoaderRoute: typeof AuthenticatedWorkshopRoutePlannerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/print/challan/$bookingId': {
       id: '/_authenticated/print/challan/$bookingId'
       path: '/print/challan/$bookingId'
@@ -699,6 +719,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedInquiriesNewRoute: typeof AuthenticatedInquiriesNewRoute
   AuthenticatedPassingBookingIdRoute: typeof AuthenticatedPassingBookingIdRoute
   AuthenticatedStockStockIdRoute: typeof AuthenticatedStockStockIdRoute
+  AuthenticatedWorkshopRoutePlannerRoute: typeof AuthenticatedWorkshopRoutePlannerRoute
   AuthenticatedAccountingIndexRoute: typeof AuthenticatedAccountingIndexRoute
   AuthenticatedBookingsIndexRoute: typeof AuthenticatedBookingsIndexRoute
   AuthenticatedCustomersIndexRoute: typeof AuthenticatedCustomersIndexRoute
@@ -733,6 +754,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedInquiriesNewRoute: AuthenticatedInquiriesNewRoute,
   AuthenticatedPassingBookingIdRoute: AuthenticatedPassingBookingIdRoute,
   AuthenticatedStockStockIdRoute: AuthenticatedStockStockIdRoute,
+  AuthenticatedWorkshopRoutePlannerRoute:
+    AuthenticatedWorkshopRoutePlannerRoute,
   AuthenticatedAccountingIndexRoute: AuthenticatedAccountingIndexRoute,
   AuthenticatedBookingsIndexRoute: AuthenticatedBookingsIndexRoute,
   AuthenticatedCustomersIndexRoute: AuthenticatedCustomersIndexRoute,
