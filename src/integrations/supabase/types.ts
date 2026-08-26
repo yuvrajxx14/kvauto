@@ -2187,6 +2187,10 @@ export type Database = {
         | "receptionist"
         | "workshop_manager"
         | "mechanic"
+        | "sales_manager"
+        | "accountant"
+        | "service_manager"
+        | "sparepart_manager"
       booking_status:
         | "BOOKED"
         | "ALLOCATED"
@@ -2349,6 +2353,10 @@ export const Constants = {
         "receptionist",
         "workshop_manager",
         "mechanic",
+        "sales_manager",
+        "accountant",
+        "service_manager",
+        "sparepart_manager",
       ],
       booking_status: [
         "BOOKED",
