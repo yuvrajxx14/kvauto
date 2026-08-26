@@ -19,12 +19,7 @@ export const Route = createFileRoute("/_authenticated")({
   component: AuthenticatedLayout,
 });
 
-const ROLE_LABEL: Record<string, string> = {
-  ceo: "CEO / Dealer",
-  manager: "Manager",
-  salesman: "Salesman",
-  receptionist: "Receptionist",
-};
+const ROLE_LABEL: Record<string, string> = ROLE_LABELS;
 
 function AuthenticatedLayout() {
   const { data: me, isLoading } = useMe();
