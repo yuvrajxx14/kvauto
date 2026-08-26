@@ -28,14 +28,9 @@ export const Route = createFileRoute("/_authenticated/team")({
   component: TeamPage,
 });
 
-const ROLES = ["ceo", "manager", "salesman", "receptionist"] as const;
-type Role = (typeof ROLES)[number];
-const ROLE_LABEL: Record<Role, string> = {
-  ceo: "CEO / Dealer",
-  manager: "Manager",
-  salesman: "Salesman",
-  receptionist: "Receptionist",
-};
+const ROLES = ASSIGNABLE_ROLES;
+type Role = AppRole;
+const ROLE_LABEL = ROLE_LABELS;
 
 function TeamPage() {
   const { data: me } = useMe();
