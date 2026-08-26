@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { VillageSelect, TehsilSelect } from "@/components/sales/location-select";
 import { PageHeader } from "@/components/sales/ui";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

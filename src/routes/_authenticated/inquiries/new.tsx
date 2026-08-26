@@ -10,6 +10,7 @@ import { useProducts } from "@/lib/erp";
 import { PageHeader } from "@/components/sales/ui";
 import { StatusBadge } from "@/components/sales/badges";
 import { ModelSelect } from "@/components/sales/model-select";
+import { VillageSelect, TehsilSelect } from "@/components/sales/location-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
