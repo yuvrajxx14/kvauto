@@ -132,7 +132,10 @@ export function useMe() {
       return {
         profile,
         roles: roleList,
-        isManagement: roleList.includes("ceo") || roleList.includes("manager"),
+        isManagement:
+          roleList.includes("ceo") ||
+          roleList.includes("manager") ||
+          roleList.includes("sales_manager"),
         isReceptionist: roleList.includes("receptionist"),
         isSalesman: roleList.includes("salesman"),
         hasRole: roleList.length > 0,
