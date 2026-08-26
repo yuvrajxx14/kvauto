@@ -102,8 +102,8 @@ export function TehsilSelect({
   const selected = value !== undefined ? value : internal;
 
   return (
+    <Select
       value={selected}
-      value={selected || undefined}
       disabled={disabled ?? false}
       onValueChange={(v) => {
         if (value === undefined) setInternal(v);
