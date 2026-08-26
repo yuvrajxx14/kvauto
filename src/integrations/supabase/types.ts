@@ -2056,6 +2056,33 @@ export type Database = {
         }
         Relationships: []
       }
+      villages: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          name: string
+          tehsil: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name: string
+          tehsil: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name?: string
+          tehsil?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

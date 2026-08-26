@@ -1,0 +1,131 @@
+CREATE TABLE public.villages (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  name text NOT NULL UNIQUE,
+  tehsil text NOT NULL,
+  active boolean NOT NULL DEFAULT true,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.villages TO authenticated;
+GRANT ALL ON public.villages TO service_role;
+
+ALTER TABLE public.villages ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Staff can view villages" ON public.villages
+  FOR SELECT TO authenticated USING (public.is_staff(auth.uid()));
+CREATE POLICY "Management can add villages" ON public.villages
+  FOR INSERT TO authenticated WITH CHECK (public.is_management(auth.uid()));
+CREATE POLICY "Management can update villages" ON public.villages
+  FOR UPDATE TO authenticated USING (public.is_management(auth.uid())) WITH CHECK (public.is_management(auth.uid()));
+
+CREATE TRIGGER trg_villages_touch BEFORE UPDATE ON public.villages
+  FOR EACH ROW EXECUTE FUNCTION public.touch_updated_at();
+
+INSERT INTO public.villages (name, tehsil) VALUES
+  ('Adhiya', 'Jasdan'),
+  ('Ajmer', 'Vinchiya'),
+  ('Ambardi', 'Vinchiya'),
+  ('Amrapur', 'Vinchiya'),
+  ('Ankadiya', 'Vinchiya'),
+  ('Asalpar', 'Vinchiya'),
+  ('Atkot', 'Jasdan'),
+  ('Bakhalvad', 'Jasdan'),
+  ('Baldhoi', 'Jasdan'),
+  ('Bandhali', 'Vinchiya'),
+  ('Barvala', 'Jasdan'),
+  ('Belda', 'Vinchiya'),
+  ('Bhadla', 'Jasdan'),
+  ('Bhadli', 'Vinchiya'),
+  ('Bhandariya', 'Jasdan'),
+  ('Bhonyra', 'Vinchiya'),
+  ('Boghravadar', 'Jasdan'),
+  ('Chhasiya', 'Vinchiya'),
+  ('Chitaliya', 'Jasdan'),
+  ('Dadli', 'Vinchiya'),
+  ('Dahinsara', 'Jasdan'),
+  ('Devdhari', 'Vinchiya'),
+  ('Devpara', 'Jasdan'),
+  ('Dhedhuki', 'Vinchiya'),
+  ('Dodiyala', 'Jasdan'),
+  ('Dolatpar', 'Jasdan'),
+  ('Fulzar', 'Vinchiya'),
+  ('Gadhadiya (Jam)', 'Jasdan'),
+  ('Gadhadiya (Jas)', 'Jasdan'),
+  ('Gadhala', 'Vinchiya'),
+  ('Godladhar', 'Vinchiya'),
+  ('Gokhlana', 'Jasdan'),
+  ('Gundala (Jas)', 'Vinchiya'),
+  ('Gundala Jam', 'Jasdan'),
+  ('Hadmatiya khanda', 'Jasdan'),
+  ('Hathasani', 'Vinchiya'),
+  ('Hingolgadh', 'Vinchiya'),
+  ('Ishvariya', 'Jasdan'),
+  ('Janada', 'Vinchiya'),
+  ('Jangvad', 'Jasdan'),
+  ('Jasapar', 'Jasdan'),
+  ('Jasdan (M)', 'Jasdan'),
+  ('Jivapar', 'Jasdan'),
+  ('Juna Pipaliya', 'Jasdan'),
+  ('Kaduka', 'Vinchiya'),
+  ('Kalasar', 'Jasdan'),
+  ('Kamlapur', 'Jasdan'),
+  ('Kandhevaliya', 'Vinchiya'),
+  ('Kanesara', 'Jasdan'),
+  ('Kanpar', 'Jasdan'),
+  ('Kansloliya', 'Vinchiya'),
+  ('Khadkana', 'Vinchiya'),
+  ('Khadvavdi', 'Jasdan'),
+  ('Kharachiya Jam', 'Jasdan'),
+  ('Kharachiya Jas', 'Vinchiya'),
+  ('Kotda', 'Vinchiya'),
+  ('Kothi', 'Jasdan'),
+  ('Kundani', 'Jasdan'),
+  ('Lalavadar', 'Vinchiya'),
+  ('Lilapur', 'Jasdan'),
+  ('Madava', 'Vinchiya'),
+  ('Madhavipur', 'Jasdan'),
+  ('Madhda', 'Jasdan'),
+  ('Meghpar', 'Jasdan'),
+  ('Modhuka', 'Vinchiya'),
+  ('Mota Hadmatiya', 'Vinchiya'),
+  ('Mota Matra', 'Vinchiya'),
+  ('Moti Lakhavad', 'Vinchiya'),
+  ('Nani Lakhavad', 'Jasdan'),
+  ('Navagam', 'Vinchiya'),
+  ('Panchavada', 'Jasdan'),
+  ('Parewala', 'Jasdan'),
+  ('Patiyali', 'Vinchiya'),
+  ('Pipardi', 'Vinchiya'),
+  ('Polarpar', 'Jasdan'),
+  ('Pratappur', 'Jasdan'),
+  ('Raja Vadla Jam', 'Jasdan'),
+  ('Rajavadla Jas', 'Jasdan'),
+  ('Ramaliya', 'Jasdan'),
+  ('Raningpar', 'Jasdan'),
+  ('Ranjitgadh', 'Jasdan'),
+  ('Ranparda', 'Jasdan'),
+  ('Revaniya', 'Vinchiya'),
+  ('Rupavati', 'Vinchiya'),
+  ('Sanala', 'Vinchiya'),
+  ('Sanali', 'Vinchiya'),
+  ('Sanathali', 'Jasdan'),
+  ('Sartanpar', 'Vinchiya'),
+  ('Shivrajpur', 'Jasdan'),
+  ('Som Pipaliya', 'Vinchiya'),
+  ('Somalpar', 'Vinchiya'),
+  ('Thoriyali', 'Vinchiya'),
+  ('Vadod', 'Vinchiya'),
+  ('Vanala', 'Vinchiya'),
+  ('Vangadhara', 'Vinchiya'),
+  ('Veraval Bhadla', 'Jasdan'),
+  ('Veraval Bhadli', 'Vinchiya'),
+  ('Veraval sanathali', 'Jasdan'),
+  ('Vinchhiya', 'Vinchiya'),
+  ('Virnagar', 'Jasdan'),
+  ('Virpur', 'Jasdan'),
+  ('Zundala', 'Jasdan')
+ON CONFLICT (name) DO NOTHING;
+
+CREATE POLICY "Management can update staff profiles" ON public.profiles
+  FOR UPDATE TO authenticated USING (public.is_management(auth.uid())) WITH CHECK (public.is_management(auth.uid()));
