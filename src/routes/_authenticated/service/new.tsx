@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { VillageSelect, TehsilSelect } from "@/components/sales/location-select";
 import { PageHeader } from "@/components/sales/ui";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -116,10 +117,10 @@ function NewServiceJobPage() {
             <Input value={form.mobile} onChange={(e) => set("mobile", e.target.value)} />
           </Row>
           <Row label="Village *">
-            <Input value={form.village} onChange={(e) => set("village", e.target.value)} />
+            <VillageSelect value={form.village} onChange={(v) => set("village", v)} />
           </Row>
-          <Row label="Taluka">
-            <Input value={form.taluka} onChange={(e) => set("taluka", e.target.value)} />
+          <Row label="Tehsil">
+            <TehsilSelect value={form.taluka} onChange={(v) => set("taluka", v)} />
           </Row>
           <Row label="Model">
             <Select value={form.model || "none"} onValueChange={(v) => set("model", v === "none" ? "" : v)}>

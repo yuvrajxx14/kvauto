@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useMe } from "@/lib/auth";
+import { useMe, ROLE_LABELS, ASSIGNABLE_ROLES, type AppRole } from "@/lib/auth";
 import { PageHeader, EmptyState } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,14 +28,9 @@ export const Route = createFileRoute("/_authenticated/team")({
   component: TeamPage,
 });
 
-const ROLES = ["ceo", "manager", "salesman", "receptionist"] as const;
-type Role = (typeof ROLES)[number];
-const ROLE_LABEL: Record<Role, string> = {
-  ceo: "CEO / Dealer",
-  manager: "Manager",
-  salesman: "Salesman",
-  receptionist: "Receptionist",
-};
+const ROLES = ASSIGNABLE_ROLES;
+type Role = AppRole;
+const ROLE_LABEL = ROLE_LABELS;
 
 function TeamPage() {
   const { data: me } = useMe();

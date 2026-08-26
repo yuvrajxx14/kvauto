@@ -2,7 +2,7 @@ import { createFileRoute, Outlet, redirect, useNavigate, Link } from "@tanstack/
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useMe, signOutAndRedirect } from "@/lib/auth";
+import { useMe, signOutAndRedirect, ROLE_LABELS } from "@/lib/auth";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sales/app-sidebar";
 import { Button } from "@/components/ui/button";
@@ -19,12 +19,7 @@ export const Route = createFileRoute("/_authenticated")({
   component: AuthenticatedLayout,
 });
 
-const ROLE_LABEL: Record<string, string> = {
-  ceo: "CEO / Dealer",
-  manager: "Manager",
-  salesman: "Salesman",
-  receptionist: "Receptionist",
-};
+const ROLE_LABEL: Record<string, string> = ROLE_LABELS;
 
 function AuthenticatedLayout() {
   const { data: me, isLoading } = useMe();

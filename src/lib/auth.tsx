@@ -3,7 +3,42 @@ import type { Session, User } from "@supabase/supabase-js";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export type AppRole = "ceo" | "manager" | "salesman" | "receptionist";
+export type AppRole =
+  | "ceo"
+  | "manager"
+  | "sales_manager"
+  | "salesman"
+  | "accountant"
+  | "service_manager"
+  | "workshop_manager"
+  | "mechanic"
+  | "sparepart_manager"
+  | "receptionist";
+
+export const ROLE_LABELS: Record<AppRole, string> = {
+  ceo: "CEO",
+  manager: "Manager",
+  sales_manager: "Sales Manager",
+  salesman: "Salesman",
+  accountant: "Accountant",
+  service_manager: "Service Manager",
+  workshop_manager: "Workshop Manager",
+  mechanic: "Mechanic",
+  sparepart_manager: "Spare Part Manager",
+  receptionist: "Receptionist",
+};
+
+/** Roles that can be assigned from Team & Roles. */
+export const ASSIGNABLE_ROLES: AppRole[] = [
+  "ceo",
+  "salesman",
+  "sales_manager",
+  "accountant",
+  "service_manager",
+  "mechanic",
+  "sparepart_manager",
+  "receptionist",
+];
 
 type AuthCtx = {
   session: Session | null;
@@ -97,7 +132,10 @@ export function useMe() {
       return {
         profile,
         roles: roleList,
-        isManagement: roleList.includes("ceo") || roleList.includes("manager"),
+        isManagement:
+          roleList.includes("ceo") ||
+          roleList.includes("manager") ||
+          roleList.includes("sales_manager"),
         isReceptionist: roleList.includes("receptionist"),
         isSalesman: roleList.includes("salesman"),
         hasRole: roleList.length > 0,

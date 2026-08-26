@@ -10,6 +10,7 @@ import { useProducts } from "@/lib/erp";
 import { PageHeader } from "@/components/sales/ui";
 import { StatusBadge } from "@/components/sales/badges";
 import { ModelSelect } from "@/components/sales/model-select";
+import { VillageSelect, TehsilSelect } from "@/components/sales/location-select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -249,11 +250,11 @@ function NewInquiry() {
               </div>
               <div className="space-y-1.5">
                 <Label>Village</Label>
-                <Input name="village" required maxLength={80} />
+                <VillageSelect name="village" required />
               </div>
               <div className="space-y-1.5">
-                <Label>Taluka</Label>
-                <Input name="taluka" maxLength={80} />
+                <Label>Tehsil</Label>
+                <TehsilSelect name="taluka" />
               </div>
               <div className="space-y-1.5">
                 <Label>Customer type</Label>
