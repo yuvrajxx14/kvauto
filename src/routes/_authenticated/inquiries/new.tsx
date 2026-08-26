@@ -249,11 +249,11 @@ function NewInquiry() {
               </div>
               <div className="space-y-1.5">
                 <Label>Village</Label>
-                <Input name="village" required maxLength={80} />
+                <VillageSelect name="village" required />
               </div>
               <div className="space-y-1.5">
-                <Label>Taluka</Label>
-                <Input name="taluka" maxLength={80} />
+                <Label>Tehsil</Label>
+                <TehsilSelect name="taluka" />
               </div>
               <div className="space-y-1.5">
                 <Label>Customer type</Label>
