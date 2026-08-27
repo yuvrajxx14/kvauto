@@ -44,7 +44,6 @@ import { Route as AuthenticatedSystemIndexRouteImport } from './routes/_authenti
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedVillagesIndexRouteImport } from './routes/_authenticated/villages/index'
 import { Route as AuthenticatedPrintChallanBookingIdRouteImport } from './routes/_authenticated/print/challan.$bookingId'
-import { Route as AuthenticatedPrintDocumentsCustomerIdRouteImport } from './routes/_authenticated/print/documents.$customerId'
 import { Route as AuthenticatedPrintGatepassBookingIdRouteImport } from './routes/_authenticated/print/gatepass.$bookingId'
 import { Route as AuthenticatedPrintInvoiceBookingIdRouteImport } from './routes/_authenticated/print/invoice.$bookingId'
 import { Route as AuthenticatedPrintPassingSetBookingIdRouteImport } from './routes/_authenticated/print/passing-set.$bookingId'
@@ -251,12 +250,6 @@ const AuthenticatedPrintChallanBookingIdRoute =
     path: '/print/challan/$bookingId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedPrintDocumentsCustomerIdRoute =
-  AuthenticatedPrintDocumentsCustomerIdRouteImport.update({
-    id: '/print/documents/$customerId',
-    path: '/print/documents/$customerId',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedPrintGatepassBookingIdRoute =
   AuthenticatedPrintGatepassBookingIdRouteImport.update({
     id: '/print/gatepass/$bookingId',
@@ -323,7 +316,6 @@ export interface FileRoutesByFullPath {
   '/users/': typeof AuthenticatedUsersIndexRoute
   '/villages/': typeof AuthenticatedVillagesIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
-  '/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
   '/print/gatepass/$bookingId': typeof AuthenticatedPrintGatepassBookingIdRoute
   '/print/invoice/$bookingId': typeof AuthenticatedPrintInvoiceBookingIdRoute
   '/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
@@ -365,7 +357,6 @@ export interface FileRoutesByTo {
   '/users': typeof AuthenticatedUsersIndexRoute
   '/villages': typeof AuthenticatedVillagesIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
-  '/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
   '/print/gatepass/$bookingId': typeof AuthenticatedPrintGatepassBookingIdRoute
   '/print/invoice/$bookingId': typeof AuthenticatedPrintInvoiceBookingIdRoute
   '/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
@@ -409,7 +400,6 @@ export interface FileRoutesById {
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
   '/_authenticated/villages/': typeof AuthenticatedVillagesIndexRoute
   '/_authenticated/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
-  '/_authenticated/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
   '/_authenticated/print/gatepass/$bookingId': typeof AuthenticatedPrintGatepassBookingIdRoute
   '/_authenticated/print/invoice/$bookingId': typeof AuthenticatedPrintInvoiceBookingIdRoute
   '/_authenticated/print/passing-set/$bookingId': typeof AuthenticatedPrintPassingSetBookingIdRoute
@@ -453,7 +443,6 @@ export interface FileRouteTypes {
     | '/users/'
     | '/villages/'
     | '/print/challan/$bookingId'
-    | '/print/documents/$customerId'
     | '/print/gatepass/$bookingId'
     | '/print/invoice/$bookingId'
     | '/print/passing-set/$bookingId'
@@ -495,7 +484,6 @@ export interface FileRouteTypes {
     | '/users'
     | '/villages'
     | '/print/challan/$bookingId'
-    | '/print/documents/$customerId'
     | '/print/gatepass/$bookingId'
     | '/print/invoice/$bookingId'
     | '/print/passing-set/$bookingId'
@@ -538,7 +526,6 @@ export interface FileRouteTypes {
     | '/_authenticated/users/'
     | '/_authenticated/villages/'
     | '/_authenticated/print/challan/$bookingId'
-    | '/_authenticated/print/documents/$customerId'
     | '/_authenticated/print/gatepass/$bookingId'
     | '/_authenticated/print/invoice/$bookingId'
     | '/_authenticated/print/passing-set/$bookingId'
@@ -799,13 +786,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPrintChallanBookingIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/print/documents/$customerId': {
-      id: '/_authenticated/print/documents/$customerId'
-      path: '/print/documents/$customerId'
-      fullPath: '/print/documents/$customerId'
-      preLoaderRoute: typeof AuthenticatedPrintDocumentsCustomerIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/print/gatepass/$bookingId': {
       id: '/_authenticated/print/gatepass/$bookingId'
       path: '/print/gatepass/$bookingId'
@@ -877,7 +857,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
   AuthenticatedVillagesIndexRoute: typeof AuthenticatedVillagesIndexRoute
   AuthenticatedPrintChallanBookingIdRoute: typeof AuthenticatedPrintChallanBookingIdRoute
-  AuthenticatedPrintDocumentsCustomerIdRoute: typeof AuthenticatedPrintDocumentsCustomerIdRoute
   AuthenticatedPrintGatepassBookingIdRoute: typeof AuthenticatedPrintGatepassBookingIdRoute
   AuthenticatedPrintInvoiceBookingIdRoute: typeof AuthenticatedPrintInvoiceBookingIdRoute
   AuthenticatedPrintPassingSetBookingIdRoute: typeof AuthenticatedPrintPassingSetBookingIdRoute
@@ -920,8 +899,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedVillagesIndexRoute: AuthenticatedVillagesIndexRoute,
   AuthenticatedPrintChallanBookingIdRoute:
     AuthenticatedPrintChallanBookingIdRoute,
-  AuthenticatedPrintDocumentsCustomerIdRoute:
-    AuthenticatedPrintDocumentsCustomerIdRoute,
   AuthenticatedPrintGatepassBookingIdRoute:
     AuthenticatedPrintGatepassBookingIdRoute,
   AuthenticatedPrintInvoiceBookingIdRoute:
