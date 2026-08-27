@@ -27,6 +27,7 @@ function NewBooking() {
   const { data: inquiry, isLoading } = useInquiry(inquiryId);
   const { data: profiles } = useProfiles();
   const [financeType, setFinanceType] = useState("CASH");
+  const [financeCompany, setFinanceCompany] = useState<string>(FINANCE_COMPANIES[0]);
 
   const create = useMutation({
     mutationFn: async (payload: {
@@ -40,6 +41,7 @@ function NewBooking() {
       payment_mode: string;
       finance_type: string;
       loan_amount: number;
+      finance_company: string | null;
     }) => {
       const { data, error } = await supabase.rpc("create_booking_atomic", {
         _inquiry_id: inquiryId,
