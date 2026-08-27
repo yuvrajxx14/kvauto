@@ -11,7 +11,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useStockItem } from "@/lib/erp";
-import { VehicleDocumentsPanel } from "@/components/sales/vehicle-documents-panel";
 import { type CheckStatus, type StockStatus } from "@/lib/stock";
 import { fmtDate } from "@/lib/sales";
 
@@ -136,7 +135,6 @@ function StockDetail() {
           </CardContent>
         </Card>
         <div className="lg:col-span-3">
-          <VehicleDocumentsPanel stockId={stockId} />
         </div>
       </div>
     </div>
