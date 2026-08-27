@@ -51,6 +51,7 @@ function StockPage() {
         mfg_year: payload["mfg_year"] || null,
         location: payload["location"] || "Main Showroom",
         arrival_date: payload["arrival_date"] || null,
+        received_from: payload["received_from"] || null,
         status: "INSPECTION_PENDING",
       });
       if (error) throw error;
@@ -142,6 +143,7 @@ function StockPage() {
                 </Select>
               </div>
               <div><Label>Arrival date</Label><Input name="arrival_date" type="date" defaultValue={new Date().toISOString().slice(0, 10)} /></div>
+              <div><Label>Received from</Label><Input name="received_from" placeholder="Mahindra company / dealer name" defaultValue="Mahindra Company" /></div>
               <div className="flex items-end"><Button disabled={addStock.isPending}>{addStock.isPending ? "Saving…" : "Add to stock"}</Button></div>
             </form>
           </CardContent>

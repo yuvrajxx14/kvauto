@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { VARIANTS } from "@/lib/sales";
-import { PAYMENT_MODES, PAYMENT_MODE_LABEL } from "@/lib/booking";
+import { PAYMENT_MODES, PAYMENT_MODE_LABEL, FINANCE_COMPANIES } from "@/lib/booking";
 
 export const Route = createFileRoute("/_authenticated/bookings/new")({
   validateSearch: (search: Record<string, unknown>) => ({ inquiryId: String(search['inquiryId'] ?? "") }),
@@ -27,6 +27,7 @@ function NewBooking() {
   const { data: inquiry, isLoading } = useInquiry(inquiryId);
   const { data: profiles } = useProfiles();
   const [financeType, setFinanceType] = useState("CASH");
+  const [financeCompany, setFinanceCompany] = useState<string>(FINANCE_COMPANIES[0]);
 
   const create = useMutation({
     mutationFn: async (payload: {
@@ -40,6 +41,7 @@ function NewBooking() {
       payment_mode: string;
       finance_type: string;
       loan_amount: number;
+      finance_company: string | null;
     }) => {
       const { data, error } = await supabase.rpc("create_booking_atomic", {
         _inquiry_id: inquiryId,
@@ -55,6 +57,13 @@ function NewBooking() {
         _loan_amount: payload.loan_amount,
       });
       if (error) throw error;
+      if (payload.finance_company) {
+        const { error: upErr } = await supabase
+          .from("bookings")
+          .update({ finance_company: payload.finance_company })
+          .eq("id", String(data));
+        if (upErr) throw upErr;
+      }
       return data;
     },
     onSuccess: (id) => {
@@ -112,6 +121,7 @@ function NewBooking() {
             payment_mode: String(fd.get("payment_mode") || "Cash"),
             finance_type: financeType,
             loan_amount: loanAmount,
+            finance_company: financeType === "LOAN" ? financeCompany : null,
           });
         }}
       >
@@ -133,9 +143,20 @@ function NewBooking() {
             </Select>
           </div>
           {financeType === "LOAN" ? (
-            <Field label="Loan amount (2% document charge applies at delivery)">
-              <Input name="loan_amount" type="number" min="1" step="0.01" required />
-            </Field>
+            <>
+              <Field label="Loan amount (2% document charge applies at delivery)">
+                <Input name="loan_amount" type="number" min="1" step="0.01" required />
+              </Field>
+              <div>
+                <Label>Finance company</Label>
+                <Select value={financeCompany} onValueChange={setFinanceCompany}>
+                  <SelectTrigger><SelectValue placeholder="Select finance company" /></SelectTrigger>
+                  <SelectContent>
+                    {FINANCE_COMPANIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            </>
           ) : (
             <div />
           )}

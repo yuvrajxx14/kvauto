@@ -356,6 +356,15 @@ function PassingDetail() {
                   {r?.number_plate_received ? "Undo received" : "Mark received"}
                 </Button>
                 <Input
+                  className="h-8 w-[180px] uppercase"
+                  placeholder="Number plate e.g. GJ03NK5189"
+                  defaultValue={r?.number_plate_number ?? ""}
+                  onBlur={(e) => {
+                    const v = e.target.value.toUpperCase().replace(/\s+/g, "");
+                    if (v !== (r?.number_plate_number ?? "")) update.mutate({ number_plate_number: v || null });
+                  }}
+                />
+                <Input
                   type="date"
                   className="h-8 w-[170px]"
                   defaultValue={r?.fitment_date ?? ""}
@@ -410,7 +419,14 @@ function PassingDetail() {
                 <Select
                   value={r?.subsidy_file_status ?? "PENDING"}
                   onValueChange={(v) =>
-                    update.mutate({ subsidy_file_status: v, subsidy_file_uploaded_date: v === "UPLOADED" ? todayISO() : null })
+                    update.mutate({
+                      subsidy_file_status: v,
+                      subsidy_file_uploaded_date: v === "UPLOADED" ? todayISO() : null,
+                      ...(v === "PRINTED"
+                        ? { subsidy_file_printed: true, subsidy_file_printed_date: r?.subsidy_file_printed_date ?? todayISO() }
+                        : {}),
+                      ...(v === "UPLOADED" ? { subsidy_file_date: r?.subsidy_file_date ?? todayISO() } : {}),
+                    })
                   }
                 >
                   <SelectTrigger className="h-8 w-[170px]"><SelectValue /></SelectTrigger>
@@ -438,6 +454,8 @@ function PassingDetail() {
                     insurance_policy_number: String(fd.get("insurance_policy_number") ?? "") || null,
                     set_sent_date: String(fd.get("set_sent_date") ?? "") || null,
                     rto_number: String(fd.get("rto_number") ?? "") || null,
+                    number_plate_number: String(fd.get("number_plate_number") ?? "").toUpperCase().replace(/\s+/g, "") || null,
+                    passing_date: String(fd.get("passing_date") ?? "") || null,
                     remarks: String(fd.get("remarks") ?? "") || null,
                   });
                   toast.success("Passing details saved");
@@ -448,6 +466,8 @@ function PassingDetail() {
                 <div><Label>Insurance policy number</Label><Input name="insurance_policy_number" defaultValue={rec.insurance_policy_number ?? ""} /></div>
                 <div><Label>Set sent for passing on</Label><Input name="set_sent_date" type="date" defaultValue={rec.set_sent_date ?? ""} /></div>
                 <div><Label>RTO number</Label><Input name="rto_number" defaultValue={rec.rto_number ?? ""} /></div>
+                <div><Label>Number plate</Label><Input name="number_plate_number" className="uppercase" placeholder="GJ03NK5189" defaultValue={rec.number_plate_number ?? ""} /></div>
+                <div><Label>Passing done on</Label><Input name="passing_date" type="date" defaultValue={rec.passing_date ?? ""} /></div>
                 <div><Label>Remarks</Label><Textarea name="remarks" rows={2} defaultValue={rec.remarks ?? ""} /></div>
                 <Button disabled={update.isPending}>Save details</Button>
               </form>
@@ -457,6 +477,8 @@ function PassingDetail() {
                 <Field label="Use type">{subsidy?.use_type ?? "—"}</Field>
                 <Field label="Application">{subsidy?.application_status ?? "—"}</Field>
                 <Field label="Approval">{subsidy?.approval_status ?? "—"}</Field>
+                <Field label="Number plate">{rec.number_plate_number ?? "—"}</Field>
+                <Field label="Passing done on">{fmtDate(rec.passing_date ?? null)}</Field>
                 <Field label="Number plate fitment">{fmtDate(r?.fitment_date ?? null)}</Field>
               </div>
             </CardContent>
