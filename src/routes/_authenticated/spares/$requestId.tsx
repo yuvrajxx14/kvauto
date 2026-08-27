@@ -48,6 +48,7 @@ function SpareRequestDetailPage() {
   const { data: req, isLoading } = useSpareRequest(requestId);
   const [issued, setIssued] = useState<Record<string, string>>({});
   const [note, setNote] = useState("");
+  const [sourcing, setSourcing] = useState<Record<string, string | boolean>>({});
 
   const items = ((req?.items ?? []) as SpareItem[]).slice().sort((a, b) => a.sort_order - b.sort_order);
 
