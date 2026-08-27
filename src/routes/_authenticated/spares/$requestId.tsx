@@ -291,6 +291,125 @@ function SpareRequestDetailPage() {
               )}
             </CardContent>
           </Card>
+
+          <Card className="shadow-card">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Sourcing &amp; order tracking</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ol className="space-y-1 text-xs">
+                {SPARE_FLOW.map((s) => {
+                  const done = SPARE_FLOW.indexOf(status) >= SPARE_FLOW.indexOf(s) && SPARE_FLOW.includes(status);
+                  return (
+                    <li key={s} className={done ? "font-medium text-foreground" : "text-muted-foreground"}>
+                      {done ? "●" : "○"} {SPARE_STATUS_LABEL[s]}
+                    </li>
+                  );
+                })}
+              </ol>
+
+              <div className="space-y-2 border-t border-border pt-3">
+                <p className="text-sm font-medium">Local market</p>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={!!sourcing["local_checked"]}
+                    onCheckedChange={(v) => setSourcing((p) => ({ ...p, local_checked: !!v }))}
+                  />
+                  Checked locally
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={!!sourcing["local_available"]}
+                    onCheckedChange={(v) => setSourcing((p) => ({ ...p, local_available: !!v }))}
+                  />
+                  Available locally
+                </label>
+                <Input
+                  placeholder="Local market remarks"
+                  value={(sourcing["local_remarks"] as string) ?? ""}
+                  onChange={(e) => setSourcing((p) => ({ ...p, local_remarks: e.target.value }))}
+                />
+              </div>
+
+              <div className="space-y-2 border-t border-border pt-3">
+                <p className="text-sm font-medium">Co-dealer</p>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={!!sourcing["codealer_checked"]}
+                    onCheckedChange={(v) => setSourcing((p) => ({ ...p, codealer_checked: !!v }))}
+                  />
+                  Checked with co-dealer
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={!!sourcing["codealer_available"]}
+                    onCheckedChange={(v) => setSourcing((p) => ({ ...p, codealer_available: !!v }))}
+                  />
+                  Available at co-dealer
+                </label>
+                <Input
+                  placeholder="Co-dealer name"
+                  value={(sourcing["codealer_name"] as string) ?? ""}
+                  onChange={(e) => setSourcing((p) => ({ ...p, codealer_name: e.target.value }))}
+                />
+                <Input
+                  placeholder="Co-dealer remarks"
+                  value={(sourcing["codealer_remarks"] as string) ?? ""}
+                  onChange={(e) => setSourcing((p) => ({ ...p, codealer_remarks: e.target.value }))}
+                />
+              </div>
+
+              <div className="space-y-2 border-t border-border pt-3">
+                <p className="text-sm font-medium">Company order</p>
+                <div>
+                  <Label className="text-xs">Order number</Label>
+                  <Input
+                    className="mt-1"
+                    value={(sourcing["order_number"] as string) ?? ""}
+                    onChange={(e) => setSourcing((p) => ({ ...p, order_number: e.target.value }))}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Label className="text-xs">Order date</Label>
+                    <Input
+                      type="date"
+                      className="mt-1"
+                      value={(sourcing["order_date"] as string) ?? ""}
+                      onChange={(e) => setSourcing((p) => ({ ...p, order_date: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Expected</Label>
+                    <Input
+                      type="date"
+                      className="mt-1"
+                      value={(sourcing["order_expected_date"] as string) ?? ""}
+                      onChange={(e) => setSourcing((p) => ({ ...p, order_expected_date: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs">Received on</Label>
+                  <Input
+                    type="date"
+                    className="mt-1"
+                    value={(sourcing["order_received_date"] as string) ?? ""}
+                    onChange={(e) => setSourcing((p) => ({ ...p, order_received_date: e.target.value }))}
+                  />
+                </div>
+              </div>
+
+              <Button
+                className="w-full"
+                variant="outline"
+                disabled={saveSourcing.isPending}
+                onClick={() => saveSourcing.mutate()}
+              >
+                {saveSourcing.isPending ? "Saving…" : "Save sourcing & order"}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
