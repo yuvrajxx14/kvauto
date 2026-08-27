@@ -56,6 +56,21 @@ function InquiryDetail() {
 
   const [edit, setEdit] = useState(false);
 
+  // A cancelled booking frees the inquiry, so the customer can book again.
+  const { data: inquiryBookings } = useQuery({
+    queryKey: ["inquiry-bookings", inquiryId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("bookings")
+        .select("id, booking_number, status")
+        .eq("inquiry_id", inquiryId);
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: !!inquiryId,
+  });
+  const hasActiveBooking = (inquiryBookings ?? []).some((b) => b.status !== "CANCELLED");
+
   const update = useMutation({
     mutationFn: async (patch: {
       status: InquiryStatus;
