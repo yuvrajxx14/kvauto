@@ -419,7 +419,14 @@ function PassingDetail() {
                 <Select
                   value={r?.subsidy_file_status ?? "PENDING"}
                   onValueChange={(v) =>
-                    update.mutate({ subsidy_file_status: v, subsidy_file_uploaded_date: v === "UPLOADED" ? todayISO() : null })
+                    update.mutate({
+                      subsidy_file_status: v,
+                      subsidy_file_uploaded_date: v === "UPLOADED" ? todayISO() : null,
+                      ...(v === "PRINTED"
+                        ? { subsidy_file_printed: true, subsidy_file_printed_date: r?.subsidy_file_printed_date ?? todayISO() }
+                        : {}),
+                      ...(v === "UPLOADED" ? { subsidy_file_date: r?.subsidy_file_date ?? todayISO() } : {}),
+                    })
                   }
                 >
                   <SelectTrigger className="h-8 w-[170px]"><SelectValue /></SelectTrigger>
