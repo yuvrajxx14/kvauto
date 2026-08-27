@@ -81,7 +81,20 @@ function SpareRequestDetailPage() {
   const saveSourcing = useMutation({
     mutationFn: async () => {
       const s = sourcing;
-      const patch: Record<string, unknown> = {
+      const patch: {
+        local_checked: boolean;
+        local_available: boolean;
+        local_remarks: string | null;
+        codealer_checked: boolean;
+        codealer_available: boolean;
+        codealer_name: string | null;
+        codealer_remarks: string | null;
+        order_number: string | null;
+        order_date: string | null;
+        order_expected_date: string | null;
+        order_received_date: string | null;
+        status?: string;
+      } = {
         local_checked: !!s["local_checked"],
         local_available: !!s["local_available"],
         local_remarks: (s["local_remarks"] as string)?.trim() || null,
