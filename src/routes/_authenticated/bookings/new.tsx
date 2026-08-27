@@ -121,6 +121,7 @@ function NewBooking() {
             payment_mode: String(fd.get("payment_mode") || "Cash"),
             finance_type: financeType,
             loan_amount: loanAmount,
+            finance_company: financeType === "LOAN" ? financeCompany : null,
           });
         }}
       >
