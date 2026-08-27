@@ -447,6 +447,8 @@ function PassingDetail() {
                     insurance_policy_number: String(fd.get("insurance_policy_number") ?? "") || null,
                     set_sent_date: String(fd.get("set_sent_date") ?? "") || null,
                     rto_number: String(fd.get("rto_number") ?? "") || null,
+                    number_plate_number: String(fd.get("number_plate_number") ?? "").toUpperCase().replace(/\s+/g, "") || null,
+                    passing_date: String(fd.get("passing_date") ?? "") || null,
                     remarks: String(fd.get("remarks") ?? "") || null,
                   });
                   toast.success("Passing details saved");
