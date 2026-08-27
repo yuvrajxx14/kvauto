@@ -5,7 +5,6 @@ import { ArrowLeft, CheckCircle2, Printer, ShieldCheck, XCircle } from "lucide-r
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
-import { VehicleDocumentsPanel } from "@/components/sales/vehicle-documents-panel";
 import { DocumentsPanel, documentProgress } from "@/components/sales/documents-panel";
 import { PaymentDialog } from "@/components/sales/payment-dialog";
 import { Button } from "@/components/ui/button";
@@ -14,7 +13,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useBooking, useCustomerDocuments, useDocumentChecklist, useGatePass } from "@/lib/erp";
+import { useBooking, useCustomerDocuments, useDocumentChecklist, useGatePass, usePassingRecord, useSubsidyCase } from "@/lib/erp";
+import { usePerms } from "@/lib/permissions";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/delivery/$bookingId")({
