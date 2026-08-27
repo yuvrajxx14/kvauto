@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Circle, Printer } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { CheckCircle2, Circle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCustomerDocuments, useDocumentChecklist } from "@/lib/erp";
