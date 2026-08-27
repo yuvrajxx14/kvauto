@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Printer } from "lucide-react";
 import { toast } from "sonner";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
