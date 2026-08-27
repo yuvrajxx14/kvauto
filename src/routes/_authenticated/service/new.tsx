@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { useProfiles } from "@/lib/queries";
+import { useTechnicians } from "@/lib/queries";
 import { useProducts } from "@/lib/erp";
 import {
   PROBLEM_CATEGORIES,
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_authenticated/service/new")({
 function NewServiceJobPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { data: staff } = useProfiles();
+  const { data: staff } = useTechnicians();
   const { data: products } = useProducts(true);
 
   const [form, setForm] = useState({
@@ -226,7 +226,7 @@ function NewServiceJobPage() {
       <div className="mt-4 flex justify-end gap-2">
         <Button variant="outline" onClick={() => navigate({ to: "/service" })}>Cancel</Button>
         <Button onClick={() => create.mutate()} disabled={create.isPending}>
-          {create.isPending ? "Creating…" : "Create job card"}
+          {create.isPending ? "Saving…" : "Register service"}
         </Button>
       </div>
     </div>

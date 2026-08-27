@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useInquiry, useProfileMap, useProfiles } from "@/lib/queries";
+import { useInquiry, useProfileMap, useSalesStaff } from "@/lib/queries";
 import { useMe } from "@/lib/auth";
 import { PageHeader, Field, PipelineStepper } from "@/components/sales/ui";
 import { StatusBadge, InterestBadge } from "@/components/sales/badges";
@@ -50,7 +50,7 @@ function InquiryDetail() {
   const { inquiryId } = Route.useParams();
   const { data: inquiry, isLoading } = useInquiry(inquiryId);
   const { data: me } = useMe();
-  const { data: profiles } = useProfiles();
+  const { data: profiles } = useSalesStaff();
   const names = useProfileMap();
   const qc = useQueryClient();
 

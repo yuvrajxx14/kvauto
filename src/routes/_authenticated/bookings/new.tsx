@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useInquiry, useProfiles } from "@/lib/queries";
+import { useInquiry, useSalesStaff } from "@/lib/queries";
 import { PageHeader } from "@/components/sales/ui";
 import { ModelSelect } from "@/components/sales/model-select";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,7 @@ function NewBooking() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { data: inquiry, isLoading } = useInquiry(inquiryId);
-  const { data: profiles } = useProfiles();
+  const { data: profiles } = useSalesStaff();
   const [financeType, setFinanceType] = useState("CASH");
   const [financeCompany, setFinanceCompany] = useState<string>(FINANCE_COMPANIES[0]);
 

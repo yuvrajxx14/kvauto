@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { useProfiles } from "@/lib/queries";
+import { useTechnicians } from "@/lib/queries";
 import { fmtDate, inr } from "@/lib/sales";
 import {
   SERVICE_NEXT,
@@ -47,7 +47,7 @@ function ServiceJobPage() {
   const qc = useQueryClient();
   const { data: job, isLoading } = useServiceJob(jobId);
   const { data: checklist } = useServiceChecklist(jobId);
-  const { data: staff } = useProfiles();
+  const { data: staff } = useTechnicians();
 
   const [work, setWork] = useState({ work_done: "", parts_details: "", parts_amount: "0", labour_amount: "0", remarks: "" });
 
