@@ -13,7 +13,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { fmtDate, inr } from "@/lib/sales";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
+  SPARE_FLOW,
   SPARE_NEXT,
   SPARE_STATUS_LABEL,
   SPARE_TYPE_LABEL,
@@ -46,6 +48,7 @@ function SpareRequestDetailPage() {
   const { data: req, isLoading } = useSpareRequest(requestId);
   const [issued, setIssued] = useState<Record<string, string>>({});
   const [note, setNote] = useState("");
+  const [sourcing, setSourcing] = useState<Record<string, string | boolean>>({});
 
   const items = ((req?.items ?? []) as SpareItem[]).slice().sort((a, b) => a.sort_order - b.sort_order);
 
@@ -56,8 +59,68 @@ function SpareRequestDetailPage() {
       );
     }
     if (req?.remarks && !note) setNote(req.remarks);
+    if (req && Object.keys(sourcing).length === 0) {
+      const r = req as Record<string, unknown>;
+      setSourcing({
+        local_checked: !!r["local_checked"],
+        local_available: !!r["local_available"],
+        local_remarks: (r["local_remarks"] as string) ?? "",
+        codealer_checked: !!r["codealer_checked"],
+        codealer_available: !!r["codealer_available"],
+        codealer_name: (r["codealer_name"] as string) ?? "",
+        codealer_remarks: (r["codealer_remarks"] as string) ?? "",
+        order_number: (r["order_number"] as string) ?? "",
+        order_date: (r["order_date"] as string) ?? "",
+        order_expected_date: (r["order_expected_date"] as string) ?? "",
+        order_received_date: (r["order_received_date"] as string) ?? "",
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [req?.id, items.length]);
+
+  const saveSourcing = useMutation({
+    mutationFn: async () => {
+      const s = sourcing;
+      const patch: {
+        local_checked: boolean;
+        local_available: boolean;
+        local_remarks: string | null;
+        codealer_checked: boolean;
+        codealer_available: boolean;
+        codealer_name: string | null;
+        codealer_remarks: string | null;
+        order_number: string | null;
+        order_date: string | null;
+        order_expected_date: string | null;
+        order_received_date: string | null;
+        status?: string;
+      } = {
+        local_checked: !!s["local_checked"],
+        local_available: !!s["local_available"],
+        local_remarks: (s["local_remarks"] as string)?.trim() || null,
+        codealer_checked: !!s["codealer_checked"],
+        codealer_available: !!s["codealer_available"],
+        codealer_name: (s["codealer_name"] as string)?.trim() || null,
+        codealer_remarks: (s["codealer_remarks"] as string)?.trim() || null,
+        order_number: (s["order_number"] as string)?.trim() || null,
+        order_date: (s["order_date"] as string) || null,
+        order_expected_date: (s["order_expected_date"] as string) || null,
+        order_received_date: (s["order_received_date"] as string) || null,
+      };
+      // Keep the status in step with the sourcing progress.
+      if (patch.order_received_date && req?.status === "ORDERED") patch.status = "RECEIVED";
+      else if (patch.order_number && ["APPROVED", "LOCAL_CHECK", "CODEALER_CHECK"].includes(String(req?.status)))
+        patch.status = "ORDERED";
+      const { error } = await supabase.from("spare_requests").update(patch).eq("id", requestId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["spare-request", requestId] });
+      qc.invalidateQueries({ queryKey: ["spare-requests"] });
+      toast.success("Sourcing details saved");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
   const saveIssue = useMutation({
     mutationFn: async () => {
@@ -239,6 +302,125 @@ function SpareRequestDetailPage() {
               {status === "PENDING" && (
                 <p className="text-xs text-muted-foreground">Approve the requirement before issuing parts.</p>
               )}
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-card">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Sourcing &amp; order tracking</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <ol className="space-y-1 text-xs">
+                {SPARE_FLOW.map((s) => {
+                  const done = SPARE_FLOW.indexOf(status) >= SPARE_FLOW.indexOf(s) && SPARE_FLOW.includes(status);
+                  return (
+                    <li key={s} className={done ? "font-medium text-foreground" : "text-muted-foreground"}>
+                      {done ? "●" : "○"} {SPARE_STATUS_LABEL[s]}
+                    </li>
+                  );
+                })}
+              </ol>
+
+              <div className="space-y-2 border-t border-border pt-3">
+                <p className="text-sm font-medium">Local market</p>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={!!sourcing["local_checked"]}
+                    onCheckedChange={(v) => setSourcing((p) => ({ ...p, local_checked: !!v }))}
+                  />
+                  Checked locally
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={!!sourcing["local_available"]}
+                    onCheckedChange={(v) => setSourcing((p) => ({ ...p, local_available: !!v }))}
+                  />
+                  Available locally
+                </label>
+                <Input
+                  placeholder="Local market remarks"
+                  value={(sourcing["local_remarks"] as string) ?? ""}
+                  onChange={(e) => setSourcing((p) => ({ ...p, local_remarks: e.target.value }))}
+                />
+              </div>
+
+              <div className="space-y-2 border-t border-border pt-3">
+                <p className="text-sm font-medium">Co-dealer</p>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={!!sourcing["codealer_checked"]}
+                    onCheckedChange={(v) => setSourcing((p) => ({ ...p, codealer_checked: !!v }))}
+                  />
+                  Checked with co-dealer
+                </label>
+                <label className="flex items-center gap-2 text-sm">
+                  <Checkbox
+                    checked={!!sourcing["codealer_available"]}
+                    onCheckedChange={(v) => setSourcing((p) => ({ ...p, codealer_available: !!v }))}
+                  />
+                  Available at co-dealer
+                </label>
+                <Input
+                  placeholder="Co-dealer name"
+                  value={(sourcing["codealer_name"] as string) ?? ""}
+                  onChange={(e) => setSourcing((p) => ({ ...p, codealer_name: e.target.value }))}
+                />
+                <Input
+                  placeholder="Co-dealer remarks"
+                  value={(sourcing["codealer_remarks"] as string) ?? ""}
+                  onChange={(e) => setSourcing((p) => ({ ...p, codealer_remarks: e.target.value }))}
+                />
+              </div>
+
+              <div className="space-y-2 border-t border-border pt-3">
+                <p className="text-sm font-medium">Company order</p>
+                <div>
+                  <Label className="text-xs">Order number</Label>
+                  <Input
+                    className="mt-1"
+                    value={(sourcing["order_number"] as string) ?? ""}
+                    onChange={(e) => setSourcing((p) => ({ ...p, order_number: e.target.value }))}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <Label className="text-xs">Order date</Label>
+                    <Input
+                      type="date"
+                      className="mt-1"
+                      value={(sourcing["order_date"] as string) ?? ""}
+                      onChange={(e) => setSourcing((p) => ({ ...p, order_date: e.target.value }))}
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Expected</Label>
+                    <Input
+                      type="date"
+                      className="mt-1"
+                      value={(sourcing["order_expected_date"] as string) ?? ""}
+                      onChange={(e) => setSourcing((p) => ({ ...p, order_expected_date: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs">Received on</Label>
+                  <Input
+                    type="date"
+                    className="mt-1"
+                    value={(sourcing["order_received_date"] as string) ?? ""}
+                    onChange={(e) => setSourcing((p) => ({ ...p, order_received_date: e.target.value }))}
+                  />
+                </div>
+              </div>
+
+              <Button
+                className="w-full"
+                variant="outline"
+                disabled={saveSourcing.isPending}
+                onClick={() => saveSourcing.mutate()}
+              >
+                {saveSourcing.isPending ? "Saving…" : "Save sourcing & order"}
+              </Button>
             </CardContent>
           </Card>
         </div>

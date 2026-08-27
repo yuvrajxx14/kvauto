@@ -25,26 +25,29 @@ function AccountingPage() {
   const { data: payments } = useAllPayments();
 
   const open = (bookings ?? []).filter((b) => b.status !== "CANCELLED");
-  const dealValue = open.reduce((s, b) => s + Number(b.final_price ?? 0), 0);
-  const received = open.reduce((s, b) => s + Number(b.amount_received ?? 0), 0);
   const today = todayISO();
   const todayCollection = (payments ?? []).filter((p) => p.payment_date === today).reduce((s, p) => s + Number(p.amount), 0);
 
   const outstandingRows = open
     .map((b) => ({ b, out: Math.max(0, Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0)) }))
-    .filter((r) => r.out > 0)
+    .filter((r) => r.out > 1)
     .sort((a, x) => x.out - a.out);
+
+  const totalOutstanding = outstandingRows.reduce((s, r) => s + r.out, 0);
+  const pendingBeforeDelivery = outstandingRows.filter((r) => r.b.status !== "DELIVERED").length;
+  const deliveredWithDues = outstandingRows.filter((r) => r.b.status === "DELIVERED").length;
 
   return (
     <div>
       <PageHeader title="Accounting" subtitle="Collections, outstanding balances and customer ledgers" />
 
       <div className="mb-4 grid gap-3 sm:grid-cols-4">
-        <Metric label="Total deal value" value={inr(dealValue)} />
-        <Metric label="Total received" value={inr(received)} />
-        <Metric label="Outstanding" value={inr(Math.max(0, dealValue - received))} />
-        <Metric label="Collected today" value={inr(todayCollection)} />
+        <Metric label="Total outstanding" value={inr(totalOutstanding)} />
+        <Metric label="Accounts to recover" value={String(outstandingRows.length)} />
+        <Metric label="Payment pending before delivery" value={String(pendingBeforeDelivery)} />
+        <Metric label="Delivered but dues left" value={String(deliveredWithDues)} />
       </div>
+      <p className="mb-4 text-xs text-muted-foreground">Collected today: {inr(todayCollection)}</p>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="shadow-card">
