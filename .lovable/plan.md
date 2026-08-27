@@ -20,7 +20,7 @@ Capabilities per role:
 | Job cards | full | – | open, edit, close | no access | – |
 | Spare requests | full | raise | raise | accept, issue, add, edit, close | – |
 | Route planner | full | – | create, edit | – | – |
-| Masters (products, villages, users, team) | full | read | read | read | read |
+| Masters (products, villages, users, team) | full | – | – | – | – |
 
 Only CEO / Manager / Sales Manager ever see a Delete button, anywhere.
 
