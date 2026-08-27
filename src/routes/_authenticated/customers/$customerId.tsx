@@ -141,6 +141,8 @@ function CustomerDetail() {
                     <Field label="Outstanding">{inr(due)}</Field>
                     <Field label="Use type">{delivery?.use_type ?? "—"}</Field>
                     <Field label="RTO number">{pr?.rto_number ?? "—"}</Field>
+                    <Field label="Number plate">{pr?.number_plate_number ?? "—"}</Field>
+                    <Field label="Passing done on">{pr?.passing_date ? fmtDate(pr.passing_date) : "—"}</Field>
                   </div>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {sc && (
