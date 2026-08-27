@@ -64,6 +64,8 @@ function NewInquiry() {
   >([]);
   const [checked, setChecked] = useState(false);
   const [selectedModel, setSelectedModel] = useState("");
+  const [village, setVillage] = useState("");
+  const [tehsil, setTehsil] = useState("");
   const { data: productList } = useProducts(true);
   const selectedHp = (productList ?? []).find((p) => p.model === selectedModel)?.hp ?? "";
 
@@ -250,11 +252,17 @@ function NewInquiry() {
               </div>
               <div className="space-y-1.5">
                 <Label>Village</Label>
-                <VillageSelect name="village" required />
+                <VillageSelect
+                  name="village"
+                  required
+                  value={village}
+                  onChange={setVillage}
+                  onTehsilChange={setTehsil}
+                />
               </div>
               <div className="space-y-1.5">
                 <Label>Tehsil</Label>
-                <TehsilSelect name="taluka" />
+                <TehsilSelect name="taluka" value={tehsil} onChange={setTehsil} />
               </div>
               <div className="space-y-1.5">
                 <Label>Customer type</Label>
