@@ -116,6 +116,11 @@ function DeliveryDetail() {
   ];
   const ready = checks.every((c) => c.ok);
   const docsPending = !progress.complete;
+  const passingDone = !!passingRec?.passing_date;
+  const subsidyDone =
+    !!subsidy &&
+    (subsidy.use_type === "COMMERCIAL" ||
+      (subsidy.application_status === "DONE" && subsidy.approval_status === "APPROVED"));
 
 
   return (
@@ -343,12 +348,6 @@ function DeliveryDetail() {
         </Card>
 
         <DocumentsPanel customerId={b.customer_id} />
-
-        {stock?.id && (
-          <div className="lg:col-span-3">
-            <VehicleDocumentsPanel stockId={stock.id} />
-          </div>
-        )}
       </div>
     </div>
   );
