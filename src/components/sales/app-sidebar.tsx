@@ -12,44 +12,69 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useMe } from "@/lib/auth";
+import { usePerms } from "@/lib/permissions";
 
-const SALES_ITEMS = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-  { title: "Inquiries", url: "/inquiries", icon: ClipboardList },
-  { title: "Customers", url: "/customers", icon: Users },
-  { title: "Bookings", url: "/bookings", icon: FileSignature },
+type Perms = ReturnType<typeof usePerms>;
+
+type Item = { title: string; url: string; icon: typeof LayoutDashboard; show: (p: Perms) => boolean };
+
+const SALES_ITEMS: Item[] = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard, show: () => true },
+  { title: "Inquiries", url: "/inquiries", icon: ClipboardList, show: (p) => p.canAny("inquiry.create", "inquiry.edit") || p.isManagement },
+  { title: "Customers", url: "/customers", icon: Users, show: (p) => p.canAny("inquiry.create", "inquiry.edit", "customer.edit") || p.isManagement },
+  { title: "Bookings", url: "/bookings", icon: FileSignature, show: (p) => p.canAny("booking.create", "booking.edit", "payment.add") || p.isManagement },
 ];
 
-const OPS_ITEMS = [
-  { title: "Stock", url: "/stock", icon: Boxes },
-  { title: "Delivery", url: "/delivery", icon: Truck },
-  { title: "Subsidy", url: "/subsidy", icon: BadgeCheck },
-  { title: "Passing", url: "/passing", icon: FileCheck2 },
-  { title: "Accounting", url: "/accounting", icon: IndianRupee },
+const OPS_ITEMS: Item[] = [
+  { title: "Stock", url: "/stock", icon: Boxes, show: (p) => p.canAny("stock.add", "stock.edit", "stock.allocate") },
+  { title: "Delivery", url: "/delivery", icon: Truck, show: (p) => p.can("delivery.manage") },
+  { title: "Subsidy", url: "/subsidy", icon: BadgeCheck, show: (p) => p.can("subsidy.edit") },
+  { title: "Passing", url: "/passing", icon: FileCheck2, show: (p) => p.can("passing.edit") },
+  { title: "Accounting", url: "/accounting", icon: IndianRupee, show: (p) => p.canAny("payment.add", "payment.edit") || p.isManagement },
 ];
 
-const SERVICE_ITEMS = [
-  { title: "Service Register", url: "/service", icon: Wrench },
-  { title: "Job Cards", url: "/service/jobcards", icon: ClipboardCheck },
-  { title: "Route Planner", url: "/service/routes", icon: RouteIcon },
-  { title: "Spare Parts", url: "/spares", icon: Cog },
+const SERVICE_ITEMS: Item[] = [
+  { title: "Service Register", url: "/service", icon: Wrench, show: (p) => p.canAny("service.register", "service.edit") },
+  { title: "Job Cards", url: "/service/jobcards", icon: ClipboardCheck, show: (p) => p.can("jobcard.manage") },
+  { title: "Route Planner", url: "/service/routes", icon: RouteIcon, show: (p) => p.can("routes.manage") },
+  { title: "Spare Parts", url: "/spares", icon: Cog, show: (p) => p.canAny("spares.raise", "spares.fulfill") },
 ];
 
-
-const MASTER_ITEMS = [
-  { title: "Products", url: "/products", icon: Package },
-  { title: "Villages", url: "/villages", icon: MapPin },
-  { title: "Users", url: "/users", icon: UserCog },
-  { title: "Backend status", url: "/system", icon: Server },
+const MASTER_ITEMS: Item[] = [
+  { title: "Products", url: "/products", icon: Package, show: (p) => p.can("masters.view") },
+  { title: "Villages", url: "/villages", icon: MapPin, show: (p) => p.can("masters.view") },
+  { title: "Users", url: "/users", icon: UserCog, show: (p) => p.can("masters.view") },
+  { title: "Backend status", url: "/system", icon: Server, show: (p) => p.can("masters.view") },
 ];
 
+function NavGroup({ label, items, isActive }: { label: string; items: Item[]; isActive: (url: string) => boolean }) {
+  if (items.length === 0) return null;
+  return (
+    <SidebarGroup>
+      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
+                <Link to={item.url} className="flex items-center gap-2">
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.title}</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
+}
 
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const pathname = useRouterState({ select: (r) => r.location.pathname });
-  const { data: me } = useMe();
+  const perms = usePerms();
 
   const isActive = (url: string) => pathname === url || pathname.startsWith(url + "/");
 
@@ -72,81 +97,12 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Sales</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {SALES_ITEMS.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
-                    <Link to={item.url} className="flex items-center gap-2">
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <NavGroup label="Sales" items={SALES_ITEMS.filter((i) => i.show(perms))} isActive={isActive} />
+        <NavGroup label="Operations" items={OPS_ITEMS.filter((i) => i.show(perms))} isActive={isActive} />
+        <NavGroup label="Service" items={SERVICE_ITEMS.filter((i) => i.show(perms))} isActive={isActive} />
+        <NavGroup label="Master" items={MASTER_ITEMS.filter((i) => i.show(perms))} isActive={isActive} />
 
-        <SidebarGroup>
-          <SidebarGroupLabel>Operations</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {OPS_ITEMS.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
-                    <Link to={item.url} className="flex items-center gap-2">
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Service</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {SERVICE_ITEMS.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
-                    <Link to={item.url} className="flex items-center gap-2">
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Master</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {MASTER_ITEMS.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={isActive(item.url)} tooltip={item.title}>
-                    <Link to={item.url} className="flex items-center gap-2">
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-
-
-        {me?.isManagement && (
+        {perms.isManagement && (
           <SidebarGroup>
             <SidebarGroupLabel>Management</SidebarGroupLabel>
             <SidebarGroupContent>
