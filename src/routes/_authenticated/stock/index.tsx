@@ -51,6 +51,7 @@ function StockPage() {
         mfg_year: payload["mfg_year"] || null,
         location: payload["location"] || "Main Showroom",
         arrival_date: payload["arrival_date"] || null,
+        received_from: payload["received_from"] || null,
         status: "INSPECTION_PENDING",
       });
       if (error) throw error;
