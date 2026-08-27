@@ -150,11 +150,6 @@ function PassingDetail() {
                 <Printer className="mr-1 h-4 w-4" /> Tax invoice
               </Link>
             </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/print/documents/$customerId" params={{ customerId: b.customer_id }} target="_blank">
-                <Printer className="mr-1 h-4 w-4" /> Customer documents
-              </Link>
-            </Button>
           </div>
         }
       />
@@ -484,31 +479,6 @@ function PassingDetail() {
             </CardContent>
           </Card>
 
-          {alloc?.tractor_stock_id && (
-            <div className="lg:col-span-3">
-              <VehicleDocumentsPanel stockId={alloc.tractor_stock_id} readOnly />
-            </div>
-          )}
-
-          <Card className="print-area shadow-card lg:col-span-3">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-base">Subsidy file checklist</CardTitle>
-              <Button size="sm" variant="outline" data-print-hide onClick={() => window.print()}>
-                <Printer className="mr-1 h-4 w-4" /> Print checklist
-              </Button>
-            </CardHeader>
-            <CardContent className="grid gap-2 md:grid-cols-2">
-              {checklist.map((c) => (
-                <label key={c.id} className="flex items-center gap-3 rounded-md border p-2 text-sm">
-                  <Checkbox checked={c.is_done} onCheckedChange={(v) => tick.mutate({ id: c.id, is_done: !!v })} />
-                  <span className="flex-1">{c.label}</span>
-                  <Badge variant={c.provided_by === "CUSTOMER" ? "outline" : "secondary"}>
-                    {c.provided_by === "CUSTOMER" ? "With customer" : "Dealer"}
-                  </Badge>
-                </label>
-              ))}
-            </CardContent>
-          </Card>
         </div>
       )}
     </div>
