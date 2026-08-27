@@ -117,7 +117,11 @@ function NewServiceJobPage() {
             <Input value={form.mobile} onChange={(e) => set("mobile", e.target.value)} />
           </Row>
           <Row label="Village *">
-            <VillageSelect value={form.village} onChange={(v) => set("village", v)} />
+            <VillageSelect
+              value={form.village}
+              onChange={(v) => set("village", v)}
+              onTehsilChange={(t) => set("taluka", t)}
+            />
           </Row>
           <Row label="Tehsil">
             <TehsilSelect value={form.taluka} onChange={(v) => set("taluka", v)} />
