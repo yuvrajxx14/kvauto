@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Cog, Route as RouteIcon } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Cog, Route as RouteIcon, MapPin } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -37,7 +37,11 @@ const SERVICE_ITEMS = [
 ];
 
 
-const MASTER_ITEMS = [{ title: "Products", url: "/products", icon: Package }];
+const MASTER_ITEMS = [
+  { title: "Products", url: "/products", icon: Package },
+  { title: "Villages", url: "/villages", icon: MapPin },
+  { title: "Users", url: "/users", icon: UserCog },
+];
 
 
 export function AppSidebar() {

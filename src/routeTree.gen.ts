@@ -40,6 +40,7 @@ import { Route as AuthenticatedSparesNewRouteImport } from './routes/_authentica
 import { Route as AuthenticatedStockIndexRouteImport } from './routes/_authenticated/stock/index'
 import { Route as AuthenticatedStockStockIdRouteImport } from './routes/_authenticated/stock/$stockId'
 import { Route as AuthenticatedSubsidyIndexRouteImport } from './routes/_authenticated/subsidy/index'
+import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedVillagesIndexRouteImport } from './routes/_authenticated/villages/index'
 import { Route as AuthenticatedPrintChallanBookingIdRouteImport } from './routes/_authenticated/print/challan.$bookingId'
 import { Route as AuthenticatedPrintDocumentsCustomerIdRouteImport } from './routes/_authenticated/print/documents.$customerId'
@@ -226,6 +227,11 @@ const AuthenticatedSubsidyIndexRoute =
     path: '/subsidy/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedVillagesIndexRoute =
   AuthenticatedVillagesIndexRouteImport.update({
     id: '/villages/',
@@ -306,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/spares/': typeof AuthenticatedSparesIndexRoute
   '/stock/': typeof AuthenticatedStockIndexRoute
   '/subsidy/': typeof AuthenticatedSubsidyIndexRoute
+  '/users/': typeof AuthenticatedUsersIndexRoute
   '/villages/': typeof AuthenticatedVillagesIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
   '/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
@@ -346,6 +353,7 @@ export interface FileRoutesByTo {
   '/spares': typeof AuthenticatedSparesIndexRoute
   '/stock': typeof AuthenticatedStockIndexRoute
   '/subsidy': typeof AuthenticatedSubsidyIndexRoute
+  '/users': typeof AuthenticatedUsersIndexRoute
   '/villages': typeof AuthenticatedVillagesIndexRoute
   '/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
   '/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
@@ -388,6 +396,7 @@ export interface FileRoutesById {
   '/_authenticated/spares/': typeof AuthenticatedSparesIndexRoute
   '/_authenticated/stock/': typeof AuthenticatedStockIndexRoute
   '/_authenticated/subsidy/': typeof AuthenticatedSubsidyIndexRoute
+  '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
   '/_authenticated/villages/': typeof AuthenticatedVillagesIndexRoute
   '/_authenticated/print/challan/$bookingId': typeof AuthenticatedPrintChallanBookingIdRoute
   '/_authenticated/print/documents/$customerId': typeof AuthenticatedPrintDocumentsCustomerIdRoute
@@ -430,6 +439,7 @@ export interface FileRouteTypes {
     | '/spares/'
     | '/stock/'
     | '/subsidy/'
+    | '/users/'
     | '/villages/'
     | '/print/challan/$bookingId'
     | '/print/documents/$customerId'
@@ -470,6 +480,7 @@ export interface FileRouteTypes {
     | '/spares'
     | '/stock'
     | '/subsidy'
+    | '/users'
     | '/villages'
     | '/print/challan/$bookingId'
     | '/print/documents/$customerId'
@@ -511,6 +522,7 @@ export interface FileRouteTypes {
     | '/_authenticated/spares/'
     | '/_authenticated/stock/'
     | '/_authenticated/subsidy/'
+    | '/_authenticated/users/'
     | '/_authenticated/villages/'
     | '/_authenticated/print/challan/$bookingId'
     | '/_authenticated/print/documents/$customerId'
@@ -746,6 +758,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSubsidyIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/users/': {
+      id: '/_authenticated/users/'
+      path: '/users'
+      fullPath: '/users/'
+      preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/villages/': {
       id: '/_authenticated/villages/'
       path: '/villages'
@@ -834,6 +853,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSparesIndexRoute: typeof AuthenticatedSparesIndexRoute
   AuthenticatedStockIndexRoute: typeof AuthenticatedStockIndexRoute
   AuthenticatedSubsidyIndexRoute: typeof AuthenticatedSubsidyIndexRoute
+  AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
   AuthenticatedVillagesIndexRoute: typeof AuthenticatedVillagesIndexRoute
   AuthenticatedPrintChallanBookingIdRoute: typeof AuthenticatedPrintChallanBookingIdRoute
   AuthenticatedPrintDocumentsCustomerIdRoute: typeof AuthenticatedPrintDocumentsCustomerIdRoute
@@ -874,6 +894,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSparesIndexRoute: AuthenticatedSparesIndexRoute,
   AuthenticatedStockIndexRoute: AuthenticatedStockIndexRoute,
   AuthenticatedSubsidyIndexRoute: AuthenticatedSubsidyIndexRoute,
+  AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
   AuthenticatedVillagesIndexRoute: AuthenticatedVillagesIndexRoute,
   AuthenticatedPrintChallanBookingIdRoute:
     AuthenticatedPrintChallanBookingIdRoute,
