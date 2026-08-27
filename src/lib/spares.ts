@@ -66,8 +66,12 @@ export function spareStatusTone(status: string) {
     case "REJECTED":
       return "bg-destructive/10 text-destructive";
     case "PARTIAL":
+    case "ORDERED":
       return "bg-warning/15 text-warning";
     case "APPROVED":
+    case "LOCAL_CHECK":
+    case "CODEALER_CHECK":
+    case "RECEIVED":
       return "bg-primary/15 text-primary";
     default:
       return "bg-muted text-muted-foreground";
