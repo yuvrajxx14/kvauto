@@ -111,24 +111,11 @@ function PassingDetail() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const tick = useMutation({
-    mutationFn: async (p: { id: string; is_done: boolean }) => {
-      const { error } = await supabase.from("passing_checklist").update({ is_done: p.is_done }).eq("id", p.id);
-      if (error) throw error;
-    },
-    onSuccess: () => qc.invalidateQueries(),
-    onError: (e: Error) => toast.error(e.message),
-  });
 
   if (!b || isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
 
   const outstanding = Math.max(0, Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0));
   const paymentOk = outstanding < 1;
-  const allocRaw = (b as unknown as { allocation?: unknown }).allocation;
-  const alloc = (Array.isArray(allocRaw) ? allocRaw[0] : allocRaw) as { tractor_stock_id?: string } | undefined;
-  const checklist = [...((rec?.checklist as Array<{ id: string; label: string; provided_by: string; is_done: boolean; sort_order: number }>) ?? [])].sort(
-    (x, y) => x.sort_order - y.sort_order,
-  );
 
   const agri = subsidy?.use_type !== "COMMERCIAL";
   const applicationDone = !agri || subsidy?.application_status === "DONE";
