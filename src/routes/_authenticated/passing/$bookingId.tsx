@@ -477,6 +477,8 @@ function PassingDetail() {
                 <Field label="Use type">{subsidy?.use_type ?? "—"}</Field>
                 <Field label="Application">{subsidy?.application_status ?? "—"}</Field>
                 <Field label="Approval">{subsidy?.approval_status ?? "—"}</Field>
+                <Field label="Number plate">{rec.number_plate_number ?? "—"}</Field>
+                <Field label="Passing done on">{fmtDate(rec.passing_date ?? null)}</Field>
                 <Field label="Number plate fitment">{fmtDate(r?.fitment_date ?? null)}</Field>
               </div>
             </CardContent>
