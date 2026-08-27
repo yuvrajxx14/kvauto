@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { VARIANTS } from "@/lib/sales";
-import { PAYMENT_MODES, PAYMENT_MODE_LABEL } from "@/lib/booking";
+import { PAYMENT_MODES, PAYMENT_MODE_LABEL, FINANCE_COMPANIES } from "@/lib/booking";
 
 export const Route = createFileRoute("/_authenticated/bookings/new")({
   validateSearch: (search: Record<string, unknown>) => ({ inquiryId: String(search['inquiryId'] ?? "") }),
