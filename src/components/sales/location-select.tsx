@@ -12,7 +12,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { VILLAGES, TEHSILS } from "@/lib/geo";
+import { VILLAGES, TEHSILS, tehsilForVillage } from "@/lib/geo";
+import { useVillages } from "@/lib/erp";
 
 type BaseProps = {
   /** Optional form field name — renders a hidden input so plain FormData submits work. */
@@ -29,18 +30,26 @@ export function VillageSelect({
   name,
   value,
   onChange,
+  onTehsilChange,
   defaultValue = "",
   placeholder = "Select village",
   required,
   disabled,
-}: BaseProps) {
+}: BaseProps & { onTehsilChange?: (tehsil: string) => void }) {
   const [internal, setInternal] = useState(defaultValue);
   const [open, setOpen] = useState(false);
   const selected = value !== undefined ? value : internal;
+  const { data: master } = useVillages(true);
 
-  function pick(v: string) {
-    if (value === undefined) setInternal(v);
-    onChange?.(v);
+  const list =
+    master && master.length > 0
+      ? master.map((v) => ({ name: v.name, tehsil: v.tehsil }))
+      : VILLAGES.map((v) => ({ name: v, tehsil: tehsilForVillage(v) ?? "" }));
+
+  function pick(v: { name: string; tehsil: string }) {
+    if (value === undefined) setInternal(v.name);
+    onChange?.(v.name);
+    if (v.tehsil) onTehsilChange?.(v.tehsil);
     setOpen(false);
   }
 
@@ -70,15 +79,18 @@ export function VillageSelect({
             <CommandList>
               <CommandEmpty>No village found.</CommandEmpty>
               <CommandGroup>
-                {VILLAGES.map((v) => (
-                  <CommandItem key={v} value={v} onSelect={() => pick(v)}>
+                {list.map((v) => (
+                  <CommandItem key={v.name} value={v.name} onSelect={() => pick(v)}>
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        selected === v ? "opacity-100" : "opacity-0",
+                        selected === v.name ? "opacity-100" : "opacity-0",
                       )}
                     />
-                    {v}
+                    <span className="flex-1">{v.name}</span>
+                    {v.tehsil && (
+                      <span className="ml-2 text-xs text-muted-foreground">{v.tehsil}</span>
+                    )}
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -100,6 +112,11 @@ export function TehsilSelect({
 }: BaseProps) {
   const [internal, setInternal] = useState(defaultValue);
   const selected = value !== undefined ? value : internal;
+  const { data: master } = useVillages(true);
+
+  const options = Array.from(
+    new Set([...TEHSILS, ...((master ?? []).map((v) => v.tehsil).filter(Boolean))]),
+  );
 
   return (
     <Select
@@ -115,7 +132,7 @@ export function TehsilSelect({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        {TEHSILS.map((t) => (
+        {options.map((t) => (
           <SelectItem key={t} value={t}>
             {t}
           </SelectItem>
