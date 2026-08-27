@@ -356,6 +356,15 @@ function PassingDetail() {
                   {r?.number_plate_received ? "Undo received" : "Mark received"}
                 </Button>
                 <Input
+                  className="h-8 w-[180px] uppercase"
+                  placeholder="Number plate e.g. GJ03NK5189"
+                  defaultValue={r?.number_plate_number ?? ""}
+                  onBlur={(e) => {
+                    const v = e.target.value.toUpperCase().replace(/\s+/g, "");
+                    if (v !== (r?.number_plate_number ?? "")) update.mutate({ number_plate_number: v || null });
+                  }}
+                />
+                <Input
                   type="date"
                   className="h-8 w-[170px]"
                   defaultValue={r?.fitment_date ?? ""}
