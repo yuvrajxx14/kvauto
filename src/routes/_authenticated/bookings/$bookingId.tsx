@@ -3,6 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, Printer, Truck, Wrench } from "lucide-react";
 import { toast } from "sonner";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
 import { BookingBadge, StockBadge } from "@/components/sales/badges";
@@ -100,6 +101,9 @@ function BookingDetail() {
             )}
             {status !== "DELIVERED" && status !== "CANCELLED" && (
               <CancelBookingDialog bookingId={bookingId} received={Number(b.amount_received ?? 0)} />
+            )}
+            {status !== "DELIVERED" && (
+              <DeleteRecordButton table="bookings" id={bookingId} label="this booking" redirectTo="/bookings" />
             )}
             {status !== "DELIVERED" && alloc && (
               <Button size="sm" onClick={() => navigate({ to: "/delivery/$bookingId", params: { bookingId } })}>

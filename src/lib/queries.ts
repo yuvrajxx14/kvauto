@@ -16,6 +16,40 @@ export function useProfiles() {
   });
 }
 
+export type StaffWithRoles = { id: string; full_name: string; roles: string[] };
+
+/** Staff list including roles — used by assignment pickers so only the right role is offered. */
+export function useStaffWithRoles() {
+  return useQuery({
+    queryKey: ["staff-roles"],
+    queryFn: async (): Promise<StaffWithRoles[]> => {
+      const { data, error } = await supabase.rpc("staff_directory_roles" as never);
+      if (error) throw error;
+      return (data ?? []) as unknown as StaffWithRoles[];
+    },
+    staleTime: 60_000,
+  });
+}
+
+export function useSalesStaff() {
+  const q = useStaffWithRoles();
+  const list = (q.data ?? []).filter((p) => p.roles.some((r) => ["salesman", "sales_manager"].includes(r)));
+  // Fallback: if no salesman exists yet, allow management to be picked
+  return { ...q, data: list.length > 0 ? list : (q.data ?? []).filter((p) => p.roles.some((r) => ["ceo", "manager"].includes(r))) };
+}
+
+export function useTechnicians() {
+  const q = useStaffWithRoles();
+  const list = (q.data ?? []).filter((p) => p.roles.some((r) => ["mechanic", "service_manager", "workshop_manager"].includes(r)));
+  return { ...q, data: list };
+}
+
+export function useSparepartStaff() {
+  const q = useStaffWithRoles();
+  const list = (q.data ?? []).filter((p) => p.roles.some((r) => ["sparepart_manager", "ceo", "manager", "sales_manager"].includes(r)));
+  return { ...q, data: list };
+}
+
 
 export function useProfileMap() {
   const { data } = useProfiles();

@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Circle, Printer } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { CheckCircle2, Circle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCustomerDocuments, useDocumentChecklist } from "@/lib/erp";
@@ -90,14 +89,6 @@ export function DocumentsPanel({ customerId }: { customerId: string }) {
       <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 pb-3">
         <CardTitle className="text-base">Document collection checklist</CardTitle>
         <div className="flex items-center gap-3">
-          <Link
-            to="/print/documents/$customerId"
-            params={{ customerId }}
-            target="_blank"
-            className="flex items-center gap-1 text-xs text-primary hover:underline"
-          >
-            <Printer className="h-3.5 w-3.5" /> Print checklist
-          </Link>
           <span
             className={cn(
               "rounded-full border px-2.5 py-0.5 text-xs font-semibold",

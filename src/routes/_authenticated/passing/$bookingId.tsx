@@ -9,13 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useBooking, usePassingRecord, useSubsidyCase } from "@/lib/erp";
 import { SUBSIDY_CHECKLIST } from "@/lib/passing";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
-import { VehicleDocumentsPanel } from "@/components/sales/vehicle-documents-panel";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/passing/$bookingId")({
@@ -111,24 +109,11 @@ function PassingDetail() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const tick = useMutation({
-    mutationFn: async (p: { id: string; is_done: boolean }) => {
-      const { error } = await supabase.from("passing_checklist").update({ is_done: p.is_done }).eq("id", p.id);
-      if (error) throw error;
-    },
-    onSuccess: () => qc.invalidateQueries(),
-    onError: (e: Error) => toast.error(e.message),
-  });
 
   if (!b || isLoading) return <p className="text-sm text-muted-foreground">Loading…</p>;
 
   const outstanding = Math.max(0, Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0));
   const paymentOk = outstanding < 1;
-  const allocRaw = (b as unknown as { allocation?: unknown }).allocation;
-  const alloc = (Array.isArray(allocRaw) ? allocRaw[0] : allocRaw) as { tractor_stock_id?: string } | undefined;
-  const checklist = [...((rec?.checklist as Array<{ id: string; label: string; provided_by: string; is_done: boolean; sort_order: number }>) ?? [])].sort(
-    (x, y) => x.sort_order - y.sort_order,
-  );
 
   const agri = subsidy?.use_type !== "COMMERCIAL";
   const applicationDone = !agri || subsidy?.application_status === "DONE";
@@ -148,11 +133,6 @@ function PassingDetail() {
             <Button asChild size="sm">
               <Link to="/print/invoice/$bookingId" params={{ bookingId }} target="_blank">
                 <Printer className="mr-1 h-4 w-4" /> Tax invoice
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <Link to="/print/documents/$customerId" params={{ customerId: b.customer_id }} target="_blank">
-                <Printer className="mr-1 h-4 w-4" /> Customer documents
               </Link>
             </Button>
           </div>
@@ -484,31 +464,6 @@ function PassingDetail() {
             </CardContent>
           </Card>
 
-          {alloc?.tractor_stock_id && (
-            <div className="lg:col-span-3">
-              <VehicleDocumentsPanel stockId={alloc.tractor_stock_id} readOnly />
-            </div>
-          )}
-
-          <Card className="print-area shadow-card lg:col-span-3">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-base">Subsidy file checklist</CardTitle>
-              <Button size="sm" variant="outline" data-print-hide onClick={() => window.print()}>
-                <Printer className="mr-1 h-4 w-4" /> Print checklist
-              </Button>
-            </CardHeader>
-            <CardContent className="grid gap-2 md:grid-cols-2">
-              {checklist.map((c) => (
-                <label key={c.id} className="flex items-center gap-3 rounded-md border p-2 text-sm">
-                  <Checkbox checked={c.is_done} onCheckedChange={(v) => tick.mutate({ id: c.id, is_done: !!v })} />
-                  <span className="flex-1">{c.label}</span>
-                  <Badge variant={c.provided_by === "CUSTOMER" ? "outline" : "secondary"}>
-                    {c.provided_by === "CUSTOMER" ? "With customer" : "Dealer"}
-                  </Badge>
-                </label>
-              ))}
-            </CardContent>
-          </Card>
         </div>
       )}
     </div>

@@ -3,6 +3,7 @@ import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
 import { Field, PageHeader } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { useProfiles } from "@/lib/queries";
+import { useTechnicians } from "@/lib/queries";
 import { fmtDate, inr } from "@/lib/sales";
 import {
   SERVICE_NEXT,
@@ -47,7 +48,7 @@ function ServiceJobPage() {
   const qc = useQueryClient();
   const { data: job, isLoading } = useServiceJob(jobId);
   const { data: checklist } = useServiceChecklist(jobId);
-  const { data: staff } = useProfiles();
+  const { data: staff } = useTechnicians();
 
   const [work, setWork] = useState({ work_done: "", parts_details: "", parts_amount: "0", labour_amount: "0", remarks: "" });
 
@@ -125,9 +126,12 @@ function ServiceJobPage() {
         title={job.job_number}
         subtitle={`${job.customer_name} · ${job.mobile} · ${job.village}`}
         actions={
-          <Badge variant="secondary" className={statusTone(status)}>
-            {SERVICE_STATUS_LABEL[status] ?? status}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className={statusTone(status)}>
+              {SERVICE_STATUS_LABEL[status] ?? status}
+            </Badge>
+            <DeleteRecordButton table="service_jobs" id={jobId} label="this service job" redirectTo="/service" />
+          </div>
         }
       />
 

@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
-import { useProfiles } from "@/lib/queries";
+import { useTechnicians } from "@/lib/queries";
 import { fmtDate } from "@/lib/sales";
 import {
   DEALERSHIP_ORIGIN,
@@ -41,7 +41,7 @@ function RoutePlannerPage() {
   const qc = useQueryClient();
   const { data: jobs } = usePendingFieldJobs();
   const { data: routes } = useServiceRoutes();
-  const { data: staff } = useProfiles();
+  const { data: staff } = useTechnicians();
 
   const [visitDate, setVisitDate] = useState(new Date().toISOString().slice(0, 10));
   const [mechanic, setMechanic] = useState("none");

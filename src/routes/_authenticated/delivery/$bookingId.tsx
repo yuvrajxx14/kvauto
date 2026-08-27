@@ -2,10 +2,10 @@ import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, CheckCircle2, Printer, ShieldCheck, XCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
-import { VehicleDocumentsPanel } from "@/components/sales/vehicle-documents-panel";
 import { DocumentsPanel, documentProgress } from "@/components/sales/documents-panel";
 import { PaymentDialog } from "@/components/sales/payment-dialog";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useBooking, useCustomerDocuments, useDocumentChecklist, useGatePass } from "@/lib/erp";
+import { useBooking, useCustomerDocuments, useDocumentChecklist, useGatePass, usePassingRecord, useSubsidyCase } from "@/lib/erp";
+import { usePerms } from "@/lib/permissions";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/delivery/$bookingId")({
@@ -34,10 +35,13 @@ export const Route = createFileRoute("/_authenticated/delivery/$bookingId")({
 function DeliveryDetail() {
   const { bookingId } = Route.useParams();
   const qc = useQueryClient();
+  const perms = usePerms();
   const { data: b, isLoading } = useBooking(bookingId);
   const { data: checklist } = useDocumentChecklist();
   const { data: docs } = useCustomerDocuments(b?.customer_id ?? "");
   const { data: gatePass } = useGatePass(bookingId);
+  const { data: passingRec } = usePassingRecord(bookingId);
+  const { data: subsidy } = useSubsidyCase(bookingId);
 
   const [useType, setUseType] = useState("AGRICULTURE");
   const [applicationStatus, setApplicationStatus] = useState("PENDING");
@@ -113,6 +117,11 @@ function DeliveryDetail() {
   ];
   const ready = checks.every((c) => c.ok);
   const docsPending = !progress.complete;
+  const passingDone = !!passingRec?.passing_date;
+  const subsidyDone =
+    !!subsidy &&
+    (subsidy.use_type === "COMMERCIAL" ||
+      (subsidy.application_status === "DONE" && subsidy.approval_status === "APPROVED"));
 
 
   return (
@@ -125,28 +134,9 @@ function DeliveryDetail() {
             <Button asChild variant="outline" size="sm">
               <Link to="/delivery"><ArrowLeft className="mr-1 h-4 w-4" /> Delivery list</Link>
             </Button>
-            {outstanding >= 1 && (
+            {outstanding >= 1 && perms.can("payment.add") && (
               <PaymentDialog bookingId={bookingId} bookingNumber={b.booking_number} outstanding={outstanding} />
             )}
-            {gatePass && (
-              <>
-                <Button asChild variant="outline" size="sm">
-                  <Link to="/print/gatepass/$bookingId" params={{ bookingId }} target="_blank">
-                    <Printer className="mr-1 h-4 w-4" /> Gate pass
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="sm">
-                  <Link to="/print/challan/$bookingId" params={{ bookingId }} target="_blank">
-                    <Printer className="mr-1 h-4 w-4" /> Challan
-                  </Link>
-                </Button>
-              </>
-            )}
-            <Button asChild variant="outline" size="sm">
-              <Link to="/print/documents/$customerId" params={{ customerId: b.customer_id }} target="_blank">
-                <Printer className="mr-1 h-4 w-4" /> Documents
-              </Link>
-            </Button>
           </div>
         }
       />
@@ -177,13 +167,21 @@ function DeliveryDetail() {
                 <Field label="Delivered on">{fmtDate(delivery.delivery_date)}</Field>
                 <Field label="Use type">{delivery.use_type ?? "—"}</Field>
                 <Field label="Remarks">{delivery.remarks || "—"}</Field>
-                <div className="flex gap-2 pt-2">
-                  <Button asChild size="sm" variant="outline">
-                    <Link to="/subsidy">Subsidy tracking</Link>
-                  </Button>
-                  <Button asChild size="sm">
-                    <Link to="/passing/$bookingId" params={{ bookingId }}>Proceed to passing</Link>
-                  </Button>
+                <div className="flex flex-wrap items-center gap-2 pt-2">
+                  {subsidyDone ? (
+                    <Badge variant="secondary">Subsidy done</Badge>
+                  ) : (
+                    <Button asChild size="sm" variant="outline">
+                      <Link to="/subsidy">Subsidy tracking</Link>
+                    </Button>
+                  )}
+                  {passingDone ? (
+                    <Badge variant="secondary">Passing done · {fmtDate(passingRec?.passing_date ?? null)}</Badge>
+                  ) : (
+                    <Button asChild size="sm">
+                      <Link to="/passing/$bookingId" params={{ bookingId }}>Proceed to passing</Link>
+                    </Button>
+                  )}
                 </div>
               </div>
             ) : (
@@ -351,12 +349,6 @@ function DeliveryDetail() {
         </Card>
 
         <DocumentsPanel customerId={b.customer_id} />
-
-        {stock?.id && (
-          <div className="lg:col-span-3">
-            <VehicleDocumentsPanel stockId={stock.id} />
-          </div>
-        )}
       </div>
     </div>
   );

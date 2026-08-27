@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth, useMe } from "@/lib/auth";
-import { useProfiles } from "@/lib/queries";
+import { useSalesStaff } from "@/lib/queries";
 import { useProducts } from "@/lib/erp";
 import { PageHeader } from "@/components/sales/ui";
 import { StatusBadge } from "@/components/sales/badges";
@@ -52,7 +52,7 @@ type ExistingCustomer = {
 function NewInquiry() {
   const { user } = useAuth();
   const { data: me } = useMe();
-  const { data: profiles } = useProfiles();
+  const { data: profiles } = useSalesStaff();
   const navigate = useNavigate();
   const qc = useQueryClient();
 

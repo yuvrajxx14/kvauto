@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ModelSelect } from "@/components/sales/model-select";
-import { useProfiles } from "@/lib/queries";
+import { useTechnicians } from "@/lib/queries";
 import { useServiceJobs } from "@/lib/service";
 import { todayISO } from "@/lib/sales";
 import { SPARE_PRIORITIES, SPARE_TYPE_LABEL, type SpareRequestType } from "@/lib/spares";
@@ -41,7 +41,7 @@ const emptyLine = (): Line => ({ part_name: "", part_number: "", qty_requested: 
 function NewSpareRequestPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { data: profiles } = useProfiles();
+  const { data: profiles } = useTechnicians();
   const { data: jobs } = useServiceJobs({ status: "active" });
 
   const [type, setType] = useState<SpareRequestType>("MECHANIC");

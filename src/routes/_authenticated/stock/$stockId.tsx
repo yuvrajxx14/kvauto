@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
 import { StockBadge, CheckBadge } from "@/components/sales/badges";
@@ -11,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useStockItem } from "@/lib/erp";
-import { VehicleDocumentsPanel } from "@/components/sales/vehicle-documents-panel";
 import { type CheckStatus, type StockStatus } from "@/lib/stock";
 import { fmtDate } from "@/lib/sales";
 
@@ -71,10 +71,11 @@ function StockDetail() {
         title={u.chassis_number}
         subtitle={`${u.model} · ${u.variant ?? "—"} · ${u.location}`}
         actions={
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button asChild variant="outline" size="sm">
               <Link to="/stock"><ArrowLeft className="mr-1 h-4 w-4" /> All stock</Link>
             </Button>
+            <DeleteRecordButton table="tractor_stock" id={stockId} label="this stock unit" redirectTo="/stock" />
           </div>
         }
       />
@@ -136,7 +137,6 @@ function StockDetail() {
           </CardContent>
         </Card>
         <div className="lg:col-span-3">
-          <VehicleDocumentsPanel stockId={stockId} />
         </div>
       </div>
     </div>
