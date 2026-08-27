@@ -108,9 +108,9 @@ function SpareRequestDetailPage() {
         order_received_date: (s["order_received_date"] as string) || null,
       };
       // Keep the status in step with the sourcing progress.
-      if (patch["order_received_date"] && req?.status === "ORDERED") patch["status"] = "RECEIVED";
-      else if (patch["order_number"] && ["APPROVED", "LOCAL_CHECK", "CODEALER_CHECK"].includes(String(req?.status)))
-        patch["status"] = "ORDERED";
+      if (patch.order_received_date && req?.status === "ORDERED") patch.status = "RECEIVED";
+      else if (patch.order_number && ["APPROVED", "LOCAL_CHECK", "CODEALER_CHECK"].includes(String(req?.status)))
+        patch.status = "ORDERED";
       const { error } = await supabase.from("spare_requests").update(patch).eq("id", requestId);
       if (error) throw error;
     },
