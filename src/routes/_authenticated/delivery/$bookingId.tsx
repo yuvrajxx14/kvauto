@@ -125,28 +125,9 @@ function DeliveryDetail() {
             <Button asChild variant="outline" size="sm">
               <Link to="/delivery"><ArrowLeft className="mr-1 h-4 w-4" /> Delivery list</Link>
             </Button>
-            {outstanding >= 1 && (
+            {outstanding >= 1 && perms.can("payment.add") && (
               <PaymentDialog bookingId={bookingId} bookingNumber={b.booking_number} outstanding={outstanding} />
             )}
-            {gatePass && (
-              <>
-                <Button asChild variant="outline" size="sm">
-                  <Link to="/print/gatepass/$bookingId" params={{ bookingId }} target="_blank">
-                    <Printer className="mr-1 h-4 w-4" /> Gate pass
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" size="sm">
-                  <Link to="/print/challan/$bookingId" params={{ bookingId }} target="_blank">
-                    <Printer className="mr-1 h-4 w-4" /> Challan
-                  </Link>
-                </Button>
-              </>
-            )}
-            <Button asChild variant="outline" size="sm">
-              <Link to="/print/documents/$customerId" params={{ customerId: b.customer_id }} target="_blank">
-                <Printer className="mr-1 h-4 w-4" /> Documents
-              </Link>
-            </Button>
           </div>
         }
       />

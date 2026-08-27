@@ -64,9 +64,13 @@ function PassingList() {
                     </TableCell>
                     <TableCell className={out > 0 ? "text-destructive" : ""}>{inr(out)}</TableCell>
                     <TableCell className="text-right">
-                      <Button asChild size="sm" variant="outline">
-                        <Link to="/passing/$bookingId" params={{ bookingId: b.id }}>Open</Link>
-                      </Button>
+                      {rec?.passing_date ? (
+                        <Badge variant="secondary">Done · {fmtDate(rec.passing_date)}</Badge>
+                      ) : (
+                        <Button asChild size="sm" variant="outline">
+                          <Link to="/passing/$bookingId" params={{ bookingId: b.id }}>Open</Link>
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 );
