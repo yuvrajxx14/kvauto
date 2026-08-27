@@ -65,7 +65,7 @@ function SystemPage() {
     <div>
       <PageHeader
         title="Backend status"
-        description="Which database this dealership system is running on, and whether it is reachable right now."
+        subtitle="Which database this dealership system is running on, and whether it is reachable right now."
         actions={
           <Button
             variant="outline"
