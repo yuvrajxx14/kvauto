@@ -143,9 +143,20 @@ function NewBooking() {
             </Select>
           </div>
           {financeType === "LOAN" ? (
-            <Field label="Loan amount (2% document charge applies at delivery)">
-              <Input name="loan_amount" type="number" min="1" step="0.01" required />
-            </Field>
+            <>
+              <Field label="Loan amount (2% document charge applies at delivery)">
+                <Input name="loan_amount" type="number" min="1" step="0.01" required />
+              </Field>
+              <div>
+                <Label>Finance company</Label>
+                <Select value={financeCompany} onValueChange={setFinanceCompany}>
+                  <SelectTrigger><SelectValue placeholder="Select finance company" /></SelectTrigger>
+                  <SelectContent>
+                    {FINANCE_COMPANIES.map((f) => <SelectItem key={f} value={f}>{f}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+            </>
           ) : (
             <div />
           )}
