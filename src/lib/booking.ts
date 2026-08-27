@@ -59,3 +59,23 @@ export function bookingPaymentState(received: number, bookingAmount: number) {
   if (received < bookingAmount) return "Partially received";
   return "Fully received";
 }
+
+/** Tractor finance companies used for loan deals. */
+export const FINANCE_COMPANIES = [
+  "Mahindra Finance",
+  "L&T Finance",
+  "Kotak Mahindra Bank",
+  "IDFC First Bank",
+  "ICICI Bank",
+  "Axis Bank",
+  "HDFC Bank",
+  "State Bank of India",
+  "Bank of Baroda",
+  "Cholamandalam Finance",
+  "Sundaram Finance",
+  "Shriram Finance",
+  "Tata Capital",
+  "Union Bank of India",
+  "District Co-operative Bank",
+  "Other",
+] as const;
