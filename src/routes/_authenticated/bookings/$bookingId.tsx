@@ -101,6 +101,9 @@ function BookingDetail() {
             {status !== "DELIVERED" && status !== "CANCELLED" && (
               <CancelBookingDialog bookingId={bookingId} received={Number(b.amount_received ?? 0)} />
             )}
+            {status !== "DELIVERED" && (
+              <DeleteRecordButton table="bookings" id={bookingId} label="this booking" redirectTo="/bookings" />
+            )}
             {status !== "DELIVERED" && alloc && (
               <Button size="sm" onClick={() => navigate({ to: "/delivery/$bookingId", params: { bookingId } })}>
                 <Truck className="mr-1 h-4 w-4" /> Delivery
