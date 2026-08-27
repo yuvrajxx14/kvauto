@@ -25,15 +25,17 @@ function AccountingPage() {
   const { data: payments } = useAllPayments();
 
   const open = (bookings ?? []).filter((b) => b.status !== "CANCELLED");
-  const dealValue = open.reduce((s, b) => s + Number(b.final_price ?? 0), 0);
-  const received = open.reduce((s, b) => s + Number(b.amount_received ?? 0), 0);
   const today = todayISO();
   const todayCollection = (payments ?? []).filter((p) => p.payment_date === today).reduce((s, p) => s + Number(p.amount), 0);
 
   const outstandingRows = open
     .map((b) => ({ b, out: Math.max(0, Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0)) }))
-    .filter((r) => r.out > 0)
+    .filter((r) => r.out > 1)
     .sort((a, x) => x.out - a.out);
+
+  const totalOutstanding = outstandingRows.reduce((s, r) => s + r.out, 0);
+  const pendingBeforeDelivery = outstandingRows.filter((r) => r.b.status !== "DELIVERED").length;
+  const deliveredWithDues = outstandingRows.filter((r) => r.b.status === "DELIVERED").length;
 
   return (
     <div>
