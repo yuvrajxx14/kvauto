@@ -13,7 +13,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { fmtDate, inr } from "@/lib/sales";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
+  SPARE_FLOW,
   SPARE_NEXT,
   SPARE_STATUS_LABEL,
   SPARE_TYPE_LABEL,
