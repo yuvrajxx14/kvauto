@@ -57,6 +57,13 @@ function NewBooking() {
         _loan_amount: payload.loan_amount,
       });
       if (error) throw error;
+      if (payload.finance_company) {
+        const { error: upErr } = await supabase
+          .from("bookings")
+          .update({ finance_company: payload.finance_company })
+          .eq("id", String(data));
+        if (upErr) throw upErr;
+      }
       return data;
     },
     onSuccess: (id) => {
