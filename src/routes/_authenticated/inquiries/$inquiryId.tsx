@@ -104,8 +104,8 @@ function InquiryDetail() {
 
   const c = inquiry.customer as unknown as Customer | null;
   const status = inquiry.status as InquiryStatus;
-  const locked = status === "BOOKED" || status === "DELIVERED";
-  const canBook = !["BOOKED", "DELIVERED", "LOST"].includes(status);
+  const locked = (status === "BOOKED" && hasActiveBooking) || status === "DELIVERED";
+  const canBook = status !== "DELIVERED" && !hasActiveBooking;
 
   return (
     <div>
