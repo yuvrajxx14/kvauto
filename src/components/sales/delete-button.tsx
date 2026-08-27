@@ -35,15 +35,18 @@ export function DeleteRecordButton({
   table,
   id,
   label,
+  redirectTo,
   onDeleted,
 }: {
   table: DeletableTable;
   id: string;
   label: string;
+  redirectTo?: string;
   onDeleted?: () => void;
 }) {
   const perms = usePerms();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
 
   if (!perms.isManagement) return null;
@@ -59,6 +62,7 @@ export function DeleteRecordButton({
     toast.success(`${label} deleted`);
     qc.invalidateQueries();
     onDeleted?.();
+    if (redirectTo) navigate({ to: redirectTo });
   }
 
   return (

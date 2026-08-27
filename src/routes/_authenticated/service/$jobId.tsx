@@ -129,7 +129,7 @@ function ServiceJobPage() {
             <Badge variant="secondary" className={statusTone(status)}>
               {SERVICE_STATUS_LABEL[status] ?? status}
             </Badge>
-            <DeleteRecordButton table="service_jobs" id={jobId} label="this service job" onDeleted={() => navigate({ to: "/service" })} />
+            <DeleteRecordButton table="service_jobs" id={jobId} label="this service job" redirectTo="/service" />
           </div>
         }
       />

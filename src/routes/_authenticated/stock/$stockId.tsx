@@ -74,7 +74,7 @@ function StockDetail() {
             <Button asChild variant="outline" size="sm">
               <Link to="/stock"><ArrowLeft className="mr-1 h-4 w-4" /> All stock</Link>
             </Button>
-            <DeleteRecordButton table="tractor_stock" id={stockId} label="this stock unit" onDeleted={() => navigate({ to: "/stock" })} />
+            <DeleteRecordButton table="tractor_stock" id={stockId} label="this stock unit" redirectTo="/stock" />
           </div>
         }
       />

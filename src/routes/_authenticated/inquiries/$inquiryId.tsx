@@ -131,7 +131,7 @@ function InquiryDetail() {
                 {edit ? "Cancel edit" : "Update inquiry"}
               </Button>
             )}
-            <DeleteRecordButton table="inquiries" id={inquiryId} label="this inquiry" onDeleted={() => navigate({ to: "/inquiries" })} />
+            <DeleteRecordButton table="inquiries" id={inquiryId} label="this inquiry" redirectTo="/inquiries" />
           </>
         }
       />

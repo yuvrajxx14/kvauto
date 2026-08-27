@@ -82,7 +82,7 @@ function CustomerDetail() {
                 Customer ledger
               </Link>
             </Button>
-            <DeleteRecordButton table="customers" id={customerId} label="this customer" onDeleted={() => navigate({ to: "/customers" })} />
+            <DeleteRecordButton table="customers" id={customerId} label="this customer" redirectTo="/customers" />
           </div>
         }
       />
