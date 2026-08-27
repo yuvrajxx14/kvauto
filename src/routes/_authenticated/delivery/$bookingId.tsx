@@ -34,10 +34,13 @@ export const Route = createFileRoute("/_authenticated/delivery/$bookingId")({
 function DeliveryDetail() {
   const { bookingId } = Route.useParams();
   const qc = useQueryClient();
+  const perms = usePerms();
   const { data: b, isLoading } = useBooking(bookingId);
   const { data: checklist } = useDocumentChecklist();
   const { data: docs } = useCustomerDocuments(b?.customer_id ?? "");
   const { data: gatePass } = useGatePass(bookingId);
+  const { data: passingRec } = usePassingRecord(bookingId);
+  const { data: subsidy } = useSubsidyCase(bookingId);
 
   const [useType, setUseType] = useState("AGRICULTURE");
   const [applicationStatus, setApplicationStatus] = useState("PENDING");
@@ -158,13 +161,21 @@ function DeliveryDetail() {
                 <Field label="Delivered on">{fmtDate(delivery.delivery_date)}</Field>
                 <Field label="Use type">{delivery.use_type ?? "—"}</Field>
                 <Field label="Remarks">{delivery.remarks || "—"}</Field>
-                <div className="flex gap-2 pt-2">
-                  <Button asChild size="sm" variant="outline">
-                    <Link to="/subsidy">Subsidy tracking</Link>
-                  </Button>
-                  <Button asChild size="sm">
-                    <Link to="/passing/$bookingId" params={{ bookingId }}>Proceed to passing</Link>
-                  </Button>
+                <div className="flex flex-wrap items-center gap-2 pt-2">
+                  {subsidyDone ? (
+                    <Badge variant="secondary">Subsidy done</Badge>
+                  ) : (
+                    <Button asChild size="sm" variant="outline">
+                      <Link to="/subsidy">Subsidy tracking</Link>
+                    </Button>
+                  )}
+                  {passingDone ? (
+                    <Badge variant="secondary">Passing done · {fmtDate(passingRec?.passing_date ?? null)}</Badge>
+                  ) : (
+                    <Button asChild size="sm">
+                      <Link to="/passing/$bookingId" params={{ bookingId }}>Proceed to passing</Link>
+                    </Button>
+                  )}
                 </div>
               </div>
             ) : (
