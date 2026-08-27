@@ -4,7 +4,6 @@ import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useBooking, useCustomerDocuments, useTaxInvoice } from "@/lib/erp";
-import { useVehicleDocuments } from "@/components/sales/vehicle-documents-panel";
 import { signedDocUrl, type PrintSheet } from "@/lib/doc-print";
 import { PASSING_SET_DOCS } from "@/lib/passing";
 import { DEALER } from "@/lib/print";
@@ -14,7 +13,7 @@ export const Route = createFileRoute("/_authenticated/print/passing-set/$booking
   head: () => ({
     meta: [
       { title: "Passing document set · KrushiVidhya Automobiles" },
-      { name: "description", content: "Print the full RTO passing set: invoice, Form 22, Aadhaar, PAN/Voter ID, 7-12-8A, company invoice and chassis print." },
+      { name: "description", content: "Print the full RTO passing set: invoice, Form 22, Aadhaar, PAN/Voter ID, 7-12-8A." },
       { property: "og:title", content: "Passing document set · KrushiVidhya Automobiles" },
       { property: "og:description", content: "Printable RTO passing document set." },
       { property: "og:type", content: "website" },
@@ -30,7 +29,6 @@ function PassingSetPrint() {
   const { data: invoice } = useTaxInvoice(bookingId);
   const { data: custDocs } = useCustomerDocuments(b?.customer_id ?? "");
   const alloc = Array.isArray(b?.allocation) ? b?.allocation[0] : (b?.allocation as { tractor_stock_id?: string; chassis_number?: string; engine_number?: string } | undefined);
-  const { data: vehDocs } = useVehicleDocuments(alloc?.tractor_stock_id);
 
   const [skipped, setSkipped] = useState<Record<string, boolean>>({});
   const [sheets, setSheets] = useState<PrintSheet[] | null>(null);
@@ -43,10 +41,6 @@ function PassingSetPrint() {
     if (d.source === "CUSTOMER") {
       const doc = (custDocs ?? []).find((c) => c.doc_type === d.key && c.verification_status === "RECEIVED");
       return { ...d, available: !!doc, note: doc ? `Collected in customer file · ${fmtDate(doc.created_at)}` : "Not collected — attach the physical copy", path: null, bucket: "vehicle-documents" as const };
-    }
-    if (d.source === "VEHICLE") {
-      const doc = (vehDocs ?? []).find((v) => v.doc_type === d.key);
-      return { ...d, available: !!doc, note: doc ? `${doc.file_name ?? "File"} · ${fmtDate(doc.created_at)}` : "Not attached to this chassis", path: doc?.file_path ?? null, bucket: "vehicle-documents" as const };
     }
     return { ...d, available: true, note: d.key === "INVOICE" ? (invoice?.invoice_number ?? "Invoice not issued yet") : "Printed from vehicle details", path: null, bucket: "vehicle-documents" as const };
   });

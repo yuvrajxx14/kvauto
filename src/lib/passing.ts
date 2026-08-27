@@ -32,8 +32,6 @@ export const PASSING_SET_DOCS = [
   { key: "VOTER_ID", label: "Voter ID", source: "CUSTOMER", optional: true },
   { key: "7_12", label: "7/12 extract", source: "CUSTOMER" },
   { key: "8A", label: "8A extract", source: "CUSTOMER" },
-  { key: "COMPANY_INVOICE", label: "Mahindra company purchase invoice", source: "VEHICLE" },
-  { key: "CHASSIS_PRINT", label: "Chassis print", source: "VEHICLE" },
 ] as const;
 
 /** Subsidy-file papers, mapped to where the scan can be pulled from. */
