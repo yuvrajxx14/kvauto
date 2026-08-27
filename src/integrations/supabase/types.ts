@@ -2180,6 +2180,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_accountant: { Args: { _user_id: string }; Returns: boolean }
       is_management: { Args: { _user_id: string }; Returns: boolean }
       is_receptionist: { Args: { _user_id: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
@@ -2245,6 +2246,14 @@ export type Database = {
           full_name: string
           id: string
           phone: string
+        }[]
+      }
+      staff_directory_roles: {
+        Args: never
+        Returns: {
+          full_name: string
+          id: string
+          roles: string[]
         }[]
       }
     }
