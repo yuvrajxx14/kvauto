@@ -250,7 +250,7 @@ export type Database = {
           {
             foreignKeyName: "bookings_inquiry_id_fkey"
             columns: ["inquiry_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "inquiries"
             referencedColumns: ["id"]
           },
@@ -1488,15 +1488,26 @@ export type Database = {
         Row: {
           approved_by: string | null
           chassis_number: string | null
+          codealer_available: boolean
+          codealer_checked: boolean
+          codealer_name: string | null
+          codealer_remarks: string | null
           created_at: string
           created_by: string | null
           customer_id: string | null
           id: string
           issued_at: string | null
           issued_by: string | null
+          local_available: boolean
+          local_checked: boolean
+          local_remarks: string | null
           mobile: string | null
           model: string | null
           needed_by: string | null
+          order_date: string | null
+          order_expected_date: string | null
+          order_number: string | null
+          order_received_date: string | null
           priority: string
           remarks: string | null
           request_number: string
@@ -1510,15 +1521,26 @@ export type Database = {
         Insert: {
           approved_by?: string | null
           chassis_number?: string | null
+          codealer_available?: boolean
+          codealer_checked?: boolean
+          codealer_name?: string | null
+          codealer_remarks?: string | null
           created_at?: string
           created_by?: string | null
           customer_id?: string | null
           id?: string
           issued_at?: string | null
           issued_by?: string | null
+          local_available?: boolean
+          local_checked?: boolean
+          local_remarks?: string | null
           mobile?: string | null
           model?: string | null
           needed_by?: string | null
+          order_date?: string | null
+          order_expected_date?: string | null
+          order_number?: string | null
+          order_received_date?: string | null
           priority?: string
           remarks?: string | null
           request_number?: string
@@ -1532,15 +1554,26 @@ export type Database = {
         Update: {
           approved_by?: string | null
           chassis_number?: string | null
+          codealer_available?: boolean
+          codealer_checked?: boolean
+          codealer_name?: string | null
+          codealer_remarks?: string | null
           created_at?: string
           created_by?: string | null
           customer_id?: string | null
           id?: string
           issued_at?: string | null
           issued_by?: string | null
+          local_available?: boolean
+          local_checked?: boolean
+          local_remarks?: string | null
           mobile?: string | null
           model?: string | null
           needed_by?: string | null
+          order_date?: string | null
+          order_expected_date?: string | null
+          order_number?: string | null
+          order_received_date?: string | null
           priority?: string
           remarks?: string | null
           request_number?: string
