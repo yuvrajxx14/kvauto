@@ -42,11 +42,12 @@ function AccountingPage() {
       <PageHeader title="Accounting" subtitle="Collections, outstanding balances and customer ledgers" />
 
       <div className="mb-4 grid gap-3 sm:grid-cols-4">
-        <Metric label="Total deal value" value={inr(dealValue)} />
-        <Metric label="Total received" value={inr(received)} />
-        <Metric label="Outstanding" value={inr(Math.max(0, dealValue - received))} />
-        <Metric label="Collected today" value={inr(todayCollection)} />
+        <Metric label="Total outstanding" value={inr(totalOutstanding)} />
+        <Metric label="Accounts to recover" value={String(outstandingRows.length)} />
+        <Metric label="Payment pending before delivery" value={String(pendingBeforeDelivery)} />
+        <Metric label="Delivered but dues left" value={String(deliveredWithDues)} />
       </div>
+      <p className="mb-4 text-xs text-muted-foreground">Collected today: {inr(todayCollection)}</p>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="shadow-card">
