@@ -459,6 +459,8 @@ function PassingDetail() {
                 <div><Label>Insurance policy number</Label><Input name="insurance_policy_number" defaultValue={rec.insurance_policy_number ?? ""} /></div>
                 <div><Label>Set sent for passing on</Label><Input name="set_sent_date" type="date" defaultValue={rec.set_sent_date ?? ""} /></div>
                 <div><Label>RTO number</Label><Input name="rto_number" defaultValue={rec.rto_number ?? ""} /></div>
+                <div><Label>Number plate</Label><Input name="number_plate_number" className="uppercase" placeholder="GJ03NK5189" defaultValue={rec.number_plate_number ?? ""} /></div>
+                <div><Label>Passing done on</Label><Input name="passing_date" type="date" defaultValue={rec.passing_date ?? ""} /></div>
                 <div><Label>Remarks</Label><Textarea name="remarks" rows={2} defaultValue={rec.remarks ?? ""} /></div>
                 <Button disabled={update.isPending}>Save details</Button>
               </form>
