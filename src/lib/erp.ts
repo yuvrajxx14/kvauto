@@ -440,3 +440,28 @@ export function usePendingDocumentCustomers() {
     },
   });
 }
+
+/* ---------- Village master ---------- */
+
+export type Village = {
+  id: string;
+  name: string;
+  tehsil: string;
+  active: boolean;
+};
+
+export function useVillages(activeOnly = false) {
+  return useQuery({
+    queryKey: ["villages", activeOnly],
+    queryFn: async (): Promise<Village[]> => {
+      let q = supabase.from("villages").select("id, name, tehsil, active");
+      if (activeOnly) q = q.eq("active", true);
+      const { data, error } = await q;
+      if (error) throw error;
+      return ((data ?? []) as Village[]).sort((a, b) =>
+        a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" }),
+      );
+    },
+    staleTime: 300_000,
+  });
+}
