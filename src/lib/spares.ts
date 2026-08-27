@@ -1,12 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export const SPARE_STATUSES = ["PENDING", "APPROVED", "PARTIAL", "ISSUED", "REJECTED"] as const;
+export const SPARE_STATUSES = [
+  "PENDING",
+  "APPROVED",
+  "LOCAL_CHECK",
+  "CODEALER_CHECK",
+  "ORDERED",
+  "RECEIVED",
+  "PARTIAL",
+  "ISSUED",
+  "REJECTED",
+] as const;
 export type SpareStatus = (typeof SPARE_STATUSES)[number];
 
 export const SPARE_STATUS_LABEL: Record<SpareStatus, string> = {
   PENDING: "Requested",
   APPROVED: "Approved by spare manager",
+  LOCAL_CHECK: "Checking local market",
+  CODEALER_CHECK: "Checking co-dealer",
+  ORDERED: "Order placed on company",
+  RECEIVED: "Order received",
   PARTIAL: "Partially issued",
   ISSUED: "Fully issued",
   REJECTED: "Rejected",
@@ -14,11 +28,26 @@ export const SPARE_STATUS_LABEL: Record<SpareStatus, string> = {
 
 export const SPARE_NEXT: Record<SpareStatus, SpareStatus[]> = {
   PENDING: ["APPROVED", "REJECTED"],
-  APPROVED: ["PARTIAL", "ISSUED", "REJECTED"],
-  PARTIAL: ["ISSUED", "REJECTED"],
+  APPROVED: ["ISSUED", "PARTIAL", "LOCAL_CHECK", "REJECTED"],
+  LOCAL_CHECK: ["ISSUED", "PARTIAL", "CODEALER_CHECK", "REJECTED"],
+  CODEALER_CHECK: ["ISSUED", "PARTIAL", "ORDERED", "REJECTED"],
+  ORDERED: ["RECEIVED", "REJECTED"],
+  RECEIVED: ["ISSUED", "PARTIAL"],
+  PARTIAL: ["LOCAL_CHECK", "CODEALER_CHECK", "ORDERED", "ISSUED", "REJECTED"],
   ISSUED: [],
   REJECTED: ["PENDING"],
 };
+
+/** Ordered sourcing journey shown on the requirement page. */
+export const SPARE_FLOW: SpareStatus[] = [
+  "PENDING",
+  "APPROVED",
+  "LOCAL_CHECK",
+  "CODEALER_CHECK",
+  "ORDERED",
+  "RECEIVED",
+  "ISSUED",
+];
 
 export const SPARE_REQUEST_TYPES = ["MECHANIC", "CUSTOMER"] as const;
 export type SpareRequestType = (typeof SPARE_REQUEST_TYPES)[number];
