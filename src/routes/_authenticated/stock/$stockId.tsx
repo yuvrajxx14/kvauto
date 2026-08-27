@@ -70,10 +70,11 @@ function StockDetail() {
         title={u.chassis_number}
         subtitle={`${u.model} · ${u.variant ?? "—"} · ${u.location}`}
         actions={
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Button asChild variant="outline" size="sm">
               <Link to="/stock"><ArrowLeft className="mr-1 h-4 w-4" /> All stock</Link>
             </Button>
+            <DeleteRecordButton table="tractor_stock" id={stockId} label="this stock unit" onDeleted={() => navigate({ to: "/stock" })} />
           </div>
         }
       />

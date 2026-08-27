@@ -125,9 +125,12 @@ function ServiceJobPage() {
         title={job.job_number}
         subtitle={`${job.customer_name} · ${job.mobile} · ${job.village}`}
         actions={
-          <Badge variant="secondary" className={statusTone(status)}>
-            {SERVICE_STATUS_LABEL[status] ?? status}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className={statusTone(status)}>
+              {SERVICE_STATUS_LABEL[status] ?? status}
+            </Badge>
+            <DeleteRecordButton table="service_jobs" id={jobId} label="this service job" onDeleted={() => navigate({ to: "/service" })} />
+          </div>
         }
       />
 

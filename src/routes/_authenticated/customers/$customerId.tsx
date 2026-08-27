@@ -76,11 +76,14 @@ function CustomerDetail() {
         title={c.customer_name}
         subtitle={`${c.mobile} · ${c.village}`}
         actions={
-          <Button asChild variant="outline" size="sm">
-            <Link to="/accounting/$customerId" params={{ customerId }}>
-              Customer ledger
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline" size="sm">
+              <Link to="/accounting/$customerId" params={{ customerId }}>
+                Customer ledger
+              </Link>
+            </Button>
+            <DeleteRecordButton table="customers" id={customerId} label="this customer" onDeleted={() => navigate({ to: "/customers" })} />
+          </div>
         }
       />
 

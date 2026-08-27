@@ -195,6 +195,7 @@ function SpareRequestDetailPage() {
             <Button variant="outline" onClick={() => window.print()}>
               <Printer className="mr-1 h-4 w-4" /> Print
             </Button>
+            <DeleteRecordButton table="spare_requests" id={requestId} label="this spare requirement" onDeleted={() => navigate({ to: "/spares" })} />
           </>
         }
       />
