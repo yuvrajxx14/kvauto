@@ -1008,10 +1008,12 @@ export type Database = {
           insurance_received: boolean
           invoice_date: string | null
           invoice_number: string | null
+          number_plate_number: string | null
           number_plate_ordered: boolean
           number_plate_ordered_date: string | null
           number_plate_received: boolean
           number_plate_received_date: string | null
+          passing_date: string | null
           passing_set_printed: boolean
           passing_set_printed_date: string | null
           remarks: string | null
@@ -1043,10 +1045,12 @@ export type Database = {
           insurance_received?: boolean
           invoice_date?: string | null
           invoice_number?: string | null
+          number_plate_number?: string | null
           number_plate_ordered?: boolean
           number_plate_ordered_date?: string | null
           number_plate_received?: boolean
           number_plate_received_date?: string | null
+          passing_date?: string | null
           passing_set_printed?: boolean
           passing_set_printed_date?: string | null
           remarks?: string | null
@@ -1078,10 +1082,12 @@ export type Database = {
           insurance_received?: boolean
           invoice_date?: string | null
           invoice_number?: string | null
+          number_plate_number?: string | null
           number_plate_ordered?: boolean
           number_plate_ordered_date?: string | null
           number_plate_received?: boolean
           number_plate_received_date?: string | null
+          passing_date?: string | null
           passing_set_printed?: boolean
           passing_set_printed_date?: string | null
           remarks?: string | null
@@ -2014,6 +2020,7 @@ export type Database = {
           order_reference: string | null
           pdi_remarks: string | null
           pdi_status: string
+          received_from: string | null
           status: string
           updated_at: string
           variant: string | null
@@ -2038,6 +2045,7 @@ export type Database = {
           order_reference?: string | null
           pdi_remarks?: string | null
           pdi_status?: string
+          received_from?: string | null
           status?: string
           updated_at?: string
           variant?: string | null
@@ -2062,6 +2070,7 @@ export type Database = {
           order_reference?: string | null
           pdi_remarks?: string | null
           pdi_status?: string
+          received_from?: string | null
           status?: string
           updated_at?: string
           variant?: string | null
