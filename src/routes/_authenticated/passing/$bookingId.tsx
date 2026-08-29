@@ -115,6 +115,11 @@ function PassingDetail() {
 
   const outstanding = Math.max(0, Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0));
   const paymentOk = outstanding < 1;
+  const blocked = passingBlocked({
+    finance_type: b.finance_type,
+    insurance_charged: b.insurance_charged,
+    outstanding,
+  });
 
   const agri = subsidy?.use_type !== "COMMERCIAL";
   const applicationDone = !agri || subsidy?.application_status === "DONE";
