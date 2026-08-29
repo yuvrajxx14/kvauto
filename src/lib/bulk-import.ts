@@ -108,7 +108,7 @@ export const IMPORT_SPECS: Record<ImportKey, ImportSpec> = {
       { key: "arrival_date", label: "Arrival date", sample: "2026-07-20" },
       { key: "location", label: "Location", sample: "Main Showroom" },
       { key: "received_from", label: "Received from", sample: "Mahindra Company" },
-      { key: "status", label: "Status", sample: "AVAILABLE", note: "AVAILABLE / INSPECTION_PENDING" },
+      { key: "status", label: "Status", sample: "AVAILABLE", note: "Received units are marked available" },
     ],
   },
   bookings: {

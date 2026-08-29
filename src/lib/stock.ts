@@ -2,9 +2,6 @@ export const STOCK_STATUSES = [
   "ORDERED",
   "IN_TRANSIT",
   "RECEIVED",
-  "INSPECTION_PENDING",
-  "PDI_PENDING",
-  "INSPECTION_FAILED",
   "AVAILABLE",
   "RESERVED",
   "ALLOCATED",
@@ -17,9 +14,6 @@ export const STOCK_STATUS_LABEL: Record<StockStatus, string> = {
   ORDERED: "Ordered",
   IN_TRANSIT: "In Transit",
   RECEIVED: "Received",
-  INSPECTION_PENDING: "Inspection Pending",
-  PDI_PENDING: "PDI Pending",
-  INSPECTION_FAILED: "Inspection Failed",
   AVAILABLE: "Ready for Delivery",
   RESERVED: "Reserved",
   ALLOCATED: "Allocated",
@@ -62,11 +56,7 @@ export const TRACTOR_COLOURS = ["Mahindra Red", "Red", "Blue", "Other"] as const
 export const AVAILABLE_STATUSES: StockStatus[] = ["AVAILABLE"];
 export const INCOMING_STATUSES: StockStatus[] = ["ORDERED", "IN_TRANSIT"];
 export const HELD_STATUSES: StockStatus[] = ["RESERVED", "ALLOCATED"];
-export const PIPELINE_CHECK_STATUSES: StockStatus[] = [
-  "RECEIVED",
-  "INSPECTION_PENDING",
-  "PDI_PENDING",
-];
+export const PIPELINE_CHECK_STATUSES: StockStatus[] = ["RECEIVED"];
 
 export type DemandRow = {
   model: string;
