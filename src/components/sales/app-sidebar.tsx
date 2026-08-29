@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Cog, Route as RouteIcon, MapPin, Server } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Cog, Route as RouteIcon, MapPin, Server, UploadCloud } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -112,6 +112,14 @@ export function AppSidebar() {
                     <Link to="/team" className="flex items-center gap-2">
                       <UserCog className="h-4 w-4" />
                       <span>Team &amp; Roles</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActive("/import")} tooltip="Bulk import">
+                    <Link to="/import" className="flex items-center gap-2">
+                      <UploadCloud className="h-4 w-4" />
+                      <span>Bulk import</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
