@@ -52,7 +52,7 @@ function StockPage() {
         location: payload["location"] || "Main Showroom",
         arrival_date: payload["arrival_date"] || null,
         received_from: payload["received_from"] || null,
-        status: "INSPECTION_PENDING",
+        status: "AVAILABLE",
       });
       if (error) throw error;
     },
