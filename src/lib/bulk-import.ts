@@ -108,7 +108,7 @@ export const IMPORT_SPECS: Record<ImportKey, ImportSpec> = {
       { key: "arrival_date", label: "Arrival date", sample: "2026-07-20" },
       { key: "location", label: "Location", sample: "Main Showroom" },
       { key: "received_from", label: "Received from", sample: "Mahindra Company" },
-      { key: "status", label: "Status", sample: "AVAILABLE", note: "AVAILABLE / INSPECTION_PENDING" },
+      { key: "status", label: "Status", sample: "AVAILABLE", note: "Received units are marked available" },
     ],
   },
   bookings: {
@@ -347,7 +347,7 @@ async function importRow(kind: ImportKey, r: Record<string, string>, ctx: Ctx): 
     const chassis = (r["chassis_number"] ?? "").trim().toUpperCase();
     const { data: dup } = await supabase.from("tractor_stock").select("id").eq("chassis_number", chassis).maybeSingle();
     if (dup) return "Skipped — chassis already in stock";
-    const status = (r["status"] ?? "").trim().toUpperCase() === "AVAILABLE" ? "AVAILABLE" : "INSPECTION_PENDING";
+    const status = "AVAILABLE";
     const { error } = await supabase.from("tractor_stock").insert({
       chassis_number: chassis,
       engine_number: (r["engine_number"] ?? "").trim().toUpperCase(),
