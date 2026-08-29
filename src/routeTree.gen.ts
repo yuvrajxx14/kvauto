@@ -23,6 +23,7 @@ import { Route as AuthenticatedCustomersIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedCustomersCustomerIdRouteImport } from './routes/_authenticated/customers/$customerId'
 import { Route as AuthenticatedDeliveryIndexRouteImport } from './routes/_authenticated/delivery/index'
 import { Route as AuthenticatedDeliveryBookingIdRouteImport } from './routes/_authenticated/delivery/$bookingId'
+import { Route as AuthenticatedImportIndexRouteImport } from './routes/_authenticated/import/index'
 import { Route as AuthenticatedInquiriesIndexRouteImport } from './routes/_authenticated/inquiries/index'
 import { Route as AuthenticatedInquiriesInquiryIdRouteImport } from './routes/_authenticated/inquiries/$inquiryId'
 import { Route as AuthenticatedInquiriesNewRouteImport } from './routes/_authenticated/inquiries/new'
@@ -126,6 +127,12 @@ const AuthenticatedDeliveryBookingIdRoute =
   AuthenticatedDeliveryBookingIdRouteImport.update({
     id: '/delivery/$bookingId',
     path: '/delivery/$bookingId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedImportIndexRoute =
+  AuthenticatedImportIndexRouteImport.update({
+    id: '/import/',
+    path: '/import/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedInquiriesIndexRoute =
@@ -305,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/customers/': typeof AuthenticatedCustomersIndexRoute
   '/delivery/': typeof AuthenticatedDeliveryIndexRoute
+  '/import/': typeof AuthenticatedImportIndexRoute
   '/inquiries/': typeof AuthenticatedInquiriesIndexRoute
   '/passing/': typeof AuthenticatedPassingIndexRoute
   '/products/': typeof AuthenticatedProductsIndexRoute
@@ -346,6 +354,7 @@ export interface FileRoutesByTo {
   '/bookings': typeof AuthenticatedBookingsIndexRoute
   '/customers': typeof AuthenticatedCustomersIndexRoute
   '/delivery': typeof AuthenticatedDeliveryIndexRoute
+  '/import': typeof AuthenticatedImportIndexRoute
   '/inquiries': typeof AuthenticatedInquiriesIndexRoute
   '/passing': typeof AuthenticatedPassingIndexRoute
   '/products': typeof AuthenticatedProductsIndexRoute
@@ -389,6 +398,7 @@ export interface FileRoutesById {
   '/_authenticated/bookings/': typeof AuthenticatedBookingsIndexRoute
   '/_authenticated/customers/': typeof AuthenticatedCustomersIndexRoute
   '/_authenticated/delivery/': typeof AuthenticatedDeliveryIndexRoute
+  '/_authenticated/import/': typeof AuthenticatedImportIndexRoute
   '/_authenticated/inquiries/': typeof AuthenticatedInquiriesIndexRoute
   '/_authenticated/passing/': typeof AuthenticatedPassingIndexRoute
   '/_authenticated/products/': typeof AuthenticatedProductsIndexRoute
@@ -432,6 +442,7 @@ export interface FileRouteTypes {
     | '/bookings/'
     | '/customers/'
     | '/delivery/'
+    | '/import/'
     | '/inquiries/'
     | '/passing/'
     | '/products/'
@@ -473,6 +484,7 @@ export interface FileRouteTypes {
     | '/bookings'
     | '/customers'
     | '/delivery'
+    | '/import'
     | '/inquiries'
     | '/passing'
     | '/products'
@@ -515,6 +527,7 @@ export interface FileRouteTypes {
     | '/_authenticated/bookings/'
     | '/_authenticated/customers/'
     | '/_authenticated/delivery/'
+    | '/_authenticated/import/'
     | '/_authenticated/inquiries/'
     | '/_authenticated/passing/'
     | '/_authenticated/products/'
@@ -637,6 +650,13 @@ declare module '@tanstack/react-router' {
       path: '/delivery/$bookingId'
       fullPath: '/delivery/$bookingId'
       preLoaderRoute: typeof AuthenticatedDeliveryBookingIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/import/': {
+      id: '/_authenticated/import/'
+      path: '/import'
+      fullPath: '/import/'
+      preLoaderRoute: typeof AuthenticatedImportIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/inquiries/': {
@@ -846,6 +866,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBookingsIndexRoute: typeof AuthenticatedBookingsIndexRoute
   AuthenticatedCustomersIndexRoute: typeof AuthenticatedCustomersIndexRoute
   AuthenticatedDeliveryIndexRoute: typeof AuthenticatedDeliveryIndexRoute
+  AuthenticatedImportIndexRoute: typeof AuthenticatedImportIndexRoute
   AuthenticatedInquiriesIndexRoute: typeof AuthenticatedInquiriesIndexRoute
   AuthenticatedPassingIndexRoute: typeof AuthenticatedPassingIndexRoute
   AuthenticatedProductsIndexRoute: typeof AuthenticatedProductsIndexRoute
@@ -887,6 +908,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBookingsIndexRoute: AuthenticatedBookingsIndexRoute,
   AuthenticatedCustomersIndexRoute: AuthenticatedCustomersIndexRoute,
   AuthenticatedDeliveryIndexRoute: AuthenticatedDeliveryIndexRoute,
+  AuthenticatedImportIndexRoute: AuthenticatedImportIndexRoute,
   AuthenticatedInquiriesIndexRoute: AuthenticatedInquiriesIndexRoute,
   AuthenticatedPassingIndexRoute: AuthenticatedPassingIndexRoute,
   AuthenticatedProductsIndexRoute: AuthenticatedProductsIndexRoute,
