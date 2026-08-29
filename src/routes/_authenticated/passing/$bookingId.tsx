@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useBooking, usePassingRecord, useSubsidyCase } from "@/lib/erp";
+import { LoanInsuranceGate, passingBlocked } from "@/components/sales/loan-insurance-gate";
 import { SUBSIDY_CHECKLIST } from "@/lib/passing";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 import { cn } from "@/lib/utils";

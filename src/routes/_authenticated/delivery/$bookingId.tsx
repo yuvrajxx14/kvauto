@@ -154,6 +154,7 @@ function DeliveryDetail() {
             ))}
             <Field label="Deal type">{isLoan ? `Loan · ${inr(b.loan_amount)}` : "Cash"}</Field>
             {docCharge > 0 && <Field label="Loan document charge (2%)">{inr(docCharge)}</Field>}
+            {b.insurance_charged && <Field label="Insurance charge">{inr(b.insurance_amount)}</Field>}
             <Field label="Total payable">{inr(totalDue)}</Field>
             <Field label="Outstanding">{inr(outstanding)}</Field>
             <Field label="Chassis">{alloc?.chassis_number ?? "—"}</Field>
