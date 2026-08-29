@@ -216,14 +216,12 @@ function StockPage() {
                 <TableHead>Model</TableHead>
                 <TableHead>Colour</TableHead>
                 <TableHead>Location</TableHead>
-                <TableHead>Inspection</TableHead>
-                <TableHead>PDI</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {units.data?.length === 0 && (
-                <TableRow><TableCell colSpan={7} className="text-sm text-muted-foreground">No stock units.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-sm text-muted-foreground">No stock units.</TableCell></TableRow>
               )}
               {(units.data ?? []).map((u) => (
                 <TableRow key={u.id}>
@@ -233,8 +231,7 @@ function StockPage() {
                   <TableCell>{u.model}</TableCell>
                   <TableCell>{u.colour ?? "—"}</TableCell>
                   <TableCell>{u.location}</TableCell>
-                  <TableCell className="text-xs">{u.inspection_status}</TableCell>
-                  <TableCell className="text-xs">{u.pdi_status}</TableCell>
+
                   <TableCell><StockBadge status={u.status as StockStatus} /></TableCell>
                 </TableRow>
               ))}

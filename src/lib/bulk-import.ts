@@ -347,7 +347,7 @@ async function importRow(kind: ImportKey, r: Record<string, string>, ctx: Ctx): 
     const chassis = (r["chassis_number"] ?? "").trim().toUpperCase();
     const { data: dup } = await supabase.from("tractor_stock").select("id").eq("chassis_number", chassis).maybeSingle();
     if (dup) return "Skipped — chassis already in stock";
-    const status = (r["status"] ?? "").trim().toUpperCase() === "AVAILABLE" ? "AVAILABLE" : "INSPECTION_PENDING";
+    const status = "AVAILABLE";
     const { error } = await supabase.from("tractor_stock").insert({
       chassis_number: chassis,
       engine_number: (r["engine_number"] ?? "").trim().toUpperCase(),
