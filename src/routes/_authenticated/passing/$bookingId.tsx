@@ -248,7 +248,13 @@ function PassingDetail() {
                 title="Payment check"
                 done={paymentOk}
                 locked={!approved}
-                hint={paymentOk ? "Full amount received" : `Outstanding ${inr(outstanding)} — clear it before printing the passing set`}
+                hint={
+                  paymentOk
+                    ? "Full amount received"
+                    : b.finance_type === "LOAN"
+                      ? `Outstanding ${inr(outstanding)} — includes the insurance charge; clear it before printing the passing set`
+                      : `Outstanding ${inr(outstanding)} — clear it before printing the passing set`
+                }
               >
                 <Button asChild size="sm" variant="outline">
                   <Link to="/bookings/$bookingId" params={{ bookingId }}>Open booking</Link>
