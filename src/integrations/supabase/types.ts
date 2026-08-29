@@ -169,6 +169,8 @@ export type Database = {
           finance_type: string
           id: string
           inquiry_id: string
+          insurance_amount: number
+          insurance_charged: boolean
           loan_amount: number
           payment_mode: string | null
           remarks: string | null
@@ -199,6 +201,8 @@ export type Database = {
           finance_type?: string
           id?: string
           inquiry_id: string
+          insurance_amount?: number
+          insurance_charged?: boolean
           loan_amount?: number
           payment_mode?: string | null
           remarks?: string | null
@@ -229,6 +233,8 @@ export type Database = {
           finance_type?: string
           id?: string
           inquiry_id?: string
+          insurance_amount?: number
+          insurance_charged?: boolean
           loan_amount?: number
           payment_mode?: string | null
           remarks?: string | null
@@ -2143,6 +2149,10 @@ export type Database = {
           _remarks: string
         }
         Returns: string
+      }
+      charge_loan_insurance_atomic: {
+        Args: { _amount: number; _booking_id: string }
+        Returns: undefined
       }
       complete_delivery_atomic: {
         Args: {
