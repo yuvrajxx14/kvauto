@@ -145,7 +145,32 @@ function PassingDetail() {
         }
       />
 
-      {!rec ? (
+      {blocked ? (
+        <Card className="shadow-card">
+          <CardHeader className="pb-2"><CardTitle className="text-base">Passing blocked — loan deal</CardTitle></CardHeader>
+          <CardContent className="space-y-3 p-6 pt-2">
+            <p className="text-sm text-muted-foreground">
+              This is a loan deal. Before the passing file can be opened, the insurance amount must be added to the
+              customer balance and the full outstanding payment must be received.
+            </p>
+            <div className="space-y-1 text-sm">
+              <Field label="Insurance">{b.insurance_charged ? `${inr(b.insurance_amount)} added to balance` : "Not entered yet"}</Field>
+              <Field label="Outstanding">{inr(outstanding)}</Field>
+            </div>
+            <LoanInsuranceGate
+              booking={{
+                id: bookingId,
+                booking_number: b.booking_number,
+                finance_type: b.finance_type,
+                insurance_charged: b.insurance_charged,
+                insurance_amount: Number(b.insurance_amount ?? 0),
+                outstanding,
+              }}
+              trigger={<Button>Resolve insurance & payment</Button>}
+            />
+          </CardContent>
+        </Card>
+      ) : !rec ? (
         <Card className="shadow-card">
           <CardContent className="space-y-3 p-6">
             <p className="text-sm text-muted-foreground">No passing file started for this booking yet.</p>
