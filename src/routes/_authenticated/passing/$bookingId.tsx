@@ -12,6 +12,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useBooking, usePassingRecord, useSubsidyCase } from "@/lib/erp";
+import { LoanInsuranceGate, passingBlocked } from "@/components/sales/loan-insurance-gate";
 import { SUBSIDY_CHECKLIST } from "@/lib/passing";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 import { cn } from "@/lib/utils";
@@ -114,6 +115,11 @@ function PassingDetail() {
 
   const outstanding = Math.max(0, Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0));
   const paymentOk = outstanding < 1;
+  const blocked = passingBlocked({
+    finance_type: b.finance_type,
+    insurance_charged: b.insurance_charged,
+    outstanding,
+  });
 
   const agri = subsidy?.use_type !== "COMMERCIAL";
   const applicationDone = !agri || subsidy?.application_status === "DONE";
@@ -139,7 +145,32 @@ function PassingDetail() {
         }
       />
 
-      {!rec ? (
+      {blocked ? (
+        <Card className="shadow-card">
+          <CardHeader className="pb-2"><CardTitle className="text-base">Passing blocked — loan deal</CardTitle></CardHeader>
+          <CardContent className="space-y-3 p-6 pt-2">
+            <p className="text-sm text-muted-foreground">
+              This is a loan deal. Before the passing file can be opened, the insurance amount must be added to the
+              customer balance and the full outstanding payment must be received.
+            </p>
+            <div className="space-y-1 text-sm">
+              <Field label="Insurance">{b.insurance_charged ? `${inr(b.insurance_amount)} added to balance` : "Not entered yet"}</Field>
+              <Field label="Outstanding">{inr(outstanding)}</Field>
+            </div>
+            <LoanInsuranceGate
+              booking={{
+                id: bookingId,
+                booking_number: b.booking_number,
+                finance_type: b.finance_type,
+                insurance_charged: b.insurance_charged,
+                insurance_amount: Number(b.insurance_amount ?? 0),
+                outstanding,
+              }}
+              trigger={<Button>Resolve insurance & payment</Button>}
+            />
+          </CardContent>
+        </Card>
+      ) : !rec ? (
         <Card className="shadow-card">
           <CardContent className="space-y-3 p-6">
             <p className="text-sm text-muted-foreground">No passing file started for this booking yet.</p>
@@ -217,7 +248,13 @@ function PassingDetail() {
                 title="Payment check"
                 done={paymentOk}
                 locked={!approved}
-                hint={paymentOk ? "Full amount received" : `Outstanding ${inr(outstanding)} — clear it before printing the passing set`}
+                hint={
+                  paymentOk
+                    ? "Full amount received"
+                    : b.finance_type === "LOAN"
+                      ? `Outstanding ${inr(outstanding)} — includes the insurance charge; clear it before printing the passing set`
+                      : `Outstanding ${inr(outstanding)} — clear it before printing the passing set`
+                }
               >
                 <Button asChild size="sm" variant="outline">
                   <Link to="/bookings/$bookingId" params={{ bookingId }}>Open booking</Link>

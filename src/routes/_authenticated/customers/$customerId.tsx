@@ -143,6 +143,11 @@ function CustomerDetail() {
                     <Field label="Engine">{alloc?.engine_number ?? "—"}</Field>
                     <Field label="Delivered on">{delivery ? fmtDate(delivery.delivery_date) : "Not delivered"}</Field>
                     <Field label="Outstanding">{inr(due)}</Field>
+                    {b.finance_type === "LOAN" && (
+                      <Field label="Insurance charge">
+                        {b.insurance_charged ? inr(b.insurance_amount) : "Pending (required before passing)"}
+                      </Field>
+                    )}
                     <Field label="Use type">{delivery?.use_type ?? "—"}</Field>
                     <Field label="RTO number">{pr?.rto_number ?? "—"}</Field>
                     <Field label="Number plate">{pr?.number_plate_number ?? "—"}</Field>
