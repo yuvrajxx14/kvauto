@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { useMe } from "@/lib/auth";
+import { useAuth, useMe } from "@/lib/auth";
 import { useStaffWithRoles } from "@/lib/queries";
 import {
   IMPORT_SPECS, downloadCsv, parseCsv, runImport, templateCsv,
@@ -38,7 +38,7 @@ function ImportPage() {
   if (me && !me.isManagement) {
     return (
       <div>
-        <PageHeader title="Bulk data import" description="Restricted area" />
+        <PageHeader title="Bulk data import" subtitle="Restricted area" />
         <Card className="shadow-card">
           <CardContent className="p-6 text-sm text-muted-foreground">
             Bulk upload is available to CEO and manager accounts only. Please ask management to run the import.
@@ -52,7 +52,7 @@ function ImportPage() {
     <div>
       <PageHeader
         title="Bulk data import"
-        description="Download the format, fill it in Excel, save as CSV and upload. Records appear across the ERP immediately."
+        subtitle="Download the format, fill it in Excel, save as CSV and upload. Records appear across the ERP immediately."
       />
       <Tabs defaultValue="deliveries" className="space-y-4">
         <TabsList className="flex-wrap">
@@ -71,7 +71,7 @@ function ImportPage() {
 }
 
 function ImportPanel({ spec }: { spec: ImportSpec }) {
-  const { data: me } = useMe();
+  const { user } = useAuth();
   const { data: staff } = useStaffWithRoles();
   const qc = useQueryClient();
   const [rows, setRows] = useState<Record<string, string>[]>([]);
@@ -94,13 +94,13 @@ function ImportPanel({ spec }: { spec: ImportSpec }) {
   }
 
   async function start() {
-    if (!me) return;
+    if (!user) return;
     if (missing.length) { toast.error(`Missing columns: ${missing.join(", ")}`); return; }
     setProgress({ done: 0, total: rows.length });
     const res = await runImport(
       spec.key,
       rows,
-      { userId: me.id, staff: (staff ?? []).map((s) => ({ id: s.id, full_name: s.full_name })) },
+      { userId: user.id, staff: (staff ?? []).map((s) => ({ id: s.id, full_name: s.full_name })) },
       (done, total) => setProgress({ done, total }),
     );
     setProgress(null);
