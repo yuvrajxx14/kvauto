@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, Field } from "@/components/sales/ui";
 import { DocumentsPanel, documentProgress } from "@/components/sales/documents-panel";
 import { PaymentDialog } from "@/components/sales/payment-dialog";
+import { LoanInsuranceGate } from "@/components/sales/loan-insurance-gate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -177,6 +178,17 @@ function DeliveryDetail() {
                   )}
                   {passingDone ? (
                     <Badge variant="secondary">Passing done · {fmtDate(passingRec?.passing_date ?? null)}</Badge>
+                  ) : isLoan && (!b.insurance_charged || outstanding >= 1) ? (
+                    <LoanInsuranceGate
+                      booking={{
+                        id: bookingId,
+                        booking_number: b.booking_number,
+                        finance_type: b.finance_type,
+                        insurance_charged: b.insurance_charged,
+                        insurance_amount: Number(b.insurance_amount ?? 0),
+                        outstanding,
+                      }}
+                    />
                   ) : (
                     <Button asChild size="sm">
                       <Link to="/passing/$bookingId" params={{ bookingId }}>Proceed to passing</Link>
