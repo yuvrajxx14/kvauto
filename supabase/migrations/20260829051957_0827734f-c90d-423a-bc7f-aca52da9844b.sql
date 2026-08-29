@@ -1,0 +1,2 @@
+CREATE UNIQUE INDEX IF NOT EXISTS tractor_stock_chassis_uidx ON public.tractor_stock (upper(btrim(chassis_number)));
+CREATE UNIQUE INDEX IF NOT EXISTS tractor_stock_engine_uidx ON public.tractor_stock (upper(btrim(engine_number)));
