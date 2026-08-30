@@ -102,6 +102,36 @@ export function AppSidebar() {
         <NavGroup label="Service" items={SERVICE_ITEMS.filter((i) => i.show(perms))} isActive={isActive} />
         <NavGroup label="Master" items={MASTER_ITEMS.filter((i) => i.show(perms))} isActive={isActive} />
 
+        {(perms.can("hr.view") || perms.can("payroll.view")) && (
+          <SidebarGroup>
+            <SidebarGroupLabel>People</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {perms.can("hr.view") && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/hr")} tooltip="HR & attendance">
+                      <Link to="/hr" className="flex items-center gap-2">
+                        <UserRoundCheck className="h-4 w-4" />
+                        <span>HR &amp; Attendance</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+                {perms.can("payroll.view") && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/payroll")} tooltip="Payroll">
+                      <Link to="/payroll" className="flex items-center gap-2">
+                        <IndianRupee className="h-4 w-4" />
+                        <span>Payroll</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
+
         {perms.isManagement && (
           <SidebarGroup>
             <SidebarGroupLabel>Management</SidebarGroupLabel>
