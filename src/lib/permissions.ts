@@ -37,6 +37,7 @@ function capabilities(role: AppRole): Set<Perm> {
         "jobcard.manage",
         "spares.raise", "spares.fulfill", "spares.delete",
         "routes.manage",
+        "hr.view", "hr.manage", "payroll.view", "payroll.manage",
         "masters.view", "masters.manage",
       );
       break;
