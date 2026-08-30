@@ -13,6 +13,7 @@ export type Perm =
   | "jobcard.manage"
   | "spares.raise" | "spares.fulfill" | "spares.delete"
   | "routes.manage"
+  | "hr.view" | "hr.manage" | "payroll.view" | "payroll.manage"
   | "masters.view" | "masters.manage";
 
 const MGMT: AppRole[] = ["ceo", "manager", "sales_manager"];
