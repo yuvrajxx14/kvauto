@@ -13,6 +13,7 @@ export type Perm =
   | "jobcard.manage"
   | "spares.raise" | "spares.fulfill" | "spares.delete"
   | "routes.manage"
+  | "hr.view" | "hr.manage" | "payroll.view" | "payroll.manage"
   | "masters.view" | "masters.manage";
 
 const MGMT: AppRole[] = ["ceo", "manager", "sales_manager"];
@@ -36,6 +37,7 @@ function capabilities(role: AppRole): Set<Perm> {
         "jobcard.manage",
         "spares.raise", "spares.fulfill", "spares.delete",
         "routes.manage",
+        "hr.view", "hr.manage", "payroll.view", "payroll.manage",
         "masters.view", "masters.manage",
       );
       break;
@@ -78,6 +80,7 @@ function capabilities(role: AppRole): Set<Perm> {
         "stock.add", "stock.edit",
         "delivery.manage", "subsidy.edit", "passing.edit",
         "payment.add", "payment.edit",
+        "payroll.view",
       );
       break;
     case "receptionist":
