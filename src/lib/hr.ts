@@ -153,8 +153,8 @@ export function monthStart(d: Date | string = new Date()) {
 
 export function monthEndExclusive(ms: string) {
   const [y, m] = ms.split("-").map(Number);
-  const nextY = m === 12 ? y! + 1 : y!;
-  const nextM = m === 12 ? 1 : m! + 1;
+  const nextY = m === 12 ? y + 1 : y;
+  const nextM = m === 12 ? 1 : m + 1;
   return `${nextY}-${String(nextM).padStart(2, "0")}-01`;
 }
 
@@ -260,7 +260,7 @@ export function useTodayAttendance(employeeId?: string) {
       const { data, error } = await supabase
         .from("attendance_records")
         .select("*")
-        .eq("employee_id", employeeId!)
+        .eq("employee_id", employeeId ?? "")
         .eq("work_date", today)
         .maybeSingle();
       if (error) throw error;
@@ -322,7 +322,7 @@ export function useSopQuestions(sopId?: string) {
       const { data, error } = await supabase
         .from("sop_questions")
         .select("*")
-        .eq("sop_id", sopId!)
+        .eq("sop_id", sopId ?? "")
         .order("sort_order");
       if (error) throw error;
       return (data ?? []).map((q) => ({
@@ -341,7 +341,7 @@ export function useSopAcks(employeeId?: string) {
       const { data, error } = await supabase
         .from("sop_acknowledgements")
         .select("*")
-        .eq("employee_id", employeeId!);
+        .eq("employee_id", employeeId ?? "");
       if (error) throw error;
       return (data ?? []) as unknown as SopAck[];
     },
@@ -471,7 +471,7 @@ export function useEmployeePerformance(employee: Employee | null | undefined, mo
       const { data: att } = await supabase
         .from("attendance_records")
         .select("status")
-        .eq("employee_id", employee!.id)
+        .eq("employee_id", employee?.id ?? "")
         .gte("work_date", month)
         .lt("work_date", to);
 
