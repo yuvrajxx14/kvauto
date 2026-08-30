@@ -80,6 +80,7 @@ function capabilities(role: AppRole): Set<Perm> {
         "stock.add", "stock.edit",
         "delivery.manage", "subsidy.edit", "passing.edit",
         "payment.add", "payment.edit",
+        "payroll.view",
       );
       break;
     case "receptionist":
