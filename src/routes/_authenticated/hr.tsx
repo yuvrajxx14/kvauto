@@ -2,15 +2,14 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Activity, Check, ClipboardCheck, Clock3, FileText, MapPin, Plus, ShieldCheck, UserPlus, Users, X } from "lucide-react";
+import { Check, ClipboardCheck, Clock3, FileText, MapPin, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useMe } from "@/lib/auth";
 import { useProfiles } from "@/lib/queries";
 import { usePerms } from "@/lib/permissions";
 import {
-  ATTENDANCE_LABEL, DEPARTMENT_LABEL, DEPARTMENTS, fmtMinutes, fmtTime, mapsLink, monthLabel,
-  monthStart, useAttendance, useEmployeeOnboarding, useEmployees, useMyEmployee, useOnboardingMaster,
-  useSopAcks, useSopQuestions, useSops, useTodayAttendance, type Employee,
+  ATTENDANCE_LABEL, DEPARTMENT_LABEL, DEPARTMENTS, fmtMinutes, fmtTime, mapsLink, monthEndExclusive,
+  monthLabel, monthStart, useAttendance, useEmployeeOnboarding, useEmployeePerformance, useEmployees,
+  useMyEmployee, useOnboardingMaster, useSopAcks, useSopQuestions, useSops, useTodayAttendance, type Employee,
 } from "@/lib/hr";
 import { PageHeader, KpiCard, EmptyState } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +21,6 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/_authenticated/hr")({
   head: () => ({
@@ -40,13 +38,19 @@ export const Route = createFileRoute("/_authenticated/hr")({
 
 function HrPage() {
   const perms = usePerms();
-  const { data: me } = useMe();
   const isManager = perms.isManagement;
   const { data: employees = [], isLoading } = useEmployees(isManager);
   const { data: myEmployee } = useMyEmployee();
-  const [selectedId, setSelectedId] = useState<string | undefined>(myEmployee?.id);
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [tab, setTab] = useState("attendance");
   const selected = employees.find((e) => e.id === selectedId) ?? (myEmployee ?? null);
+
+  // Default the manager's picker to their own record, or the first employee on file.
+  useEffect(() => {
+    if (selectedId) return;
+    const fallback = myEmployee?.id ?? employees[0]?.id;
+    if (fallback) setSelectedId(fallback);
+  }, [selectedId, myEmployee?.id, employees]);
 
   if (!perms.can("hr.view")) return <EmptyState title="HR access required" hint="Ask a manager to grant HR access to your role." />;
 
@@ -147,7 +151,7 @@ function SelfAttendance({ employee }: { employee: Employee | null }) {
     mutationFn: async (kind: "IN" | "OUT") => {
       if (!navigator.geolocation) throw new Error("Location permission is required to mark attendance on this device.");
       const pos = await new Promise<GeolocationPosition>((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 }));
-      const { error } = await supabase.rpc("attendance_punch", { _kind: kind, _lat: pos.coords.latitude, _lng: pos.coords.longitude, _accuracy: pos.coords.accuracy, _address: null, _remarks: null });
+      const { error } = await supabase.rpc("attendance_punch", { _kind: kind, _lat: pos.coords.latitude, _lng: pos.coords.longitude, _accuracy: pos.coords.accuracy, _address: "" });
       if (error) throw error;
     },
     onSuccess: (_, kind) => { toast.success(kind === "IN" ? "Punched in" : "Punched out"); qc.invalidateQueries({ queryKey: ["attendance"] }); qc.invalidateQueries({ queryKey: ["attendance-today"] }); },
@@ -164,9 +168,9 @@ function AttendanceManager({ employees, selected, onSelect }: { employees: Emplo
 }
 
 function SelfAttendanceHistory({ employee }: { employee: Employee | null }) {
-  if (!employee) return null;
   const month = monthStart();
-  const { data: records = [] } = useAttendance({ employeeId: employee.id, from: month, to: `${new Date(new Date(month).getFullYear(), new Date(month).getMonth() + 1, 1).toISOString().slice(0, 10)}` });
+  const { data: records = [] } = useAttendance({ employeeId: employee?.id, from: month, to: monthEndExclusive(month) });
+  if (!employee) return null;
   return <Card className="mt-4"><CardHeader><CardTitle className="text-base">My attendance · {monthLabel(month)}</CardTitle></CardHeader><CardContent className="space-y-2">{records.length ? records.map((r) => <div key={r.id} className="flex items-center justify-between border-b py-2 text-sm last:border-0"><span>{r.work_date}</span><span className="text-muted-foreground">{ATTENDANCE_LABEL[r.status]} · {fmtTime(r.punch_in_at)} — {fmtTime(r.punch_out_at)}</span></div>) : <p className="text-sm text-muted-foreground">No attendance marked this month.</p>}</CardContent></Card>;
 }
 
@@ -214,12 +218,10 @@ function PerformanceBoard({ employees }: { employees: Employee[] }) {
   return <div className="mt-4 grid gap-4 md:grid-cols-2">{employees.map((e) => <PerformanceCard employee={e} month={month} key={e.id} />)}</div>;
 }
 function PerformanceCard({ employee, month }: { employee: Employee; month: string }) {
-  // Reuse the same auto-calculated business metrics visible to managers.
-  const { data: records = [] } = useAttendance({ employeeId: employee.id, from: month, to: `${new Date(new Date(month).getFullYear(), new Date(month).getMonth() + 1, 1).toISOString().slice(0, 10)}` });
-  const present = records.filter((r) => r.status === "PRESENT").length + records.filter((r) => r.status === "HALF_DAY").length * 0.5;
-  const monthDays = new Date(new Date(month).getFullYear(), new Date(month).getMonth() + 1, 0).getDate();
-  const pct = Math.round((present / monthDays) * 100);
-  return <Card><CardContent className="p-5"><div className="flex items-start justify-between"><div><p className="font-semibold">{employee.full_name}</p><p className="text-xs text-muted-foreground">{DEPARTMENT_LABEL[employee.department] ?? employee.department} · {employee.designation ?? "Staff"}</p></div><Badge variant="outline">{monthLabel(month)}</Badge></div><div className="mt-5"><div className="mb-1 flex justify-between text-xs"><span>Attendance reliability</span><span>{pct}%</span></div><Progress value={pct} /></div><div className="mt-4 grid grid-cols-3 gap-2 text-center"><MetricSmall label="Present days" value={String(present)} /><MetricSmall label="Punches" value={String(records.length)} /><MetricSmall label="Status" value={employee.employment_status === "ACTIVE" ? "Active" : "Exit"} /></div></CardContent></Card>;
+  // Metrics are calculated automatically from real ERP activity, not manual scoring.
+  const { data: perf } = useEmployeePerformance(employee, month);
+  const pct = perf?.attendancePercent ?? 0;
+  return <Card><CardContent className="p-5"><div className="flex items-start justify-between"><div><p className="font-semibold">{employee.full_name}</p><p className="text-xs text-muted-foreground">{DEPARTMENT_LABEL[employee.department] ?? employee.department} · {employee.designation ?? "Staff"}</p></div><Badge variant="outline">{monthLabel(month)}</Badge></div><div className="mt-5"><div className="mb-1 flex justify-between text-xs"><span>Attendance reliability</span><span>{pct}%</span></div><Progress value={pct} /></div><div className="mt-4 grid grid-cols-3 gap-2 text-center"><MetricSmall label="Inquiries" value={String(perf?.inquiries ?? 0)} /><MetricSmall label="Bookings" value={String(perf?.bookings ?? 0)} /><MetricSmall label="Deliveries" value={String(perf?.deliveries ?? 0)} /></div><div className="mt-2 grid grid-cols-3 gap-2 text-center"><MetricSmall label="Service jobs" value={String(perf?.serviceJobs ?? 0)} /><MetricSmall label="Jobs closed" value={String(perf?.serviceClosed ?? 0)} /><MetricSmall label="Present days" value={String(perf?.presentDays ?? 0)} /></div>{!employee.user_id && <p className="mt-3 text-xs text-muted-foreground">Link this employee to a login to track sales and service activity.</p>}</CardContent></Card>;
 }
 function MetricSmall({ label, value }: { label: string; value: string }) { return <div className="rounded-md bg-muted/50 p-2"><p className="text-sm font-semibold">{value}</p><p className="text-[10px] text-muted-foreground">{label}</p></div>; }
 function Field({ label, value, onChange, placeholder, type = "text" }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string }) { return <div className="space-y-2"><Label>{label}</Label><Input type={type} value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} /></div>; }
