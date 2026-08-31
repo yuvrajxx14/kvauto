@@ -151,7 +151,7 @@ function SelfAttendance({ employee }: { employee: Employee | null }) {
     mutationFn: async (kind: "IN" | "OUT") => {
       if (!navigator.geolocation) throw new Error("Location permission is required to mark attendance on this device.");
       const pos = await new Promise<GeolocationPosition>((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 }));
-      const { error } = await supabase.rpc("attendance_punch", { _kind: kind, _lat: pos.coords.latitude, _lng: pos.coords.longitude, _accuracy: pos.coords.accuracy, _address: "", _remarks: undefined });
+      const { error } = await supabase.rpc("attendance_punch", { _kind: kind, _lat: pos.coords.latitude, _lng: pos.coords.longitude, _accuracy: pos.coords.accuracy, _address: "" });
       if (error) throw error;
     },
     onSuccess: (_, kind) => { toast.success(kind === "IN" ? "Punched in" : "Punched out"); qc.invalidateQueries({ queryKey: ["attendance"] }); qc.invalidateQueries({ queryKey: ["attendance-today"] }); },
