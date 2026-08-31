@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/lib/auth";
 import { usePendingDocumentCustomers } from "@/lib/erp";
 import { KpiCard, PageHeader, EmptyState } from "@/components/sales/ui";
+import { PunchCard } from "@/components/hr/punch-card";
 import { StatusBadge } from "@/components/sales/badges";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ALL_STATUSES, STATUS_LABEL, todayISO, fmtDate, type InquiryStatus } from "@/lib/sales";
