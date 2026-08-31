@@ -82,7 +82,10 @@ function Dashboard() {
         }
       />
 
+      <div className="mb-4"><PunchCard compact /></div>
+
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+
         <KpiCard label="New inquiries today" value={newToday} icon={<ClipboardList className="h-4 w-4" />} />
         <KpiCard label="Active inquiries" value={active.length} icon={<Users className="h-4 w-4" />} tone="info" />
         <KpiCard label="Follow-ups today" value={dueToday.length} icon={<CalendarClock className="h-4 w-4" />} />
