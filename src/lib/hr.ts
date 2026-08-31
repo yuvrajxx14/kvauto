@@ -152,7 +152,9 @@ export function monthStart(d: Date | string = new Date()) {
 }
 
 export function monthEndExclusive(ms: string) {
-  const [y, m] = ms.split("-").map(Number);
+  const parts = ms.split("-").map(Number);
+  const y = parts[0] ?? new Date().getFullYear();
+  const m = parts[1] ?? 1;
   const nextY = m === 12 ? y + 1 : y;
   const nextM = m === 12 ? 1 : m + 1;
   return `${nextY}-${String(nextM).padStart(2, "0")}-01`;
@@ -412,7 +414,7 @@ export function useEmployeePerformance(employee: Employee | null | undefined, mo
     enabled: !!employee,
     queryFn: async (): Promise<PerfMetrics> => {
       const uid = employee?.user_id ?? null;
-      const zeroIf = async (p: Promise<{ count: number | null }>) => (await p).count ?? 0;
+      const zeroIf = async (p: PromiseLike<{ count: number | null }>) => (await p).count ?? 0;
 
       const [inquiries, bookings, deliveries, serviceJobs, serviceClosed] = await Promise.all([
         uid
