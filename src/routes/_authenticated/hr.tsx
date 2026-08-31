@@ -38,13 +38,19 @@ export const Route = createFileRoute("/_authenticated/hr")({
 
 function HrPage() {
   const perms = usePerms();
-  const { data: me } = useMe();
   const isManager = perms.isManagement;
   const { data: employees = [], isLoading } = useEmployees(isManager);
   const { data: myEmployee } = useMyEmployee();
-  const [selectedId, setSelectedId] = useState<string | undefined>(myEmployee?.id);
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
   const [tab, setTab] = useState("attendance");
   const selected = employees.find((e) => e.id === selectedId) ?? (myEmployee ?? null);
+
+  // Default the manager's picker to their own record, or the first employee on file.
+  useEffect(() => {
+    if (selectedId) return;
+    const fallback = myEmployee?.id ?? employees[0]?.id;
+    if (fallback) setSelectedId(fallback);
+  }, [selectedId, myEmployee?.id, employees]);
 
   if (!perms.can("hr.view")) return <EmptyState title="HR access required" hint="Ask a manager to grant HR access to your role." />;
 
