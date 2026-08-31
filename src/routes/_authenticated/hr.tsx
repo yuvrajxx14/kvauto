@@ -12,6 +12,7 @@ import {
   useMyEmployee, useOnboardingMaster, useSopAcks, useSopQuestions, useSops, useTodayAttendance, type Employee,
 } from "@/lib/hr";
 import { PageHeader, KpiCard, EmptyState } from "@/components/sales/ui";
+import { PunchCard } from "@/components/hr/punch-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -63,7 +64,7 @@ function HrPage() {
       />
 
       {isManager && <HrOverview employees={employees} />}
-      {!isManager && <SelfAttendance employee={myEmployee ?? null} />}
+      <div className="mt-4"><PunchCard /></div>
 
       <Tabs value={tab} onValueChange={setTab} className="mt-6">
         <TabsList className="flex w-full justify-start overflow-x-auto sm:w-auto">
@@ -142,23 +143,6 @@ function EmployeeDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (
       <DialogFooter><Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button><Button disabled={save.isPending || !form.employee_code || !form.full_name} onClick={() => save.mutate()}>{save.isPending ? "Saving…" : "Create employee"}</Button></DialogFooter>
     </DialogContent></Dialog>
   );
-}
-
-function SelfAttendance({ employee }: { employee: Employee | null }) {
-  const qc = useQueryClient();
-  const { data: today } = useTodayAttendance(employee?.id);
-  const punch = useMutation({
-    mutationFn: async (kind: "IN" | "OUT") => {
-      if (!navigator.geolocation) throw new Error("Location permission is required to mark attendance on this device.");
-      const pos = await new Promise<GeolocationPosition>((resolve, reject) => navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 }));
-      const { error } = await supabase.rpc("attendance_punch", { _kind: kind, _lat: pos.coords.latitude, _lng: pos.coords.longitude, _accuracy: pos.coords.accuracy, _address: "" });
-      if (error) throw error;
-    },
-    onSuccess: (_, kind) => { toast.success(kind === "IN" ? "Punched in" : "Punched out"); qc.invalidateQueries({ queryKey: ["attendance"] }); qc.invalidateQueries({ queryKey: ["attendance-today"] }); },
-    onError: (e: Error) => toast.error(e.message),
-  });
-  if (!employee) return <Card className="mt-6 border-warning/40"><CardContent className="flex items-center gap-3 p-5 text-sm"><MapPin className="h-5 w-5 text-warning" /><span>Your login is not linked to an employee record. Ask management to link it before marking attendance.</span></CardContent></Card>;
-  return <Card className="mt-6 border-primary/20 bg-primary/5"><CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-semibold">Good morning, {employee.full_name.split(" ")[0]}</p><p className="mt-1 text-sm text-muted-foreground">Location and exact time are recorded when you punch.</p>{today?.punch_in_at && <p className="mt-2 text-xs text-muted-foreground">In {fmtTime(today.punch_in_at)} {today.punch_out_at ? `· Out ${fmtTime(today.punch_out_at)}` : "· Still working"}</p>}</div><div className="flex gap-2"><Button disabled={punch.isPending || !!today?.punch_in_at} onClick={() => punch.mutate("IN")}><MapPin className="mr-2 h-4 w-4" /> Punch in</Button><Button variant="outline" disabled={punch.isPending || !today?.punch_in_at || !!today?.punch_out_at} onClick={() => punch.mutate("OUT")}>Punch out</Button></div></CardContent></Card>;
 }
 
 function AttendanceManager({ employees, selected, onSelect }: { employees: Employee[]; selected: Employee | null; onSelect: (id: string) => void }) {
