@@ -2,15 +2,14 @@ import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Activity, Check, ClipboardCheck, Clock3, FileText, MapPin, Plus, ShieldCheck, UserPlus, Users, X } from "lucide-react";
+import { Check, ClipboardCheck, Clock3, FileText, MapPin, ShieldCheck, UserPlus, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useMe } from "@/lib/auth";
 import { useProfiles } from "@/lib/queries";
 import { usePerms } from "@/lib/permissions";
 import {
-  ATTENDANCE_LABEL, DEPARTMENT_LABEL, DEPARTMENTS, fmtMinutes, fmtTime, mapsLink, monthLabel,
-  monthStart, useAttendance, useEmployeeOnboarding, useEmployees, useMyEmployee, useOnboardingMaster,
-  useSopAcks, useSopQuestions, useSops, useTodayAttendance, type Employee,
+  ATTENDANCE_LABEL, DEPARTMENT_LABEL, DEPARTMENTS, fmtMinutes, fmtTime, mapsLink, monthEndExclusive,
+  monthLabel, monthStart, useAttendance, useEmployeeOnboarding, useEmployeePerformance, useEmployees,
+  useMyEmployee, useOnboardingMaster, useSopAcks, useSopQuestions, useSops, useTodayAttendance, type Employee,
 } from "@/lib/hr";
 import { PageHeader, KpiCard, EmptyState } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +21,6 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 
 export const Route = createFileRoute("/_authenticated/hr")({
   head: () => ({
