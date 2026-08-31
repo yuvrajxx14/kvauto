@@ -234,7 +234,7 @@ export function useMyEmployee() {
   });
 }
 
-export function useAttendance(params: { employeeId?: string; from: string; to: string }) {
+export function useAttendance(params: { employeeId?: string | undefined; from: string; to: string }) {
   const { employeeId, from, to } = params;
   return useQuery({
     queryKey: ["attendance", employeeId ?? "all", from, to],
