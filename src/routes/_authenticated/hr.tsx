@@ -164,9 +164,9 @@ function AttendanceManager({ employees, selected, onSelect }: { employees: Emplo
 }
 
 function SelfAttendanceHistory({ employee }: { employee: Employee | null }) {
-  if (!employee) return null;
   const month = monthStart();
-  const { data: records = [] } = useAttendance({ employeeId: employee.id, from: month, to: `${new Date(new Date(month).getFullYear(), new Date(month).getMonth() + 1, 1).toISOString().slice(0, 10)}` });
+  const { data: records = [] } = useAttendance({ employeeId: employee?.id, from: month, to: monthEndExclusive(month) });
+  if (!employee) return null;
   return <Card className="mt-4"><CardHeader><CardTitle className="text-base">My attendance · {monthLabel(month)}</CardTitle></CardHeader><CardContent className="space-y-2">{records.length ? records.map((r) => <div key={r.id} className="flex items-center justify-between border-b py-2 text-sm last:border-0"><span>{r.work_date}</span><span className="text-muted-foreground">{ATTENDANCE_LABEL[r.status]} · {fmtTime(r.punch_in_at)} — {fmtTime(r.punch_out_at)}</span></div>) : <p className="text-sm text-muted-foreground">No attendance marked this month.</p>}</CardContent></Card>;
 }
 
