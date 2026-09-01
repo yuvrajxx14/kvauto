@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { DeleteRecordButton } from "@/components/sales/delete-button";
+import { EditCustomerDialog } from "@/components/sales/edit-customer-dialog";
 import { PageHeader, Field } from "@/components/sales/ui";
 import { StatusBadge, BookingBadge } from "@/components/sales/badges";
 import { DocumentsPanel } from "@/components/sales/documents-panel";
@@ -78,6 +79,7 @@ function CustomerDetail() {
         subtitle={`${c.mobile} · ${c.village}`}
         actions={
           <div className="flex items-center gap-2">
+            <EditCustomerDialog customer={c} />
             <Button asChild variant="outline" size="sm">
               <Link to="/accounting/$customerId" params={{ customerId }}>
                 Customer ledger
