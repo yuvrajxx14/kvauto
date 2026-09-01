@@ -78,6 +78,7 @@ function CustomerDetail() {
         subtitle={`${c.mobile} · ${c.village}`}
         actions={
           <div className="flex items-center gap-2">
+            <EditCustomerDialog customer={c} />
             <Button asChild variant="outline" size="sm">
               <Link to="/accounting/$customerId" params={{ customerId }}>
                 Customer ledger
