@@ -497,3 +497,96 @@ export function useEmployeePerformance(employee: Employee | null | undefined, mo
     },
   });
 }
+
+/* ------------------------------------------------- team performance board */
+
+export type TeamPerfRow = {
+  employee: Employee;
+  inquiries: number;
+  bookings: number;
+  deliveries: number;
+  serviceJobs: number;
+  serviceClosed: number;
+  presentDays: number;
+  earlyDays: number;
+  lateDays: number;
+  workMinutes: number;
+  lastPunchAt: string | null;
+};
+
+/** Month-wide activity + attendance for every active employee, in one pass. */
+export function useTeamPerformance(month: string) {
+  const to = monthEndExclusive(month);
+  return useQuery({
+    queryKey: ["team-perf", month],
+    queryFn: async (): Promise<TeamPerfRow[]> => {
+      const [{ data: emps }, inq, bk, dl, sj, att] = await Promise.all([
+        supabase.from("employees").select("*").neq("employment_status", "EXITED").order("full_name"),
+        supabase.from("inquiries").select("salesman_id").gte("inquiry_date", month).lt("inquiry_date", to),
+        supabase.from("bookings").select("salesman_id").gte("booking_date", month).lt("booking_date", to),
+        supabase.from("deliveries").select("delivered_by").gte("delivery_date", month).lt("delivery_date", to),
+        supabase.from("service_jobs").select("assigned_to, status").gte("received_date", month).lt("received_date", to),
+        supabase
+          .from("attendance_records")
+          .select("employee_id, status, punch_in_at, work_minutes")
+          .gte("work_date", month)
+          .lt("work_date", to),
+      ]);
+
+      const tally = (rows: { [k: string]: unknown }[] | null, key: string) => {
+        const map = new Map<string, number>();
+        for (const r of rows ?? []) {
+          const id = r[key] as string | null;
+          if (!id) continue;
+          map.set(id, (map.get(id) ?? 0) + 1);
+        }
+        return map;
+      };
+
+      const inqBy = tally(inq.data, "salesman_id");
+      const bkBy = tally(bk.data, "salesman_id");
+      const dlBy = tally(dl.data, "delivered_by");
+      const sjBy = tally(sj.data, "assigned_to");
+      const sjDoneBy = tally((sj.data ?? []).filter((r) => r.status === "COMPLETED"), "assigned_to");
+
+      return (emps ?? []).map((raw) => {
+        const employee = raw as unknown as Employee;
+        const uid = employee.user_id ?? "";
+        const rows = (att.data ?? []).filter((r) => r.employee_id === employee.id);
+        const presentDays =
+          rows.filter((r) => r.status === "PRESENT").length +
+          rows.filter((r) => r.status === "HALF_DAY").length * 0.5;
+        let earlyDays = 0;
+        let lateDays = 0;
+        let workMinutes = 0;
+        let lastPunchAt: string | null = null;
+        for (const r of rows) {
+          workMinutes += Number(r.work_minutes ?? 0);
+          if (!r.punch_in_at || !["PRESENT", "HALF_DAY"].includes(r.status)) continue;
+          if (!lastPunchAt || r.punch_in_at > lastPunchAt) lastPunchAt = r.punch_in_at;
+          const local = new Date(r.punch_in_at).toLocaleTimeString("en-GB", {
+            timeZone: "Asia/Kolkata",
+            hour12: false,
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          if (local < "08:30") earlyDays += 1;
+          else lateDays += 1;
+        }
+        return {
+          employee,
+          inquiries: inqBy.get(uid) ?? 0,
+          bookings: bkBy.get(uid) ?? 0,
+          deliveries: dlBy.get(uid) ?? 0,
+          serviceJobs: sjBy.get(uid) ?? 0,
+          serviceClosed: sjDoneBy.get(uid) ?? 0,
+          presentDays,
+          earlyDays,
+          lateDays,
+          workMinutes,
+          lastPunchAt,
+        };
+      });
+    },
+  });
+}
