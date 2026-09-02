@@ -144,10 +144,9 @@ export function AppSidebar() {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
         {perms.isManagement && (
           <SidebarGroup>
