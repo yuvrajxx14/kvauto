@@ -102,11 +102,28 @@ export function AppSidebar() {
         <NavGroup label="Service" items={SERVICE_ITEMS.filter((i) => i.show(perms))} isActive={isActive} />
         <NavGroup label="Master" items={MASTER_ITEMS.filter((i) => i.show(perms))} isActive={isActive} />
 
-        {(perms.can("hr.view") || perms.can("payroll.view")) && (
-          <SidebarGroup>
-            <SidebarGroupLabel>People</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
+        <SidebarGroup>
+          <SidebarGroupLabel>People</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActive("/attendance")} tooltip="Mark attendance">
+                    <Link to="/attendance" className="flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      <span>Mark attendance</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                {perms.can("hr.view") && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/performance")} tooltip="Staff performance">
+                      <Link to="/performance" className="flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4" />
+                        <span>Staff performance</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
                 {perms.can("hr.view") && (
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/hr")} tooltip="HR & attendance">
