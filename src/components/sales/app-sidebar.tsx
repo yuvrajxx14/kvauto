@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Cog, Route as RouteIcon, MapPin, Server, UploadCloud, UserRoundCheck } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Cog, Route as RouteIcon, MapPin, Server, UploadCloud, UserRoundCheck, Clock, TrendingUp } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
