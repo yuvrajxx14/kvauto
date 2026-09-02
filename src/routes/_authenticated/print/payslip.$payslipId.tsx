@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PrintShell, PrintRow } from "@/components/sales/print-shell";
-import { usePayslip, DEPARTMENT_LABEL, monthLabel } from "@/lib/hr";
+import { usePayslip, useTeamPerformance, DEPARTMENT_LABEL, monthLabel, monthStart } from "@/lib/hr";
 
 export const Route = createFileRoute("/_authenticated/print/payslip/$payslipId")({
   head: () => ({
