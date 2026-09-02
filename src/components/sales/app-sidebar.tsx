@@ -116,10 +116,10 @@ export function AppSidebar() {
                 </SidebarMenuItem>
                 {perms.can("hr.view") && (
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={isActive("/performance")} tooltip="Staff performance">
+                    <SidebarMenuButton asChild isActive={isActive("/performance")} tooltip="Manager dashboard">
                       <Link to="/performance" className="flex items-center gap-2">
                         <TrendingUp className="h-4 w-4" />
-                        <span>Staff performance</span>
+                        <span>Manager dashboard</span
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

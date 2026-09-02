@@ -12,7 +12,7 @@ import { DEPARTMENT_LABEL, fmtMinutes, monthLabel, monthStart, useTeamPerformanc
 export const Route = createFileRoute("/_authenticated/performance")({
   head: () => ({
     meta: [
-      { title: "Staff performance · KrushiVidhya Automobiles" },
+      { title: "Manager dashboard · KrushiVidhya Automobiles" }
       { name: "description", content: "Manager view of every staff member's bookings, deliveries, service jobs and attendance for the month." },
       { property: "og:title", content: "Staff performance · KrushiVidhya Automobiles" },
       { property: "og:description", content: "Measure dealership staff output and attendance month by month." },
@@ -45,7 +45,7 @@ function PerformancePage() {
   return (
     <div>
       <PageHeader
-        title="Staff performance"
+        title="Manager dashboard"
         subtitle="Bookings, deliveries, service jobs and attendance for every employee"
         actions={
           <div className="flex items-center gap-2">
