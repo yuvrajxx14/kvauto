@@ -119,7 +119,7 @@ export function AppSidebar() {
                     <SidebarMenuButton asChild isActive={isActive("/performance")} tooltip="Manager dashboard">
                       <Link to="/performance" className="flex items-center gap-2">
                         <TrendingUp className="h-4 w-4" />
-                        <span>Manager dashboard</span
+                        <span>Manager dashboard</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
