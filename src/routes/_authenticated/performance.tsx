@@ -12,9 +12,9 @@ import { DEPARTMENT_LABEL, fmtMinutes, monthLabel, monthStart, useTeamPerformanc
 export const Route = createFileRoute("/_authenticated/performance")({
   head: () => ({
     meta: [
-      { title: "Manager dashboard · KrushiVidhya Automobiles" }
+      { title: "Manager dashboard · KrushiVidhya Automobiles" },
       { name: "description", content: "Manager view of every staff member's bookings, deliveries, service jobs and attendance for the month." },
-      { property: "og:title", content: "Staff performance · KrushiVidhya Automobiles" },
+      { property: "og:title", content: "Manager dashboard · KrushiVidhya Automobiles" },
       { property: "og:description", content: "Measure dealership staff output and attendance month by month." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
