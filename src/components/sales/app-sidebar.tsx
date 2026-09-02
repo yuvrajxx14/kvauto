@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Cog, Route as RouteIcon, MapPin, Server, UploadCloud, UserRoundCheck } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Cog, Route as RouteIcon, MapPin, Server, UploadCloud, UserRoundCheck, Clock, TrendingUp } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -102,11 +102,28 @@ export function AppSidebar() {
         <NavGroup label="Service" items={SERVICE_ITEMS.filter((i) => i.show(perms))} isActive={isActive} />
         <NavGroup label="Master" items={MASTER_ITEMS.filter((i) => i.show(perms))} isActive={isActive} />
 
-        {(perms.can("hr.view") || perms.can("payroll.view")) && (
-          <SidebarGroup>
-            <SidebarGroupLabel>People</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
+        <SidebarGroup>
+          <SidebarGroupLabel>People</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActive("/attendance")} tooltip="Mark attendance">
+                    <Link to="/attendance" className="flex items-center gap-2">
+                      <Clock className="h-4 w-4" />
+                      <span>Mark attendance</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                {perms.can("hr.view") && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={isActive("/performance")} tooltip="Manager dashboard">
+                      <Link to="/performance" className="flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4" />
+                        <span>Manager dashboard</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
                 {perms.can("hr.view") && (
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/hr")} tooltip="HR & attendance">
@@ -127,10 +144,9 @@ export function AppSidebar() {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
         {perms.isManagement && (
           <SidebarGroup>

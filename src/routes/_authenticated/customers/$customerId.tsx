@@ -15,10 +15,12 @@ import type { BookingStatus } from "@/lib/booking";
 export const Route = createFileRoute("/_authenticated/customers/$customerId")({
   head: () => ({
     meta: [
-      { title: "Customer Profile — KrushiVidhya Automobiles" },
-      { name: "description", content: "Customer profile with tractors owned, payments, subsidy and passing status." },
-      { property: "og:title", content: "Customer Profile — KrushiVidhya Automobiles" },
-      { property: "og:description", content: "Dealership customer profile." },
+      { title: "Customer 360 — KrushiVidhya Automobiles" },
+      { name: "description", content: "Complete customer 360 view of inquiries, bookings, payments, deliveries, subsidy and passing." },
+      { property: "og:title", content: "Customer 360 — KrushiVidhya Automobiles" },
+      { property: "og:description", content: "All dealership activity for one customer in one place." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: CustomerDetail,
