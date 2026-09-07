@@ -34,14 +34,34 @@ function InquiriesPage() {
   const search = Route.useSearch();
   const [status, setStatus] = useState<string>(search.status ?? "all");
   const [q, setQ] = useState("");
+  const [salesman, setSalesman] = useState("all");
+  const [model, setModel] = useState("all");
+  const [village, setVillage] = useState("all");
   const [page, setPage] = useState(0);
   const [sortDesc, setSortDesc] = useState(true);
   const { data, isLoading } = useInquiries({ status });
   const names = useProfileMap();
   const today = todayISO();
 
-  const filtered = (data ?? [])
+  const all = data ?? [];
+  const modelOptions = optionsFrom(all.map((i) => i.model), "All models");
+  const villageOptions = optionsFrom(
+    all.map((i) => (i.customer as { village?: string } | null)?.village),
+    "All villages",
+  );
+  const salesmanOptions = [
+    { value: "all", label: "All salesmen" },
+    ...Array.from(new Set(all.map((i) => i.salesman_id).filter(Boolean) as string[])).map((id) => ({
+      value: id,
+      label: names.get(id) ?? "Unknown",
+    })),
+  ];
+
+  const filtered = all
     .filter((i) => status !== "all" || !["DELIVERED", "LOST"].includes(i.status))
+    .filter((i) => salesman === "all" || i.salesman_id === salesman)
+    .filter((i) => model === "all" || i.model === model)
+    .filter((i) => village === "all" || (i.customer as { village?: string } | null)?.village === village)
     .filter((i) => {
       const s = q.trim().toLowerCase();
       if (!s) return true;
@@ -56,8 +76,19 @@ function InquiriesPage() {
         : a.inquiry_date.localeCompare(b.inquiry_date),
     );
 
+  const dirty = status !== "all" || q !== "" || salesman !== "all" || model !== "all" || village !== "all";
+  const clear = () => {
+    setStatus("all");
+    setQ("");
+    setSalesman("all");
+    setModel("all");
+    setVillage("all");
+    setPage(0);
+  };
+
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const rows = filtered.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+
 
   return (
     <div>
