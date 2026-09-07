@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search } from "lucide-react";
 import { PageHeader } from "@/components/sales/ui";
 import { BookingBadge } from "@/components/sales/badges";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { useBookings } from "@/lib/erp";
 import { BOOKING_STATUSES, BOOKING_STATUS_LABEL, type BookingStatus } from "@/lib/booking";
 import { fmtDate, inr } from "@/lib/sales";
@@ -28,11 +26,35 @@ export const Route = createFileRoute("/_authenticated/bookings/")({
 function BookingsPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("all");
+  const [model, setModel] = useState("all");
+  const [finance, setFinance] = useState("all");
+  const [payment, setPayment] = useState("all");
   const { data, isLoading } = useBookings(search);
 
-  const rows = (data ?? []).filter((b) =>
-    status === "all" ? !["DELIVERED", "CANCELLED"].includes(b.status) : b.status === status,
-  );
+  const all = data ?? [];
+  const modelOptions = optionsFrom(all.map((b) => b.tractor_model), "All models");
+
+  const outstandingOf = (b: (typeof all)[number]) =>
+    Math.max(0, Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0));
+
+  const rows = all
+    .filter((b) => (status === "all" ? !["DELIVERED", "CANCELLED"].includes(b.status) : b.status === status))
+    .filter((b) => model === "all" || b.tractor_model === model)
+    .filter((b) => finance === "all" || (b.finance_type ?? "CASH") === finance)
+    .filter((b) => {
+      if (payment === "all") return true;
+      const out = outstandingOf(b);
+      return payment === "due" ? out > 1 : out <= 1;
+    });
+
+  const dirty = search !== "" || status !== "all" || model !== "all" || finance !== "all" || payment !== "all";
+  const clear = () => {
+    setSearch("");
+    setStatus("all");
+    setModel("all");
+    setFinance("all");
+    setPayment("all");
+  };
 
   return (
     <div>
@@ -42,26 +64,40 @@ function BookingsPage() {
         <Metric label="Active bookings" value={String(rows.length)} />
       </div>
 
-      <div className="mb-3 flex flex-wrap gap-2">
-        <div className="relative min-w-56 flex-1">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            className="pl-8"
-            placeholder="Search booking number or model"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            {BOOKING_STATUSES.map((s) => (
-              <SelectItem key={s} value={s}>{BOOKING_STATUS_LABEL[s]}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <FilterBar>
+        <SearchBox value={search} onChange={setSearch} placeholder="Search booking number or model" />
+        <FilterSelect
+          value={status}
+          onChange={setStatus}
+          className="w-52"
+          options={[
+            { value: "all", label: "Active bookings" },
+            ...BOOKING_STATUSES.map((s) => ({ value: s, label: BOOKING_STATUS_LABEL[s] })),
+          ]}
+        />
+        <FilterSelect value={model} onChange={setModel} options={modelOptions} className="w-44" />
+        <FilterSelect
+          value={finance}
+          onChange={setFinance}
+          className="w-40"
+          options={[
+            { value: "all", label: "Cash & loan" },
+            { value: "CASH", label: "Cash deals" },
+            { value: "LOAN", label: "Loan deals" },
+          ]}
+        />
+        <FilterSelect
+          value={payment}
+          onChange={setPayment}
+          className="w-44"
+          options={[
+            { value: "all", label: "Any balance" },
+            { value: "due", label: "Balance pending" },
+            { value: "clear", label: "Fully paid" },
+          ]}
+        />
+        <ClearFilters show={dirty} onClear={clear} />
+      </FilterBar>
 
       <Card className="shadow-card">
         <CardContent className="p-0">
@@ -83,7 +119,7 @@ function BookingsPage() {
                 <TableRow><TableCell colSpan={8} className="text-sm text-muted-foreground">Loading…</TableCell></TableRow>
               )}
               {!isLoading && rows.length === 0 && (
-                <TableRow><TableCell colSpan={8} className="text-sm text-muted-foreground">No bookings yet.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={8} className="text-sm text-muted-foreground">No bookings match these filters.</TableCell></TableRow>
               )}
               {rows.map((b) => {
                 const received = Number(b.amount_received ?? 0);
@@ -97,10 +133,7 @@ function BookingsPage() {
                       </Link>
                       <p className="text-xs text-muted-foreground">{fmtDate(b.booking_date)}</p>
                     </TableCell>
-                    <TableCell>
-                      <p>{b.customer?.customer_name ?? "—"}</p>
-                      <p className="text-xs text-muted-foreground">{b.customer?.village ?? ""}</p>
-                    </TableCell>
+                    <TableCell>{b.customer?.customer_name ?? "—"}</TableCell>
                     <TableCell>{b.tractor_model}</TableCell>
                     <TableCell className="text-right">{inr(b.final_price)}</TableCell>
                     <TableCell className="text-right">{inr(received)}</TableCell>
