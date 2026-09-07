@@ -5,11 +5,11 @@ import { useInquiries, useProfileMap } from "@/lib/queries";
 import { PageHeader, EmptyState } from "@/components/sales/ui";
 import { StatusBadge, InterestBadge } from "@/components/sales/badges";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { ALL_STATUSES, STATUS_LABEL, fmtDate, todayISO, type InquiryStatus } from "@/lib/sales";
+
 
 type Search = { status?: string | undefined };
 
