@@ -106,39 +106,60 @@ function InquiriesPage() {
 
       <Card className="shadow-card">
         <CardContent className="p-3 sm:p-4">
-          <div className="mb-3 flex flex-col gap-2 sm:flex-row">
-            <Input
-              placeholder="Search inquiry no, customer, mobile, village, model"
+          <FilterBar>
+            <SearchBox
               value={q}
-              onChange={(e) => {
-                setQ(e.target.value);
+              onChange={(v) => {
+                setQ(v);
                 setPage(0);
               }}
+              placeholder="Search inquiry no, customer, mobile, village, model"
               className="sm:max-w-sm"
             />
-            <Select
+            <FilterSelect
               value={status}
-              onValueChange={(v) => {
+              onChange={(v) => {
                 setStatus(v);
                 setPage(0);
               }}
-            >
-              <SelectTrigger className="sm:w-48">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All statuses</SelectItem>
-                {ALL_STATUSES.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    {STATUS_LABEL[s]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              className="w-48"
+              options={[
+                { value: "all", label: "All statuses" },
+                ...ALL_STATUSES.map((s) => ({ value: s, label: STATUS_LABEL[s] })),
+              ]}
+            />
+            <FilterSelect
+              value={salesman}
+              onChange={(v) => {
+                setSalesman(v);
+                setPage(0);
+              }}
+              options={salesmanOptions}
+            />
+            <FilterSelect
+              value={model}
+              onChange={(v) => {
+                setModel(v);
+                setPage(0);
+              }}
+              options={modelOptions}
+              className="w-44"
+            />
+            <FilterSelect
+              value={village}
+              onChange={(v) => {
+                setVillage(v);
+                setPage(0);
+              }}
+              options={villageOptions}
+              className="w-44"
+            />
             <Button variant="outline" onClick={() => setSortDesc((v) => !v)}>
               Date {sortDesc ? "↓" : "↑"}
             </Button>
-          </div>
+            <ClearFilters show={dirty} onClear={clear} />
+          </FilterBar>
+
 
           {isLoading ? (
             <p className="py-8 text-center text-sm text-muted-foreground">Loading…</p>
