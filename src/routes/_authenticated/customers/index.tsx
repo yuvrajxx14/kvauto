@@ -3,11 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, EmptyState } from "@/components/sales/ui";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 
 export const Route = createFileRoute("/_authenticated/customers/")({
   head: () => ({
@@ -24,6 +24,9 @@ export const Route = createFileRoute("/_authenticated/customers/")({
 function CustomersPage() {
   const [q, setQ] = useState("");
   const [tab, setTab] = useState<"owners" | "all">("owners");
+  const [village, setVillage] = useState("all");
+  const [taluka, setTaluka] = useState("all");
+  const [model, setModel] = useState("all");
 
   const { data, isLoading } = useQuery({
     queryKey: ["customers-with-purchases"],
@@ -48,8 +51,16 @@ function CustomersPage() {
   });
 
   const owned = data?.owned ?? new Map<string, string[]>();
-  const rows = (data?.customers ?? [])
+  const customers = data?.customers ?? [];
+  const villageOptions = optionsFrom(customers.map((c) => c.village), "All villages");
+  const talukaOptions = optionsFrom(customers.map((c) => c.taluka), "All tehsils");
+  const modelOptions = optionsFrom([...owned.values()].flat(), "All models owned");
+
+  const rows = customers
     .filter((c) => (tab === "owners" ? owned.has(c.id) : true))
+    .filter((c) => village === "all" || c.village === village)
+    .filter((c) => taluka === "all" || c.taluka === taluka)
+    .filter((c) => model === "all" || (owned.get(c.id) ?? []).includes(model))
     .filter((c) => {
       const s = q.trim().toLowerCase();
       if (!s) return true;
@@ -57,6 +68,14 @@ function CustomersPage() {
         .filter(Boolean)
         .some((v) => String(v).toLowerCase().includes(s));
     });
+
+  const dirty = q !== "" || village !== "all" || taluka !== "all" || model !== "all";
+  const clear = () => {
+    setQ("");
+    setVillage("all");
+    setTaluka("all");
+    setModel("all");
+  };
 
   return (
     <div>
@@ -66,20 +85,26 @@ function CustomersPage() {
       />
       <Card className="shadow-card">
         <CardContent className="p-3 sm:p-4">
-          <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center">
+          <FilterBar>
             <Tabs value={tab} onValueChange={(v) => setTab(v as "owners" | "all")}>
               <TabsList>
                 <TabsTrigger value="owners">Tractor owners</TabsTrigger>
                 <TabsTrigger value="all">All customers</TabsTrigger>
               </TabsList>
             </Tabs>
-            <Input
-              className="sm:max-w-sm"
-              placeholder="Search by name, mobile or village"
+            <SearchBox
               value={q}
-              onChange={(e) => setQ(e.target.value)}
+              onChange={setQ}
+              placeholder="Search by name, mobile or village"
+              className="sm:max-w-sm"
             />
-          </div>
+            <FilterSelect value={village} onChange={setVillage} options={villageOptions} className="w-44" />
+            <FilterSelect value={taluka} onChange={setTaluka} options={talukaOptions} className="w-40" />
+            {tab === "owners" && (
+              <FilterSelect value={model} onChange={setModel} options={modelOptions} className="w-48" />
+            )}
+            <ClearFilters show={dirty} onClear={clear} />
+          </FilterBar>
           {isLoading ? (
             <p className="py-8 text-center text-sm text-muted-foreground">Loading…</p>
           ) : rows.length === 0 ? (
