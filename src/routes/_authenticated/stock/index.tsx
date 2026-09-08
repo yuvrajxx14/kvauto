@@ -12,7 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { useDemandVsStock, useStock } from "@/lib/erp";
+
 import { useMe } from "@/lib/auth";
 import { STOCK_STATUSES, STOCK_STATUS_LABEL, STOCK_LOCATIONS, TRACTOR_COLOURS, type StockStatus } from "@/lib/stock";
 import { VARIANTS } from "@/lib/sales";
@@ -36,9 +38,38 @@ function StockPage() {
   const qc = useQueryClient();
   const { data: me } = useMe();
   const [status, setStatus] = useState("all");
+  const [q, setQ] = useState("");
+  const [model, setModel] = useState("all");
+  const [location, setLocation] = useState("all");
+  const [colour, setColour] = useState("all");
   const [addOpen, setAddOpen] = useState(false);
   const { rows, isLoading } = useDemandVsStock();
   const units = useStock({ status });
+
+  const allUnits = units.data ?? [];
+  const modelOptions = optionsFrom(allUnits.map((u) => u.model), "All models");
+  const locationOptions = optionsFrom(allUnits.map((u) => u.location), "All locations");
+  const colourOptions = optionsFrom(allUnits.map((u) => u.colour), "All colours");
+  const unitRows = allUnits
+    .filter((u) => model === "all" || u.model === model)
+    .filter((u) => location === "all" || u.location === location)
+    .filter((u) => colour === "all" || u.colour === colour)
+    .filter((u) => {
+      const s = q.trim().toLowerCase();
+      if (!s) return true;
+      return [u.chassis_number, u.engine_number, u.received_from]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(s));
+    });
+  const dirty = q !== "" || status !== "all" || model !== "all" || location !== "all" || colour !== "all";
+  const clear = () => {
+    setQ("");
+    setStatus("all");
+    setModel("all");
+    setLocation("all");
+    setColour("all");
+  };
+
 
   const addStock = useMutation({
     mutationFn: async (payload: Record<string, string>) => {
