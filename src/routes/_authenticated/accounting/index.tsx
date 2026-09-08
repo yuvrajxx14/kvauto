@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader } from "@/components/sales/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { useAllPayments, useBookings } from "@/lib/erp";
 import { PaymentDialog } from "@/components/sales/payment-dialog";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
+
 
 export const Route = createFileRoute("/_authenticated/accounting/")({
   head: () => ({
@@ -23,19 +26,52 @@ export const Route = createFileRoute("/_authenticated/accounting/")({
 function AccountingPage() {
   const { data: bookings } = useBookings();
   const { data: payments } = useAllPayments();
+  const [q, setQ] = useState("");
+  const [stage, setStage] = useState("all");
+  const [mode, setMode] = useState("all");
 
   const open = (bookings ?? []).filter((b) => b.status !== "CANCELLED");
   const today = todayISO();
   const todayCollection = (payments ?? []).filter((p) => p.payment_date === today).reduce((s, p) => s + Number(p.amount), 0);
 
-  const outstandingRows = open
+  const allOutstanding = open
     .map((b) => ({ b, out: Math.max(0, Number(b.final_price ?? 0) + Number(b.extra_charges ?? 0) - Number(b.amount_received ?? 0)) }))
     .filter((r) => r.out > 1)
     .sort((a, x) => x.out - a.out);
 
+  const outstandingRows = allOutstanding
+    .filter((r) =>
+      stage === "all" ? true : stage === "delivered" ? r.b.status === "DELIVERED" : r.b.status !== "DELIVERED",
+    )
+    .filter((r) => {
+      const s = q.trim().toLowerCase();
+      if (!s) return true;
+      return [r.b.customer?.customer_name, r.b.booking_number, r.b.customer?.mobile]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(s));
+    });
+
+  const modeOptions = optionsFrom((payments ?? []).map((p) => p.payment_mode), "All payment modes");
+  const receiptRows = (payments ?? [])
+    .filter((p) => mode === "all" || p.payment_mode === mode)
+    .filter((p) => {
+      const s = q.trim().toLowerCase();
+      if (!s) return true;
+      return [p.booking?.customer?.customer_name, p.booking?.booking_number]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(s));
+    });
+
   const totalOutstanding = outstandingRows.reduce((s, r) => s + r.out, 0);
-  const pendingBeforeDelivery = outstandingRows.filter((r) => r.b.status !== "DELIVERED").length;
-  const deliveredWithDues = outstandingRows.filter((r) => r.b.status === "DELIVERED").length;
+  const pendingBeforeDelivery = allOutstanding.filter((r) => r.b.status !== "DELIVERED").length;
+  const deliveredWithDues = allOutstanding.filter((r) => r.b.status === "DELIVERED").length;
+
+  const dirty = q !== "" || stage !== "all" || mode !== "all";
+  const clear = () => {
+    setQ("");
+    setStage("all");
+    setMode("all");
+  };
 
   return (
     <div>
@@ -48,6 +84,23 @@ function AccountingPage() {
         <Metric label="Delivered but dues left" value={String(deliveredWithDues)} />
       </div>
       <p className="mb-4 text-xs text-muted-foreground">Collected today: {inr(todayCollection)}</p>
+
+      <FilterBar>
+        <SearchBox value={q} onChange={setQ} placeholder="Search customer, mobile or booking number" />
+        <FilterSelect
+          value={stage}
+          onChange={setStage}
+          className="w-56"
+          options={[
+            { value: "all", label: "All outstanding" },
+            { value: "before", label: "Pending before delivery" },
+            { value: "delivered", label: "Delivered with dues" },
+          ]}
+        />
+        <FilterSelect value={mode} onChange={setMode} options={modeOptions} className="w-48" />
+        <ClearFilters show={dirty} onClear={clear} />
+      </FilterBar>
+
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="shadow-card">
@@ -99,8 +152,9 @@ function AccountingPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {(payments ?? []).length === 0 && <TableRow><TableCell colSpan={5} className="text-sm text-muted-foreground">No receipts yet.</TableCell></TableRow>}
-                {(payments ?? []).slice(0, 20).map((p) => (
+                {receiptRows.length === 0 && <TableRow><TableCell colSpan={5} className="text-sm text-muted-foreground">No receipts match these filters.</TableCell></TableRow>}
+                {receiptRows.slice(0, 20).map((p) => (
+
                   <TableRow key={p.id}>
                     <TableCell className="text-xs">{fmtDate(p.payment_date)}</TableCell>
                     <TableCell>{p.booking?.customer?.customer_name ?? "\u2014"}</TableCell>

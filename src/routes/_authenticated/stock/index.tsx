@@ -12,7 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { useDemandVsStock, useStock } from "@/lib/erp";
+
 import { useMe } from "@/lib/auth";
 import { STOCK_STATUSES, STOCK_STATUS_LABEL, STOCK_LOCATIONS, TRACTOR_COLOURS, type StockStatus } from "@/lib/stock";
 import { VARIANTS } from "@/lib/sales";
@@ -36,9 +38,38 @@ function StockPage() {
   const qc = useQueryClient();
   const { data: me } = useMe();
   const [status, setStatus] = useState("all");
+  const [q, setQ] = useState("");
+  const [model, setModel] = useState("all");
+  const [location, setLocation] = useState("all");
+  const [colour, setColour] = useState("all");
   const [addOpen, setAddOpen] = useState(false);
   const { rows, isLoading } = useDemandVsStock();
   const units = useStock({ status });
+
+  const allUnits = units.data ?? [];
+  const modelOptions = optionsFrom(allUnits.map((u) => u.model), "All models");
+  const locationOptions = optionsFrom(allUnits.map((u) => u.location), "All locations");
+  const colourOptions = optionsFrom(allUnits.map((u) => u.colour), "All colours");
+  const unitRows = allUnits
+    .filter((u) => model === "all" || u.model === model)
+    .filter((u) => location === "all" || u.location === location)
+    .filter((u) => colour === "all" || u.colour === colour)
+    .filter((u) => {
+      const s = q.trim().toLowerCase();
+      if (!s) return true;
+      return [u.chassis_number, u.engine_number, u.received_from]
+        .filter(Boolean)
+        .some((v) => String(v).toLowerCase().includes(s));
+    });
+  const dirty = q !== "" || status !== "all" || model !== "all" || location !== "all" || colour !== "all";
+  const clear = () => {
+    setQ("");
+    setStatus("all");
+    setModel("all");
+    setLocation("all");
+    setColour("all");
+  };
+
 
   const addStock = useMutation({
     mutationFn: async (payload: Record<string, string>) => {
@@ -197,15 +228,23 @@ function StockPage() {
         </CardContent>
       </Card>
 
-      <div className="mb-3 flex justify-end">
-        <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All stock statuses</SelectItem>
-            {STOCK_STATUSES.map((s) => <SelectItem key={s} value={s}>{STOCK_STATUS_LABEL[s]}</SelectItem>)}
-          </SelectContent>
-        </Select>
-      </div>
+      <FilterBar>
+        <SearchBox value={q} onChange={setQ} placeholder="Search chassis, engine number or received from" />
+        <FilterSelect
+          value={status}
+          onChange={setStatus}
+          className="w-52"
+          options={[
+            { value: "all", label: "All stock statuses" },
+            ...STOCK_STATUSES.map((s) => ({ value: s, label: STOCK_STATUS_LABEL[s] })),
+          ]}
+        />
+        <FilterSelect value={model} onChange={setModel} options={modelOptions} className="w-44" />
+        <FilterSelect value={location} onChange={setLocation} options={locationOptions} className="w-48" />
+        <FilterSelect value={colour} onChange={setColour} options={colourOptions} className="w-40" />
+        <ClearFilters show={dirty} onClear={clear} />
+      </FilterBar>
+
 
       <Card className="shadow-card">
         <CardContent className="p-0">
@@ -220,10 +259,11 @@ function StockPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {units.data?.length === 0 && (
-                <TableRow><TableCell colSpan={5} className="text-sm text-muted-foreground">No stock units.</TableCell></TableRow>
+              {unitRows.length === 0 && (
+                <TableRow><TableCell colSpan={5} className="text-sm text-muted-foreground">No stock units match these filters.</TableCell></TableRow>
               )}
-              {(units.data ?? []).map((u) => (
+              {unitRows.map((u) => (
+
                 <TableRow key={u.id}>
                   <TableCell className="font-medium">
                     <Link to="/stock/$stockId" params={{ stockId: u.id }} className="hover:underline">{u.chassis_number}</Link>
