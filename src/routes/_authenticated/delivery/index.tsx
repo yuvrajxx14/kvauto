@@ -12,9 +12,9 @@ import { fmtDate, inr } from "@/lib/sales";
 export const Route = createFileRoute("/_authenticated/delivery/")({
   head: () => ({
     meta: [
-      { title: "Delivery \u00b7 KrushiVidhya Automobiles" },
+      { title: "Delivery · KrushiVidhya Automobiles" },
       { name: "description", content: "Tractors allocated and ready for delivery with payment and document readiness." },
-      { property: "og:title", content: "Delivery \u00b7 KrushiVidhya Automobiles" },
+      { property: "og:title", content: "Delivery · KrushiVidhya Automobiles" },
       { property: "og:description", content: "Delivery-ready tractors and pending deliveries." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -112,7 +112,7 @@ function DeliveryPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && <TableRow><TableCell colSpan={6} className="text-sm text-muted-foreground">Loading\u2026</TableCell></TableRow>}
+              {isLoading && <TableRow><TableCell colSpan={6} className="text-sm text-muted-foreground">Loading…</TableCell></TableRow>}
               {!isLoading && rows.length === 0 && <TableRow><TableCell colSpan={6} className="text-sm text-muted-foreground">Nothing matches these filters.</TableCell></TableRow>}
               {rows.map((b) => {
                 const a = Array.isArray(b.allocation) ? b.allocation[0] : b.allocation;
@@ -123,7 +123,7 @@ function DeliveryPage() {
                       <Link to="/delivery/$bookingId" params={{ bookingId: b.id }} className="hover:underline">{b.booking_number}</Link>
                       <p className="text-xs text-muted-foreground">{fmtDate(b.booking_date)}</p>
                     </TableCell>
-                    <TableCell>{b.customer?.customer_name ?? "\u2014"}</TableCell>
+                    <TableCell>{b.customer?.customer_name ?? "—"}</TableCell>
                     <TableCell>{b.tractor_model}</TableCell>
                     <TableCell className="text-xs">{a?.chassis_number ?? "Not allocated"}</TableCell>
                     <TableCell className="text-right">{inr(outstanding)}</TableCell>
