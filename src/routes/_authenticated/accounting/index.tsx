@@ -152,8 +152,9 @@ function AccountingPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {(payments ?? []).length === 0 && <TableRow><TableCell colSpan={5} className="text-sm text-muted-foreground">No receipts yet.</TableCell></TableRow>}
-                {(payments ?? []).slice(0, 20).map((p) => (
+                {receiptRows.length === 0 && <TableRow><TableCell colSpan={5} className="text-sm text-muted-foreground">No receipts match these filters.</TableCell></TableRow>}
+                {receiptRows.slice(0, 20).map((p) => (
+
                   <TableRow key={p.id}>
                     <TableCell className="text-xs">{fmtDate(p.payment_date)}</TableCell>
                     <TableCell>{p.booking?.customer?.customer_name ?? "\u2014"}</TableCell>
