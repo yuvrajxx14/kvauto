@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { fmtDate } from "@/lib/sales";
+
 import {
   SERVICE_STATUSES,
   SERVICE_STATUS_LABEL,
@@ -51,11 +51,30 @@ export function statusTone(status: ServiceStatus) {
 function ServiceRegisterPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
+  const [mode, setMode] = useState("all");
+  const [type, setType] = useState("all");
+  const [village, setVillage] = useState("all");
   const { data, isLoading } = useServiceJobs({ search, status });
-  const rows = data ?? [];
+  const all = data ?? [];
+  const typeOptions = optionsFrom(all.map((r) => r.service_type), "All service types");
+  const villageOptions = optionsFrom(all.map((r) => r.village), "All villages");
+  const rows = all
+    .filter((r) => mode === "all" || r.service_mode === mode)
+    .filter((r) => type === "all" || r.service_type === type)
+    .filter((r) => village === "all" || r.village === village);
+
+  const dirty = search !== "" || status !== "active" || mode !== "all" || type !== "all" || village !== "all";
+  const clear = () => {
+    setSearch("");
+    setStatus("active");
+    setMode("all");
+    setType("all");
+    setVillage("all");
+  };
 
   const unassigned = rows.filter((r) => !r.assigned_to).length;
   const field = rows.filter((r) => r.service_mode === "FIELD_VISIT").length;
+
 
   return (
     <div>
