@@ -48,14 +48,26 @@ function RoutePlannerPage() {
   const [selected, setSelected] = useState<string[]>([]);
   const [openRoute, setOpenRoute] = useState<string | null>(null);
 
+  const [villageFilter, setVillageFilter] = useState("all");
+  const [priority, setPriority] = useState("all");
+
+  const villageOptions = optionsFrom((jobs ?? []).map((j) => j.village), "All villages");
+  const priorityOptions = optionsFrom((jobs ?? []).map((j) => j.priority), "All priorities");
+
+  const visibleJobs = (jobs ?? [])
+    .filter((j) => villageFilter === "all" || j.village === villageFilter)
+    .filter((j) => priority === "all" || j.priority === priority);
+
   const byVillage = useMemo(() => {
     const map = new Map<string, NonNullable<typeof jobs>>();
-    (jobs ?? []).forEach((j) => {
+    visibleJobs.forEach((j) => {
       const key = j.village || "Unknown village";
       map.set(key, [...(map.get(key) ?? []), j] as never);
     });
     return [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-  }, [jobs]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jobs, villageFilter, priority]);
+
 
   const selectedJobs = (jobs ?? []).filter((j) => selected.includes(j.id));
   const orderedVillages = useMemo(() => {
