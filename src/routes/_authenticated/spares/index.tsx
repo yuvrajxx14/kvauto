@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, Search, Wrench, User } from "lucide-react";
+import { Plus, Wrench, User } from "lucide-react";
 import { PageHeader } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { fmtDate, inr } from "@/lib/sales";
+
 import {
   SPARE_STATUSES,
   SPARE_STATUS_LABEL,
@@ -38,11 +38,26 @@ export const Route = createFileRoute("/_authenticated/spares/")({
 function SparesPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("open");
+  const [type, setType] = useState("all");
+  const [model, setModel] = useState("all");
   const { data, isLoading } = useSpareRequests({ search, status });
-  const rows = data ?? [];
+  const all = data ?? [];
+  const modelOptions = optionsFrom(all.map((r) => r.model), "All models");
+  const rows = all
+    .filter((r) => type === "all" || r.request_type === type)
+    .filter((r) => model === "all" || r.model === model);
+
+  const dirty = search !== "" || status !== "open" || type !== "all" || model !== "all";
+  const clear = () => {
+    setSearch("");
+    setStatus("open");
+    setType("all");
+    setModel("all");
+  };
 
   const pending = rows.filter((r) => r.status === "PENDING").length;
   const partial = rows.filter((r) => r.status === "PARTIAL").length;
+
 
   return (
     <div>
