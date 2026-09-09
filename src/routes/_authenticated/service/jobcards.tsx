@@ -40,14 +40,19 @@ export const Route = createFileRoute("/_authenticated/service/jobcards")({
 function JobCardsPage() {
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
+  const [mode, setMode] = useState("all");
+  const [mechanic, setMechanic] = useState("all");
   const { data, isLoading } = useServiceJobs({ search, status: "active" });
   const { data: staff } = useProfiles();
   const { data: me } = useMe();
   const canAssign = !!me?.isManagement;
 
-  const rows = data ?? [];
+  const rows = (data ?? [])
+    .filter((r) => mode === "all" || r.service_mode === mode)
+    .filter((r) => mechanic === "all" || (mechanic === "none" ? !r.assigned_to : r.assigned_to === mechanic));
   const unassigned = rows.filter((r) => !r.assigned_to);
   const assigned = rows.filter((r) => r.assigned_to);
+
 
   const assign = useMutation({
     mutationFn: async ({ jobId, mechanicId }: { jobId: string; mechanicId: string | null }) => {
