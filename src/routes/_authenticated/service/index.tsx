@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import { PageHeader } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { fmtDate } from "@/lib/sales";
+
 import {
   SERVICE_STATUSES,
   SERVICE_STATUS_LABEL,
@@ -51,11 +51,30 @@ export function statusTone(status: ServiceStatus) {
 function ServiceRegisterPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
+  const [mode, setMode] = useState("all");
+  const [type, setType] = useState("all");
+  const [village, setVillage] = useState("all");
   const { data, isLoading } = useServiceJobs({ search, status });
-  const rows = data ?? [];
+  const all = data ?? [];
+  const typeOptions = optionsFrom(all.map((r) => r.service_type), "All service types");
+  const villageOptions = optionsFrom(all.map((r) => r.village), "All villages");
+  const rows = all
+    .filter((r) => mode === "all" || r.service_mode === mode)
+    .filter((r) => type === "all" || r.service_type === type)
+    .filter((r) => village === "all" || r.village === village);
+
+  const dirty = search !== "" || status !== "active" || mode !== "all" || type !== "all" || village !== "all";
+  const clear = () => {
+    setSearch("");
+    setStatus("active");
+    setMode("all");
+    setType("all");
+    setVillage("all");
+  };
 
   const unassigned = rows.filter((r) => !r.assigned_to).length;
   const field = rows.filter((r) => r.service_mode === "FIELD_VISIT").length;
+
 
   return (
     <div>
@@ -77,27 +96,33 @@ function ServiceRegisterPage() {
         <Metric label="Field visits" value={String(field)} />
       </div>
 
-      <div className="mb-3 flex flex-wrap gap-2">
-        <div className="relative min-w-56 flex-1">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            className="pl-8"
-            placeholder="Search job no, customer, mobile, chassis"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-56"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="active">Active entries</SelectItem>
-            <SelectItem value="all">All entries</SelectItem>
-            {SERVICE_STATUSES.map((s) => (
-              <SelectItem key={s} value={s}>{SERVICE_STATUS_LABEL[s]}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <FilterBar>
+        <SearchBox value={search} onChange={setSearch} placeholder="Search job no, customer, mobile, chassis" />
+        <FilterSelect
+          value={status}
+          onChange={setStatus}
+          className="w-52"
+          options={[
+            { value: "active", label: "Active entries" },
+            { value: "all", label: "All entries" },
+            ...SERVICE_STATUSES.map((s) => ({ value: s, label: SERVICE_STATUS_LABEL[s] })),
+          ]}
+        />
+        <FilterSelect
+          value={mode}
+          onChange={setMode}
+          className="w-48"
+          options={[
+            { value: "all", label: "All service modes" },
+            { value: "IN_HOUSE", label: SERVICE_MODE_LABEL["IN_HOUSE"] ?? "In house" },
+            { value: "FIELD_VISIT", label: SERVICE_MODE_LABEL["FIELD_VISIT"] ?? "Field visit" },
+          ]}
+        />
+        <FilterSelect value={type} onChange={setType} options={typeOptions} className="w-48" />
+        <FilterSelect value={village} onChange={setVillage} options={villageOptions} className="w-44" />
+        <ClearFilters show={dirty} onClear={clear} />
+      </FilterBar>
+
 
       <Card className="shadow-card">
         <CardContent className="p-0">

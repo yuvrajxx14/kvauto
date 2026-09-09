@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Search } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters } from "@/components/sales/filters";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useProfiles } from "@/lib/queries";
 import { useMe } from "@/lib/auth";
@@ -40,14 +40,19 @@ export const Route = createFileRoute("/_authenticated/service/jobcards")({
 function JobCardsPage() {
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
+  const [mode, setMode] = useState("all");
+  const [mechanic, setMechanic] = useState("all");
   const { data, isLoading } = useServiceJobs({ search, status: "active" });
   const { data: staff } = useProfiles();
   const { data: me } = useMe();
   const canAssign = !!me?.isManagement;
 
-  const rows = data ?? [];
+  const rows = (data ?? [])
+    .filter((r) => mode === "all" || r.service_mode === mode)
+    .filter((r) => mechanic === "all" || (mechanic === "none" ? !r.assigned_to : r.assigned_to === mechanic));
   const unassigned = rows.filter((r) => !r.assigned_to);
   const assigned = rows.filter((r) => r.assigned_to);
+
 
   const assign = useMutation({
     mutationFn: async ({ jobId, mechanicId }: { jobId: string; mechanicId: string | null }) => {
@@ -97,15 +102,38 @@ function JobCardsPage() {
         </p>
       )}
 
-      <div className="relative mb-3 max-w-md">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input
-          className="pl-8"
-          placeholder="Search job no, customer, mobile, chassis"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+      <FilterBar>
+        <SearchBox value={search} onChange={setSearch} placeholder="Search job no, customer, mobile, chassis" />
+        <FilterSelect
+          value={mode}
+          onChange={setMode}
+          className="w-48"
+          options={[
+            { value: "all", label: "All service modes" },
+            { value: "IN_HOUSE", label: SERVICE_MODE_LABEL["IN_HOUSE"] ?? "In house" },
+            { value: "FIELD_VISIT", label: SERVICE_MODE_LABEL["FIELD_VISIT"] ?? "Field visit" },
+          ]}
         />
-      </div>
+        <FilterSelect
+          value={mechanic}
+          onChange={setMechanic}
+          className="w-52"
+          options={[
+            { value: "all", label: "All mechanics" },
+            { value: "none", label: "Not assigned" },
+            ...(staff ?? []).map((p) => ({ value: p.id, label: p.full_name ?? "Staff" })),
+          ]}
+        />
+        <ClearFilters
+          show={search !== "" || mode !== "all" || mechanic !== "all"}
+          onClear={() => {
+            setSearch("");
+            setMode("all");
+            setMechanic("all");
+          }}
+        />
+      </FilterBar>
+
 
       <Card className="mb-4 shadow-card">
         <CardHeader>

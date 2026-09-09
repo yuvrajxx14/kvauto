@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus, Search, Wrench, User } from "lucide-react";
+import { Plus, Wrench, User } from "lucide-react";
 import { PageHeader } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { fmtDate, inr } from "@/lib/sales";
+
 import {
   SPARE_STATUSES,
   SPARE_STATUS_LABEL,
@@ -38,11 +38,26 @@ export const Route = createFileRoute("/_authenticated/spares/")({
 function SparesPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("open");
+  const [type, setType] = useState("all");
+  const [model, setModel] = useState("all");
   const { data, isLoading } = useSpareRequests({ search, status });
-  const rows = data ?? [];
+  const all = data ?? [];
+  const modelOptions = optionsFrom(all.map((r) => r.model), "All models");
+  const rows = all
+    .filter((r) => type === "all" || r.request_type === type)
+    .filter((r) => model === "all" || r.model === model);
+
+  const dirty = search !== "" || status !== "open" || type !== "all" || model !== "all";
+  const clear = () => {
+    setSearch("");
+    setStatus("open");
+    setType("all");
+    setModel("all");
+  };
 
   const pending = rows.filter((r) => r.status === "PENDING").length;
   const partial = rows.filter((r) => r.status === "PARTIAL").length;
+
 
   return (
     <div>
@@ -64,31 +79,32 @@ function SparesPage() {
         <Metric label="Partially issued" value={String(partial)} />
       </div>
 
-      <div className="mb-3 flex flex-wrap gap-2">
-        <div className="relative min-w-56 flex-1">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            className="pl-8"
-            placeholder="Search request no, requester, mobile, model"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-60">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="open">Open requirements</SelectItem>
-            <SelectItem value="all">All requirements</SelectItem>
-            {SPARE_STATUSES.map((s) => (
-              <SelectItem key={s} value={s}>
-                {SPARE_STATUS_LABEL[s]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <FilterBar>
+        <SearchBox value={search} onChange={setSearch} placeholder="Search request no, requester, mobile, model" />
+        <FilterSelect
+          value={status}
+          onChange={setStatus}
+          className="w-56"
+          options={[
+            { value: "open", label: "Open requirements" },
+            { value: "all", label: "All requirements" },
+            ...SPARE_STATUSES.map((s) => ({ value: s, label: SPARE_STATUS_LABEL[s] })),
+          ]}
+        />
+        <FilterSelect
+          value={type}
+          onChange={setType}
+          className="w-48"
+          options={[
+            { value: "all", label: "Mechanic & customer" },
+            { value: "MECHANIC", label: "Raised by mechanic" },
+            { value: "CUSTOMER", label: "Raised by customer" },
+          ]}
+        />
+        <FilterSelect value={model} onChange={setModel} options={modelOptions} className="w-44" />
+        <ClearFilters show={dirty} onClear={clear} />
+      </FilterBar>
+
 
       <Card className="shadow-card">
         <CardContent className="p-0">
