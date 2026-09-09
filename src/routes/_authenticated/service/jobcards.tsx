@@ -97,15 +97,38 @@ function JobCardsPage() {
         </p>
       )}
 
-      <div className="relative mb-3 max-w-md">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input
-          className="pl-8"
-          placeholder="Search job no, customer, mobile, chassis"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+      <FilterBar>
+        <SearchBox value={search} onChange={setSearch} placeholder="Search job no, customer, mobile, chassis" />
+        <FilterSelect
+          value={mode}
+          onChange={setMode}
+          className="w-48"
+          options={[
+            { value: "all", label: "All service modes" },
+            { value: "IN_HOUSE", label: SERVICE_MODE_LABEL["IN_HOUSE"] ?? "In house" },
+            { value: "FIELD_VISIT", label: SERVICE_MODE_LABEL["FIELD_VISIT"] ?? "Field visit" },
+          ]}
         />
-      </div>
+        <FilterSelect
+          value={mechanic}
+          onChange={setMechanic}
+          className="w-52"
+          options={[
+            { value: "all", label: "All mechanics" },
+            { value: "none", label: "Not assigned" },
+            ...(staff ?? []).map((p) => ({ value: p.id, label: p.full_name ?? "Staff" })),
+          ]}
+        />
+        <ClearFilters
+          show={search !== "" || mode !== "all" || mechanic !== "all"}
+          onClear={() => {
+            setSearch("");
+            setMode("all");
+            setMechanic("all");
+          }}
+        />
+      </FilterBar>
+
 
       <Card className="mb-4 shadow-card">
         <CardHeader>
