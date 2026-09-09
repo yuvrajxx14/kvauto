@@ -11,7 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FilterBar, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { supabase } from "@/integrations/supabase/client";
+
 import { useTechnicians } from "@/lib/queries";
 import { fmtDate } from "@/lib/sales";
 import {
@@ -166,13 +168,25 @@ function RoutePlannerPage() {
             <CardHeader>
               <CardTitle className="text-base">
                 Pending field visits by village{" "}
-                <span className="text-sm font-normal text-muted-foreground">({jobs?.length ?? 0})</span>
+                <span className="text-sm font-normal text-muted-foreground">({visibleJobs.length})</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <FilterBar className="mb-0">
+                <FilterSelect value={villageFilter} onChange={setVillageFilter} options={villageOptions} className="w-48" />
+                <FilterSelect value={priority} onChange={setPriority} options={priorityOptions} className="w-44" />
+                <ClearFilters
+                  show={villageFilter !== "all" || priority !== "all"}
+                  onClear={() => {
+                    setVillageFilter("all");
+                    setPriority("all");
+                  }}
+                />
+              </FilterBar>
               {byVillage.length === 0 && (
                 <p className="text-sm text-muted-foreground">No field visits pending right now.</p>
               )}
+
               {byVillage.map(([village, list]) => {
                 const ids = list.map((j) => j.id);
                 const all = ids.every((id) => selected.includes(id));
