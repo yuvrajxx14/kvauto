@@ -5,6 +5,7 @@ export type Perm =
   | "customer.edit" | "customer.delete"
   | "booking.create" | "booking.edit" | "booking.cancel" | "booking.delete"
   | "stock.add" | "stock.edit" | "stock.delete" | "stock.allocate"
+  | "implements.sell" | "implements.stock" | "implements.delete"
   | "delivery.manage"
   | "subsidy.edit"
   | "passing.edit"
@@ -31,6 +32,7 @@ function capabilities(role: AppRole): Set<Perm> {
         "customer.edit", "customer.delete",
         "booking.create", "booking.edit", "booking.cancel", "booking.delete",
         "stock.add", "stock.edit", "stock.delete", "stock.allocate",
+        "implements.sell", "implements.stock", "implements.delete",
         "delivery.manage", "subsidy.edit", "passing.edit",
         "payment.add", "payment.edit",
         "service.register", "service.edit", "service.close", "service.delete",
@@ -47,6 +49,7 @@ function capabilities(role: AppRole): Set<Perm> {
         "customer.edit",
         "booking.create", "booking.edit",
         "stock.allocate",
+        "implements.sell",
         "delivery.manage", "subsidy.edit", "passing.edit",
         "service.register",
         "spares.raise",
@@ -78,6 +81,7 @@ function capabilities(role: AppRole): Set<Perm> {
     case "accountant":
       add(
         "stock.add", "stock.edit",
+        "implements.sell", "implements.stock",
         "delivery.manage", "subsidy.edit", "passing.edit",
         "payment.add", "payment.edit",
         "payroll.view",

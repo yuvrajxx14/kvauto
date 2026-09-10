@@ -51,6 +51,8 @@ export const LEDGER_TYPE_LABEL: Record<string, string> = {
   OTHER_CHARGE: "Other charge",
   OTHER_RECEIPT: "Other receipt",
   REFUND: "Refund",
+  IMPLEMENT_SALE: "Implement purchase",
+  IMPLEMENT_RECEIPT: "Implement payment",
 };
 
 /** Booking-amount collection state (deal balance is tracked separately). */

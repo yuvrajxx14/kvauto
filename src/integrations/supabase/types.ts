@@ -879,6 +879,265 @@ export type Database = {
           },
         ]
       }
+      implement_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          id: string
+          payment_date: string
+          payment_mode: string
+          reference_number: string | null
+          remarks: string | null
+          sale_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          payment_date?: string
+          payment_mode?: string
+          reference_number?: string | null
+          remarks?: string | null
+          sale_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          payment_date?: string
+          payment_mode?: string
+          reference_number?: string | null
+          remarks?: string | null
+          sale_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "implement_payments_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "implement_sales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      implement_products: {
+        Row: {
+          active: boolean
+          brand: string | null
+          category: string | null
+          created_at: string
+          created_by: string | null
+          default_price: number
+          id: string
+          name: string
+          size_spec: string | null
+          sort_order: number
+          suitable_hp: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          brand?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          default_price?: number
+          id?: string
+          name: string
+          size_spec?: string | null
+          sort_order?: number
+          suitable_hp?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          brand?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          default_price?: number
+          id?: string
+          name?: string
+          size_spec?: string | null
+          sort_order?: number
+          suitable_hp?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      implement_sale_items: {
+        Row: {
+          created_at: string
+          id: string
+          implement_stock_id: string | null
+          item_name: string
+          price: number
+          sale_id: string
+          serial_number: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          implement_stock_id?: string | null
+          item_name: string
+          price?: number
+          sale_id: string
+          serial_number?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          implement_stock_id?: string | null
+          item_name?: string
+          price?: number
+          sale_id?: string
+          serial_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "implement_sale_items_implement_stock_id_fkey"
+            columns: ["implement_stock_id"]
+            isOneToOne: false
+            referencedRelation: "implement_stock"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "implement_sale_items_sale_id_fkey"
+            columns: ["sale_id"]
+            isOneToOne: false
+            referencedRelation: "implement_sales"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      implement_sales: {
+        Row: {
+          amount_received: number
+          balance: number
+          booking_id: string | null
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          id: string
+          remarks: string | null
+          sale_date: string
+          sale_number: string
+          salesman_id: string | null
+          status: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          amount_received?: number
+          balance?: number
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id: string
+          id?: string
+          remarks?: string | null
+          sale_date?: string
+          sale_number: string
+          salesman_id?: string | null
+          status?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          amount_received?: number
+          balance?: number
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string
+          id?: string
+          remarks?: string | null
+          sale_date?: string
+          sale_number?: string
+          salesman_id?: string | null
+          status?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "implement_sales_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "implement_sales_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      implement_stock: {
+        Row: {
+          arrival_date: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          item_name: string
+          location: string
+          product_id: string | null
+          purchase_price: number
+          received_from: string | null
+          remarks: string | null
+          sale_price: number
+          serial_number: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          arrival_date?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_name: string
+          location?: string
+          product_id?: string | null
+          purchase_price?: number
+          received_from?: string | null
+          remarks?: string | null
+          sale_price?: number
+          serial_number: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          arrival_date?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_name?: string
+          location?: string
+          product_id?: string | null
+          purchase_price?: number
+          received_from?: string | null
+          remarks?: string | null
+          sale_price?: number
+          serial_number?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "implement_stock_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "implement_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inquiries: {
         Row: {
           budget: number | null
@@ -2689,6 +2948,17 @@ export type Database = {
         }
         Returns: string
       }
+      create_implement_sale_atomic: {
+        Args: {
+          _booking_id: string
+          _customer_id: string
+          _items: Json
+          _remarks: string
+          _sale_date: string
+          _salesman_id: string
+        }
+        Returns: string
+      }
       generate_payroll: { Args: { _month_start: string }; Returns: string }
       has_role: {
         Args: {
@@ -2755,6 +3025,17 @@ export type Database = {
           _payment_type?: string
           _reference_number: string
           _remarks: string
+        }
+        Returns: string
+      }
+      receive_implement_payment_atomic: {
+        Args: {
+          _amount: number
+          _payment_date: string
+          _payment_mode: string
+          _reference_number: string
+          _remarks: string
+          _sale_id: string
         }
         Returns: string
       }
