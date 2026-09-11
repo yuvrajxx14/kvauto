@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Cog, Route as RouteIcon, MapPin, Server, UploadCloud, UserRoundCheck, Clock, TrendingUp } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Tractor, UserCog, FileSignature, Boxes, Truck, IndianRupee, Package, BadgeCheck, FileCheck2, Wrench, ClipboardCheck, Cog, Route as RouteIcon, MapPin, Server, UploadCloud, UserRoundCheck, Clock, TrendingUp, Shovel } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +23,7 @@ const SALES_ITEMS: Item[] = [
   { title: "Inquiries", url: "/inquiries", icon: ClipboardList, show: (p) => p.canAny("inquiry.create", "inquiry.edit") || p.isManagement },
   { title: "Customers", url: "/customers", icon: Users, show: (p) => p.canAny("inquiry.create", "inquiry.edit", "customer.edit") || p.isManagement },
   { title: "Bookings", url: "/bookings", icon: FileSignature, show: (p) => p.canAny("booking.create", "booking.edit", "payment.add") || p.isManagement },
+  { title: "Implements", url: "/implements", icon: Shovel, show: (p) => p.canAny("implements.sell", "implements.stock") || p.isManagement },
 ];
 
 const OPS_ITEMS: Item[] = [
@@ -42,6 +43,7 @@ const SERVICE_ITEMS: Item[] = [
 
 const MASTER_ITEMS: Item[] = [
   { title: "Products", url: "/products", icon: Package, show: (p) => p.can("masters.view") },
+  { title: "Implement master", url: "/implements/products", icon: Shovel, show: (p) => p.can("masters.view") },
   { title: "Villages", url: "/villages", icon: MapPin, show: (p) => p.can("masters.view") },
   { title: "Users", url: "/users", icon: UserCog, show: (p) => p.can("masters.view") },
   { title: "Backend status", url: "/system", icon: Server, show: (p) => p.can("masters.view") },
