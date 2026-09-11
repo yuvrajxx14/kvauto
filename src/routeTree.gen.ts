@@ -28,6 +28,8 @@ import { Route as AuthenticatedCustomersCustomerIdRouteImport } from './routes/_
 import { Route as AuthenticatedDeliveryIndexRouteImport } from './routes/_authenticated/delivery/index'
 import { Route as AuthenticatedDeliveryBookingIdRouteImport } from './routes/_authenticated/delivery/$bookingId'
 import { Route as AuthenticatedImplementsIndexRouteImport } from './routes/_authenticated/implements/index'
+import { Route as AuthenticatedImplementsSaleIdRouteImport } from './routes/_authenticated/implements/$saleId'
+import { Route as AuthenticatedImplementsNewRouteImport } from './routes/_authenticated/implements/new'
 import { Route as AuthenticatedImplementsProductsRouteImport } from './routes/_authenticated/implements/products'
 import { Route as AuthenticatedImplementsStockRouteImport } from './routes/_authenticated/implements/stock'
 import { Route as AuthenticatedImportIndexRouteImport } from './routes/_authenticated/import/index'
@@ -162,6 +164,18 @@ const AuthenticatedImplementsIndexRoute =
   AuthenticatedImplementsIndexRouteImport.update({
     id: '/implements/',
     path: '/implements/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedImplementsSaleIdRoute =
+  AuthenticatedImplementsSaleIdRouteImport.update({
+    id: '/implements/$saleId',
+    path: '/implements/$saleId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedImplementsNewRoute =
+  AuthenticatedImplementsNewRouteImport.update({
+    id: '/implements/new',
+    path: '/implements/new',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedImplementsProductsRoute =
@@ -355,6 +369,8 @@ export interface FileRoutesByFullPath {
   '/bookings/new': typeof AuthenticatedBookingsNewRoute
   '/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
   '/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
+  '/implements/$saleId': typeof AuthenticatedImplementsSaleIdRoute
+  '/implements/new': typeof AuthenticatedImplementsNewRoute
   '/implements/products': typeof AuthenticatedImplementsProductsRoute
   '/implements/stock': typeof AuthenticatedImplementsStockRoute
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
@@ -405,6 +421,8 @@ export interface FileRoutesByTo {
   '/bookings/new': typeof AuthenticatedBookingsNewRoute
   '/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
   '/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
+  '/implements/$saleId': typeof AuthenticatedImplementsSaleIdRoute
+  '/implements/new': typeof AuthenticatedImplementsNewRoute
   '/implements/products': typeof AuthenticatedImplementsProductsRoute
   '/implements/stock': typeof AuthenticatedImplementsStockRoute
   '/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
@@ -457,6 +475,8 @@ export interface FileRoutesById {
   '/_authenticated/bookings/new': typeof AuthenticatedBookingsNewRoute
   '/_authenticated/customers/$customerId': typeof AuthenticatedCustomersCustomerIdRoute
   '/_authenticated/delivery/$bookingId': typeof AuthenticatedDeliveryBookingIdRoute
+  '/_authenticated/implements/$saleId': typeof AuthenticatedImplementsSaleIdRoute
+  '/_authenticated/implements/new': typeof AuthenticatedImplementsNewRoute
   '/_authenticated/implements/products': typeof AuthenticatedImplementsProductsRoute
   '/_authenticated/implements/stock': typeof AuthenticatedImplementsStockRoute
   '/_authenticated/inquiries/$inquiryId': typeof AuthenticatedInquiriesInquiryIdRoute
@@ -509,6 +529,8 @@ export interface FileRouteTypes {
     | '/bookings/new'
     | '/customers/$customerId'
     | '/delivery/$bookingId'
+    | '/implements/$saleId'
+    | '/implements/new'
     | '/implements/products'
     | '/implements/stock'
     | '/inquiries/$inquiryId'
@@ -559,6 +581,8 @@ export interface FileRouteTypes {
     | '/bookings/new'
     | '/customers/$customerId'
     | '/delivery/$bookingId'
+    | '/implements/$saleId'
+    | '/implements/new'
     | '/implements/products'
     | '/implements/stock'
     | '/inquiries/$inquiryId'
@@ -610,6 +634,8 @@ export interface FileRouteTypes {
     | '/_authenticated/bookings/new'
     | '/_authenticated/customers/$customerId'
     | '/_authenticated/delivery/$bookingId'
+    | '/_authenticated/implements/$saleId'
+    | '/_authenticated/implements/new'
     | '/_authenticated/implements/products'
     | '/_authenticated/implements/stock'
     | '/_authenticated/inquiries/$inquiryId'
@@ -786,6 +812,20 @@ declare module '@tanstack/react-router' {
       path: '/implements'
       fullPath: '/implements/'
       preLoaderRoute: typeof AuthenticatedImplementsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/implements/$saleId': {
+      id: '/_authenticated/implements/$saleId'
+      path: '/implements/$saleId'
+      fullPath: '/implements/$saleId'
+      preLoaderRoute: typeof AuthenticatedImplementsSaleIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/implements/new': {
+      id: '/_authenticated/implements/new'
+      path: '/implements/new'
+      fullPath: '/implements/new'
+      preLoaderRoute: typeof AuthenticatedImplementsNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/implements/products': {
@@ -1013,6 +1053,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBookingsNewRoute: typeof AuthenticatedBookingsNewRoute
   AuthenticatedCustomersCustomerIdRoute: typeof AuthenticatedCustomersCustomerIdRoute
   AuthenticatedDeliveryBookingIdRoute: typeof AuthenticatedDeliveryBookingIdRoute
+  AuthenticatedImplementsSaleIdRoute: typeof AuthenticatedImplementsSaleIdRoute
+  AuthenticatedImplementsNewRoute: typeof AuthenticatedImplementsNewRoute
   AuthenticatedImplementsProductsRoute: typeof AuthenticatedImplementsProductsRoute
   AuthenticatedImplementsStockRoute: typeof AuthenticatedImplementsStockRoute
   AuthenticatedInquiriesInquiryIdRoute: typeof AuthenticatedInquiriesInquiryIdRoute
@@ -1063,6 +1105,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBookingsNewRoute: AuthenticatedBookingsNewRoute,
   AuthenticatedCustomersCustomerIdRoute: AuthenticatedCustomersCustomerIdRoute,
   AuthenticatedDeliveryBookingIdRoute: AuthenticatedDeliveryBookingIdRoute,
+  AuthenticatedImplementsSaleIdRoute: AuthenticatedImplementsSaleIdRoute,
+  AuthenticatedImplementsNewRoute: AuthenticatedImplementsNewRoute,
   AuthenticatedImplementsProductsRoute: AuthenticatedImplementsProductsRoute,
   AuthenticatedImplementsStockRoute: AuthenticatedImplementsStockRoute,
   AuthenticatedInquiriesInquiryIdRoute: AuthenticatedInquiriesInquiryIdRoute,
