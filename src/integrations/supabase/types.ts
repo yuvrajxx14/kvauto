@@ -2200,6 +2200,63 @@ export type Database = {
         }
         Relationships: []
       }
+      spare_parts: {
+        Row: {
+          active: boolean
+          brand: string | null
+          category: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          min_qty: number
+          part_name: string
+          part_number: string
+          purchase_rate: number
+          qty_on_hand: number
+          rack_location: string | null
+          remarks: string | null
+          sale_rate: number
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          brand?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          min_qty?: number
+          part_name: string
+          part_number: string
+          purchase_rate?: number
+          qty_on_hand?: number
+          rack_location?: string | null
+          remarks?: string | null
+          sale_rate?: number
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          brand?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          min_qty?: number
+          part_name?: string
+          part_number?: string
+          purchase_rate?: number
+          qty_on_hand?: number
+          rack_location?: string | null
+          remarks?: string | null
+          sale_rate?: number
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       spare_request_items: {
         Row: {
           created_at: string
@@ -2384,6 +2441,60 @@ export type Database = {
             columns: ["service_job_id"]
             isOneToOne: false
             referencedRelation: "service_jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      spare_stock_movements: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          movement_type: string
+          part_id: string
+          qty: number
+          rate: number
+          reference: string | null
+          remarks: string | null
+          request_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          movement_type: string
+          part_id: string
+          qty: number
+          rate?: number
+          reference?: string | null
+          remarks?: string | null
+          request_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          movement_type?: string
+          part_id?: string
+          qty?: number
+          rate?: number
+          reference?: string | null
+          remarks?: string | null
+          request_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spare_stock_movements_part_id_fkey"
+            columns: ["part_id"]
+            isOneToOne: false
+            referencedRelation: "spare_parts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spare_stock_movements_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "spare_requests"
             referencedColumns: ["id"]
           },
         ]
@@ -3039,6 +3150,17 @@ export type Database = {
         }
         Returns: string
       }
+      record_spare_movement: {
+        Args: {
+          _movement_type: string
+          _part_id: string
+          _qty: number
+          _rate?: number
+          _reference?: string
+          _remarks?: string
+        }
+        Returns: string
+      }
       staff_directory: {
         Args: never
         Returns: {
@@ -3055,6 +3177,20 @@ export type Database = {
           id: string
           roles: string[]
         }[]
+      }
+      upsert_spare_part_stock: {
+        Args: {
+          _brand?: string
+          _category?: string
+          _min_qty?: number
+          _part_name: string
+          _part_number: string
+          _purchase_rate?: number
+          _qty: number
+          _rack_location?: string
+          _sale_rate?: number
+        }
+        Returns: string
       }
     }
     Enums: {
