@@ -71,8 +71,8 @@ function NewImplementSale() {
       const items = Object.entries(picked).map(([stock_id, price]) => ({ stock_id, price: Number(price) || 0 }));
       const { data, error } = await supabase.rpc("create_implement_sale_atomic", {
         _customer_id: customerId,
-        _booking_id: bookingId === "none" ? null : bookingId,
-        _salesman_id: salesmanId || null,
+        _booking_id: (bookingId === "none" ? null : bookingId) as string,
+        _salesman_id: (salesmanId || null) as string,
         _sale_date: saleDate,
         _remarks: remarks,
         _items: items,
