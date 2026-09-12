@@ -48,6 +48,7 @@ function BookingDetail() {
   const b = bookingQuery.data;
   const availableStock = useStock({ status: "AVAILABLE", model: b?.tractor_model });
   const { data: gatePass } = useGatePass(bookingId);
+  const { data: implementSales } = useBookingImplements(bookingId);
 
   const allocate = useMutation({
     mutationFn: async (stockId: string) => {
