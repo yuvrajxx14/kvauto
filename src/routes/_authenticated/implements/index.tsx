@@ -66,7 +66,7 @@ function ImplementSalesPage() {
             </Button>
             {perms.can("implements.sell") && (
               <Button asChild size="sm">
-                <Link to="/implements/new"><Plus className="mr-1 h-4 w-4" /> New sale</Link>
+                <Link to="/implements/new" search={{ bookingId: "", customerId: "" }}><Plus className="mr-1 h-4 w-4" /> New sale</Link>
               </Button>
             )}
           </div>

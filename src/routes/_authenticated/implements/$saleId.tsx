@@ -52,8 +52,8 @@ function ImplementSaleDetail() {
         _amount: p.amount,
         _payment_date: p.date,
         _payment_mode: p.mode,
-        _reference_number: p.reference || null,
-        _remarks: p.remarks || null,
+        _reference_number: (p.reference || null) as string,
+        _remarks: (p.remarks || null) as string,
       });
       if (error) throw error;
     },

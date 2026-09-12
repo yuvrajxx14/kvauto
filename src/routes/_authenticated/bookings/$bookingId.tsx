@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, Printer, Truck, Wrench } from "lucide-react";
+import { ArrowLeft, Printer, Shovel, Truck, Wrench } from "lucide-react";
 import { toast } from "sonner";
 import { DeleteRecordButton } from "@/components/sales/delete-button";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +13,7 @@ import { CancelBookingDialog } from "@/components/sales/cancel-booking-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useBooking, useBookingPayments, useGatePass, useStock } from "@/lib/erp";
+import { useBookingImplements } from "@/lib/implements";
 import {
   BOOKING_STATUS_LABEL,
   PAYMENT_TYPE_LABEL,
@@ -47,6 +48,7 @@ function BookingDetail() {
   const b = bookingQuery.data;
   const availableStock = useStock({ status: "AVAILABLE", model: b?.tractor_model });
   const { data: gatePass } = useGatePass(bookingId);
+  const { data: implementSales } = useBookingImplements(bookingId);
 
   const allocate = useMutation({
     mutationFn: async (stockId: string) => {
@@ -265,6 +267,45 @@ function BookingDetail() {
           </CardContent>
         </Card>
 
+        <Card className="shadow-card">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-base">Implements with this tractor</CardTitle>
+            {status !== "CANCELLED" && (
+              <Button asChild size="sm" variant="secondary">
+                <Link to="/implements/new" search={{ bookingId, customerId: b.customer_id }}>
+                  <Shovel className="mr-1 h-4 w-4" /> Sell implement
+                </Link>
+              </Button>
+            )}
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {(implementSales ?? []).length === 0 && (
+              <p className="text-sm text-muted-foreground">No implements sold with this tractor yet.</p>
+            )}
+            {(implementSales ?? []).map((s) => {
+              const items = (s.items ?? []) as { id: string; item_name: string; serial_number: string | null }[];
+              return (
+                <div key={s.id} className="flex items-center justify-between border-b pb-2 text-sm">
+                  <div>
+                    <Link className="font-medium hover:underline" to="/implements/$saleId" params={{ saleId: s.id }}>
+                      {s.sale_number}
+                    </Link>
+                    <p className="text-xs text-muted-foreground">
+                      {items.map((i) => `${i.item_name}${i.serial_number ? ` (${i.serial_number})` : ""}`).join(", ") || "—"}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p>{inr(s.total_amount)}</p>
+                    <p className="text-xs text-muted-foreground">Balance {inr(s.balance)}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="mt-4">
         <DocumentsPanel customerId={b.customer_id} />
       </div>
     </div>
