@@ -377,18 +377,18 @@ function UploadDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
       const r = rows[i]!;
       try {
         const { error } = await supabase.rpc("upsert_spare_part_stock", {
-          _part_number: String(r.part_number ?? "").trim(),
-          _part_name: String(r.part_name ?? "").trim(),
-          _qty: Number(r.qty ?? 0) || 0,
-          _category: (r.category?.trim() || null) as string,
-          _brand: (r.brand?.trim() || null) as string,
-          _rack_location: (r.rack_location?.trim() || null) as string,
-          _purchase_rate: Number(r.purchase_rate ?? 0) || 0,
-          _sale_rate: Number(r.sale_rate ?? 0) || 0,
-          _min_qty: Number(r.min_qty ?? 0) || 0,
+          _part_number: cell(r, "part_number"),
+          _part_name: cell(r, "part_name"),
+          _qty: num(r, "qty"),
+          _category: (cell(r, "category") || null) as string,
+          _brand: (cell(r, "brand") || null) as string,
+          _rack_location: (cell(r, "rack_location") || null) as string,
+          _purchase_rate: num(r, "purchase_rate"),
+          _sale_rate: num(r, "sale_rate"),
+          _min_qty: num(r, "min_qty"),
         });
         if (error) throw error;
-        out.push({ row: i + 2, ok: true, message: `${r.part_number} updated` });
+        out.push({ row: i + 2, ok: true, message: `${cell(r, "part_number")} updated` });
       } catch (e) {
         out.push({ row: i + 2, ok: false, message: (e as Error).message });
       }
