@@ -39,6 +39,7 @@ const SERVICE_ITEMS: Item[] = [
   { title: "Job Cards", url: "/service/jobcards", icon: ClipboardCheck, show: (p) => p.can("jobcard.manage") },
   { title: "Route Planner", url: "/service/routes", icon: RouteIcon, show: (p) => p.can("routes.manage") },
   { title: "Spare Parts", url: "/spares", icon: Cog, show: (p) => p.canAny("spares.raise", "spares.fulfill") },
+  { title: "Spare Inventory", url: "/spares/inventory", icon: Boxes, show: (p) => p.canAny("spares.raise", "spares.fulfill") },
 ];
 
 const MASTER_ITEMS: Item[] = [
