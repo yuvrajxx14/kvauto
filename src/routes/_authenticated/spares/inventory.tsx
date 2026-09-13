@@ -75,15 +75,15 @@ function SpareInventoryPage() {
   const savePart = useMutation({
     mutationFn: async (p: Record<string, string>) => {
       const { error } = await supabase.from("spare_parts").insert({
-        part_number: p.part_number.trim(),
-        part_name: p.part_name.trim(),
-        category: p.category?.trim() || null,
-        brand: p.brand?.trim() || null,
-        rack_location: p.rack_location?.trim() || null,
-        purchase_rate: Number(p.purchase_rate) || 0,
-        sale_rate: Number(p.sale_rate) || 0,
-        qty_on_hand: Number(p.qty) || 0,
-        min_qty: Number(p.min_qty) || 0,
+        part_number: cell(p, "part_number"),
+        part_name: cell(p, "part_name"),
+        category: cell(p, "category") || null,
+        brand: cell(p, "brand") || null,
+        rack_location: cell(p, "rack_location") || null,
+        purchase_rate: num(p, "purchase_rate"),
+        sale_rate: num(p, "sale_rate"),
+        qty_on_hand: num(p, "qty"),
+        min_qty: num(p, "min_qty"),
       });
       if (error) throw error;
     },
