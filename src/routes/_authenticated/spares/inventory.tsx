@@ -42,6 +42,9 @@ export const Route = createFileRoute("/_authenticated/spares/inventory")({
   component: SpareInventoryPage,
 });
 
+const cell = (r: Record<string, string>, k: string) => String(r[k] ?? "").trim();
+const num = (r: Record<string, string>, k: string) => Number(cell(r, k)) || 0;
+
 function SpareInventoryPage() {
   const perms = usePerms();
   const canManage = perms.isManagement || perms.hasRole("sparepart_manager");
@@ -75,15 +78,15 @@ function SpareInventoryPage() {
   const savePart = useMutation({
     mutationFn: async (p: Record<string, string>) => {
       const { error } = await supabase.from("spare_parts").insert({
-        part_number: p.part_number.trim(),
-        part_name: p.part_name.trim(),
-        category: p.category?.trim() || null,
-        brand: p.brand?.trim() || null,
-        rack_location: p.rack_location?.trim() || null,
-        purchase_rate: Number(p.purchase_rate) || 0,
-        sale_rate: Number(p.sale_rate) || 0,
-        qty_on_hand: Number(p.qty) || 0,
-        min_qty: Number(p.min_qty) || 0,
+        part_number: cell(p, "part_number"),
+        part_name: cell(p, "part_name"),
+        category: cell(p, "category") || null,
+        brand: cell(p, "brand") || null,
+        rack_location: cell(p, "rack_location") || null,
+        purchase_rate: num(p, "purchase_rate"),
+        sale_rate: num(p, "sale_rate"),
+        qty_on_hand: num(p, "qty"),
+        min_qty: num(p, "min_qty"),
       });
       if (error) throw error;
     },
@@ -246,7 +249,7 @@ function SpareInventoryPage() {
               e.preventDefault();
               const fd = new FormData(e.currentTarget);
               const v = Object.fromEntries(Array.from(fd.entries()).map(([k, x]) => [k, String(x)]));
-              if (!v.part_number?.trim() || !v.part_name?.trim()) {
+              if (!cell(v, "part_number") || !cell(v, "part_name")) {
                 toast.error("Part number and part name are required");
                 return;
               }
@@ -377,18 +380,18 @@ function UploadDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v:
       const r = rows[i]!;
       try {
         const { error } = await supabase.rpc("upsert_spare_part_stock", {
-          _part_number: String(r.part_number ?? "").trim(),
-          _part_name: String(r.part_name ?? "").trim(),
-          _qty: Number(r.qty ?? 0) || 0,
-          _category: (r.category?.trim() || null) as string,
-          _brand: (r.brand?.trim() || null) as string,
-          _rack_location: (r.rack_location?.trim() || null) as string,
-          _purchase_rate: Number(r.purchase_rate ?? 0) || 0,
-          _sale_rate: Number(r.sale_rate ?? 0) || 0,
-          _min_qty: Number(r.min_qty ?? 0) || 0,
+          _part_number: cell(r, "part_number"),
+          _part_name: cell(r, "part_name"),
+          _qty: num(r, "qty"),
+          _category: (cell(r, "category") || null) as string,
+          _brand: (cell(r, "brand") || null) as string,
+          _rack_location: (cell(r, "rack_location") || null) as string,
+          _purchase_rate: num(r, "purchase_rate"),
+          _sale_rate: num(r, "sale_rate"),
+          _min_qty: num(r, "min_qty"),
         });
         if (error) throw error;
-        out.push({ row: i + 2, ok: true, message: `${r.part_number} updated` });
+        out.push({ row: i + 2, ok: true, message: `${cell(r, "part_number")} updated` });
       } catch (e) {
         out.push({ row: i + 2, ok: false, message: (e as Error).message });
       }
