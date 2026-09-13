@@ -42,6 +42,9 @@ export const Route = createFileRoute("/_authenticated/spares/inventory")({
   component: SpareInventoryPage,
 });
 
+const cell = (r: Record<string, string>, k: string) => String(r[k] ?? "").trim();
+const num = (r: Record<string, string>, k: string) => Number(cell(r, k)) || 0;
+
 function SpareInventoryPage() {
   const perms = usePerms();
   const canManage = perms.isManagement || perms.hasRole("sparepart_manager");
