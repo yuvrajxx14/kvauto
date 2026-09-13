@@ -246,7 +246,7 @@ function SpareInventoryPage() {
               e.preventDefault();
               const fd = new FormData(e.currentTarget);
               const v = Object.fromEntries(Array.from(fd.entries()).map(([k, x]) => [k, String(x)]));
-              if (!v.part_number?.trim() || !v.part_name?.trim()) {
+              if (!cell(v, "part_number") || !cell(v, "part_name")) {
                 toast.error("Part number and part name are required");
                 return;
               }
