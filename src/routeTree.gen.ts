@@ -17,6 +17,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedHrRouteImport } from './routes/_authenticated/hr'
 import { Route as AuthenticatedPayrollRouteImport } from './routes/_authenticated/payroll'
 import { Route as AuthenticatedPerformanceRouteImport } from './routes/_authenticated/performance'
+import { Route as AuthenticatedPlansRouteImport } from './routes/_authenticated/plans'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
 import { Route as AuthenticatedAccountingIndexRouteImport } from './routes/_authenticated/accounting/index'
 import { Route as AuthenticatedAccountingCustomerIdRouteImport } from './routes/_authenticated/accounting/$customerId'
@@ -103,6 +104,11 @@ const AuthenticatedPerformanceRoute =
     path: '/performance',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedPlansRoute = AuthenticatedPlansRouteImport.update({
+  id: '/plans',
+  path: '/plans',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedTeamRoute = AuthenticatedTeamRouteImport.update({
   id: '/team',
   path: '/team',
@@ -377,6 +383,7 @@ export interface FileRoutesByFullPath {
   '/hr': typeof AuthenticatedHrRoute
   '/payroll': typeof AuthenticatedPayrollRoute
   '/performance': typeof AuthenticatedPerformanceRoute
+  '/plans': typeof AuthenticatedPlansRoute
   '/team': typeof AuthenticatedTeamRoute
   '/accounting/$customerId': typeof AuthenticatedAccountingCustomerIdRoute
   '/bookings/$bookingId': typeof AuthenticatedBookingsBookingIdRoute
@@ -431,6 +438,7 @@ export interface FileRoutesByTo {
   '/hr': typeof AuthenticatedHrRoute
   '/payroll': typeof AuthenticatedPayrollRoute
   '/performance': typeof AuthenticatedPerformanceRoute
+  '/plans': typeof AuthenticatedPlansRoute
   '/team': typeof AuthenticatedTeamRoute
   '/accounting/$customerId': typeof AuthenticatedAccountingCustomerIdRoute
   '/bookings/$bookingId': typeof AuthenticatedBookingsBookingIdRoute
@@ -487,6 +495,7 @@ export interface FileRoutesById {
   '/_authenticated/hr': typeof AuthenticatedHrRoute
   '/_authenticated/payroll': typeof AuthenticatedPayrollRoute
   '/_authenticated/performance': typeof AuthenticatedPerformanceRoute
+  '/_authenticated/plans': typeof AuthenticatedPlansRoute
   '/_authenticated/team': typeof AuthenticatedTeamRoute
   '/_authenticated/accounting/$customerId': typeof AuthenticatedAccountingCustomerIdRoute
   '/_authenticated/bookings/$bookingId': typeof AuthenticatedBookingsBookingIdRoute
@@ -543,6 +552,7 @@ export interface FileRouteTypes {
     | '/hr'
     | '/payroll'
     | '/performance'
+    | '/plans'
     | '/team'
     | '/accounting/$customerId'
     | '/bookings/$bookingId'
@@ -597,6 +607,7 @@ export interface FileRouteTypes {
     | '/hr'
     | '/payroll'
     | '/performance'
+    | '/plans'
     | '/team'
     | '/accounting/$customerId'
     | '/bookings/$bookingId'
@@ -652,6 +663,7 @@ export interface FileRouteTypes {
     | '/_authenticated/hr'
     | '/_authenticated/payroll'
     | '/_authenticated/performance'
+    | '/_authenticated/plans'
     | '/_authenticated/team'
     | '/_authenticated/accounting/$customerId'
     | '/_authenticated/bookings/$bookingId'
@@ -761,6 +773,13 @@ declare module '@tanstack/react-router' {
       path: '/performance'
       fullPath: '/performance'
       preLoaderRoute: typeof AuthenticatedPerformanceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/plans': {
+      id: '/_authenticated/plans'
+      path: '/plans'
+      fullPath: '/plans'
+      preLoaderRoute: typeof AuthenticatedPlansRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/team': {
@@ -1087,6 +1106,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedHrRoute: typeof AuthenticatedHrRoute
   AuthenticatedPayrollRoute: typeof AuthenticatedPayrollRoute
   AuthenticatedPerformanceRoute: typeof AuthenticatedPerformanceRoute
+  AuthenticatedPlansRoute: typeof AuthenticatedPlansRoute
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
   AuthenticatedAccountingCustomerIdRoute: typeof AuthenticatedAccountingCustomerIdRoute
   AuthenticatedBookingsBookingIdRoute: typeof AuthenticatedBookingsBookingIdRoute
@@ -1140,6 +1160,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedHrRoute: AuthenticatedHrRoute,
   AuthenticatedPayrollRoute: AuthenticatedPayrollRoute,
   AuthenticatedPerformanceRoute: AuthenticatedPerformanceRoute,
+  AuthenticatedPlansRoute: AuthenticatedPlansRoute,
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
   AuthenticatedAccountingCustomerIdRoute:
     AuthenticatedAccountingCustomerIdRoute,
