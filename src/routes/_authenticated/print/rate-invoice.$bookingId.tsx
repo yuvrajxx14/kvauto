@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
-import { z } from "zod";
+
+
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +13,7 @@ import { useBooking, usePassingRecord } from "@/lib/erp";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/print/rate-invoice/$bookingId")({
-  validateSearch: zodValidator(z.object({ kind: fallback(z.string(), "passing").default("passing") })),
+  validateSearch: (s: Record<string, unknown>) => ({ kind: s.kind === "subsidy" ? "subsidy" : "passing" }),
   head: () => ({
     meta: [
       { title: "Passing / subsidy invoice · KrushiVidhya Automobiles" },
@@ -50,9 +50,9 @@ function RateInvoice() {
   const amount = Number(rate || 0);
 
   async function save() {
-    if (!rec) return toast.error("Passing record not created yet");
+    if (!rec) { toast.error("Passing record not created yet"); return; }
     const { error } = await supabase.from("passing_records").update({ [field]: amount } as never).eq("id", rec.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Invoice rate saved");
     qc.invalidateQueries();
   }

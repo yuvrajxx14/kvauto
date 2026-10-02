@@ -47,7 +47,7 @@ type Task = { id: string; plan_id: string | null; day: string; assigned_to: stri
 const db = supabase as unknown as { from: (t: string) => any };
 
 function monthDays(monthStart: string) {
-  const [y, m] = monthStart.split("-").map(Number);
+  const [y = 2026, m = 1] = monthStart.split("-").map(Number);
   const n = new Date(y, m, 0).getDate();
   return Array.from({ length: n }, (_, i) => `${monthStart.slice(0, 8)}${String(i + 1).padStart(2, "0")}`);
 }
