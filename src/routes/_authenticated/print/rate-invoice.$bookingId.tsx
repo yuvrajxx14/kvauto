@@ -13,7 +13,7 @@ import { useBooking, usePassingRecord } from "@/lib/erp";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/print/rate-invoice/$bookingId")({
-  validateSearch: (s: Record<string, unknown>) => ({ kind: s.kind === "subsidy" ? "subsidy" : "passing" }),
+  validateSearch: (s: Record<string, unknown>) => ({ kind: s["kind"] === "subsidy" ? "subsidy" : "passing" }),
   head: () => ({
     meta: [
       { title: "Passing / subsidy invoice · KrushiVidhya Automobiles" },
