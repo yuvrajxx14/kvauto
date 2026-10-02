@@ -141,6 +141,16 @@ function PassingDetail() {
                 <Printer className="mr-1 h-4 w-4" /> Tax invoice
               </Link>
             </Button>
+            <Button asChild size="sm" variant="outline">
+              <Link to="/print/rate-invoice/$bookingId" params={{ bookingId }} search={{ kind: "passing" }} target="_blank">
+                <Printer className="mr-1 h-4 w-4" /> Passing invoice
+              </Link>
+            </Button>
+            <Button asChild size="sm" variant="outline">
+              <Link to="/print/rate-invoice/$bookingId" params={{ bookingId }} search={{ kind: "subsidy" }} target="_blank">
+                <Printer className="mr-1 h-4 w-4" /> Subsidy invoice
+              </Link>
+            </Button>
           </div>
         }
       />
