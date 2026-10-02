@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useSubsidyCases, usePassingRecords } from "@/lib/erp";
 import { InsuranceChargeDialog } from "@/components/sales/insurance-dialog";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
+import { FilterBar, SearchBox, FilterSelect, ClearFilters } from "@/components/sales/filters";
 
 export const Route = createFileRoute("/_authenticated/subsidy/")({
   head: () => ({
@@ -48,6 +49,8 @@ function SubsidyPage() {
   const { data: cases, isLoading } = useSubsidyCases();
   const { data: passing } = usePassingRecords();
   const [stage, setStage] = useState<StageKey | "ALL">("ALL");
+  const [q, setQ] = useState("");
+  const [useType, setUseType] = useState("all");
   const qc = useQueryClient();
 
   const passingByBooking = new Map((passing ?? []).map((p) => [p.booking_id, p]));
@@ -84,7 +87,18 @@ function SubsidyPage() {
   });
 
   const count = (s: StageKey) => withStage.filter((r) => r.stage === s).length;
-  const rows = stage === "ALL" ? withStage : withStage.filter((r) => r.stage === stage);
+  const needle = q.trim().toLowerCase();
+  const rows = (stage === "ALL" ? withStage : withStage.filter((r) => r.stage === stage))
+    .filter((r) => useType === "all" || r.use_type === useType)
+    .filter(
+      (r) =>
+        !needle ||
+        [r.customer?.customer_name, r.customer?.village, r.customer?.mobile, r.booking?.booking_number, r.booking?.tractor_model]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(needle),
+    );
 
   return (
     <div>
@@ -105,6 +119,17 @@ function SubsidyPage() {
           </Button>
         ))}
       </div>
+
+      <FilterBar>
+        <SearchBox value={q} onChange={setQ} placeholder="Search customer, mobile, village, booking or model" />
+        <FilterSelect
+          value={useType}
+          onChange={setUseType}
+          className="w-40"
+          options={[{ value: "all", label: "All uses" }, { value: "AGRICULTURE", label: "Agriculture" }, { value: "COMMERCIAL", label: "Commercial" }]}
+        />
+        <ClearFilters show={!!q || useType !== "all"} onClear={() => { setQ(""); setUseType("all"); }} />
+      </FilterBar>
 
       <Card className="shadow-card">
         <CardHeader className="pb-2"><CardTitle className="text-base">Delivered customers</CardTitle></CardHeader>

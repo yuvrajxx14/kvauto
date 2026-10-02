@@ -117,6 +117,14 @@ export function AppSidebar() {
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={isActive("/plans")} tooltip="Monthly plan">
+                    <Link to="/plans" className="flex items-center gap-2">
+                      <ClipboardCheck className="h-4 w-4" />
+                      <span>Monthly plan</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
                 {perms.can("hr.view") && (
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={isActive("/performance")} tooltip="Manager dashboard">
