@@ -1362,6 +1362,42 @@ export type Database = {
         }
         Relationships: []
       }
+      monthly_plans: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          metric: string
+          month_start: string
+          monthly_target: number
+          remarks: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          metric: string
+          month_start: string
+          monthly_target?: number
+          remarks?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          metric?: string
+          month_start?: string
+          monthly_target?: number
+          remarks?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       negotiations: {
         Row: {
           accessories: string | null
@@ -1520,6 +1556,7 @@ export type Database = {
           number_plate_received: boolean
           number_plate_received_date: string | null
           passing_date: string | null
+          passing_invoice_rate: number | null
           passing_set_printed: boolean
           passing_set_printed_date: string | null
           remarks: string | null
@@ -1537,6 +1574,7 @@ export type Database = {
           subsidy_file_printed_date: string | null
           subsidy_file_status: string
           subsidy_file_uploaded_date: string | null
+          subsidy_invoice_rate: number | null
           updated_at: string
         }
         Insert: {
@@ -1557,6 +1595,7 @@ export type Database = {
           number_plate_received?: boolean
           number_plate_received_date?: string | null
           passing_date?: string | null
+          passing_invoice_rate?: number | null
           passing_set_printed?: boolean
           passing_set_printed_date?: string | null
           remarks?: string | null
@@ -1574,6 +1613,7 @@ export type Database = {
           subsidy_file_printed_date?: string | null
           subsidy_file_status?: string
           subsidy_file_uploaded_date?: string | null
+          subsidy_invoice_rate?: number | null
           updated_at?: string
         }
         Update: {
@@ -1594,6 +1634,7 @@ export type Database = {
           number_plate_received?: boolean
           number_plate_received_date?: string | null
           passing_date?: string | null
+          passing_invoice_rate?: number | null
           passing_set_printed?: boolean
           passing_set_printed_date?: string | null
           remarks?: string | null
@@ -1611,6 +1652,7 @@ export type Database = {
           subsidy_file_printed_date?: string | null
           subsidy_file_status?: string
           subsidy_file_uploaded_date?: string | null
+          subsidy_invoice_rate?: number | null
           updated_at?: string
         }
         Relationships: [
@@ -1743,6 +1785,88 @@ export type Database = {
             columns: ["run_id"]
             isOneToOne: false
             referencedRelation: "payroll_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plan_days: {
+        Row: {
+          day: string
+          id: string
+          plan_id: string
+          target: number
+        }
+        Insert: {
+          day: string
+          id?: string
+          plan_id: string
+          target?: number
+        }
+        Update: {
+          day?: string
+          id?: string
+          plan_id?: string
+          target?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_days_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "monthly_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plan_tasks: {
+        Row: {
+          achieved: number
+          assigned_to: string
+          created_at: string
+          created_by: string | null
+          day: string
+          done: boolean
+          id: string
+          plan_id: string | null
+          remarks: string | null
+          target: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          achieved?: number
+          assigned_to: string
+          created_at?: string
+          created_by?: string | null
+          day: string
+          done?: boolean
+          id?: string
+          plan_id?: string | null
+          remarks?: string | null
+          target?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          achieved?: number
+          assigned_to?: string
+          created_at?: string
+          created_by?: string | null
+          day?: string
+          done?: boolean
+          id?: string
+          plan_id?: string | null
+          remarks?: string | null
+          target?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_tasks_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "monthly_plans"
             referencedColumns: ["id"]
           },
         ]
