@@ -9,6 +9,7 @@ import { PageHeader, Field } from "@/components/sales/ui";
 import { DocumentsPanel, documentProgress } from "@/components/sales/documents-panel";
 import { PaymentDialog } from "@/components/sales/payment-dialog";
 import { LoanInsuranceGate } from "@/components/sales/loan-insurance-gate";
+import { DeliveryAccessories } from "@/components/sales/delivery-accessories";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -358,6 +359,8 @@ function DeliveryDetail() {
             )}
           </CardContent>
         </Card>
+
+        {gatePass && <DeliveryAccessories bookingId={bookingId} />}
 
         <DocumentsPanel customerId={b.customer_id} />
       </div>
