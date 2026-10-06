@@ -32,6 +32,7 @@ const OPS_ITEMS: Item[] = [
   { title: "Subsidy", url: "/subsidy", icon: BadgeCheck, show: (p) => p.can("subsidy.edit") },
   { title: "Passing", url: "/passing", icon: FileCheck2, show: (p) => p.can("passing.edit") },
   { title: "Accounting", url: "/accounting", icon: IndianRupee, show: (p) => p.canAny("payment.add", "payment.edit") || p.isManagement },
+  { title: "Accounts & invoices", url: "/accounts", icon: Package, show: (p) => p.isManagement || p.isAccountant },
 ];
 
 const SERVICE_ITEMS: Item[] = [
