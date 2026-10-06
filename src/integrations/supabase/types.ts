@@ -14,6 +14,200 @@ export type Database = {
   }
   public: {
     Tables: {
+      accessories: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          name: string
+          qty_on_hand: number
+          rate: number
+          reorder_level: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name: string
+          qty_on_hand?: number
+          rate?: number
+          reorder_level?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name?: string
+          qty_on_hand?: number
+          rate?: number
+          reorder_level?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      accessory_movements: {
+        Row: {
+          accessory_id: string
+          booking_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          invoice_id: string | null
+          movement_type: string
+          qty: number
+          reference: string | null
+        }
+        Insert: {
+          accessory_id: string
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          invoice_id?: string | null
+          movement_type: string
+          qty: number
+          reference?: string | null
+        }
+        Update: {
+          accessory_id?: string
+          booking_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          invoice_id?: string | null
+          movement_type?: string
+          qty?: number
+          reference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accessory_movements_accessory_id_fkey"
+            columns: ["accessory_id"]
+            isOneToOne: false
+            referencedRelation: "accessories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accessory_movements_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "accessory_movements_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "account_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      account_invoice_items: {
+        Row: {
+          accessory_id: string | null
+          amount: number
+          created_at: string
+          description: string
+          id: string
+          invoice_id: string
+          item_kind: string
+          qty: number
+          rate: number
+          spare_part_id: string | null
+        }
+        Insert: {
+          accessory_id?: string | null
+          amount?: number
+          created_at?: string
+          description: string
+          id?: string
+          invoice_id: string
+          item_kind: string
+          qty: number
+          rate?: number
+          spare_part_id?: string | null
+        }
+        Update: {
+          accessory_id?: string | null
+          amount?: number
+          created_at?: string
+          description?: string
+          id?: string
+          invoice_id?: string
+          item_kind?: string
+          qty?: number
+          rate?: number
+          spare_part_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_invoice_items_accessory_id_fkey"
+            columns: ["accessory_id"]
+            isOneToOne: false
+            referencedRelation: "accessories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "account_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "account_invoice_items_spare_part_id_fkey"
+            columns: ["spare_part_id"]
+            isOneToOne: false
+            referencedRelation: "spare_parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      account_invoices: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          invoice_date: string
+          invoice_number: string
+          invoice_type: string
+          party_gstin: string | null
+          party_name: string
+          remarks: string | null
+          total_amount: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          invoice_date?: string
+          invoice_number: string
+          invoice_type: string
+          party_gstin?: string | null
+          party_name: string
+          remarks?: string | null
+          total_amount?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          invoice_date?: string
+          invoice_number?: string
+          invoice_type?: string
+          party_gstin?: string | null
+          party_name?: string
+          remarks?: string | null
+          total_amount?: number
+        }
+        Relationships: []
+      }
       activity_logs: {
         Row: {
           action: string
@@ -507,6 +701,48 @@ export type Database = {
             columns: ["tractor_stock_id"]
             isOneToOne: false
             referencedRelation: "tractor_stock"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      delivery_accessories: {
+        Row: {
+          accessory_id: string
+          booking_id: string
+          created_at: string
+          created_by: string | null
+          given: boolean
+          id: string
+        }
+        Insert: {
+          accessory_id: string
+          booking_id: string
+          created_at?: string
+          created_by?: string | null
+          given?: boolean
+          id?: string
+        }
+        Update: {
+          accessory_id?: string
+          booking_id?: string
+          created_at?: string
+          created_by?: string | null
+          given?: boolean
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "delivery_accessories_accessory_id_fkey"
+            columns: ["accessory_id"]
+            isOneToOne: false
+            referencedRelation: "accessories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "delivery_accessories_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
             referencedColumns: ["id"]
           },
         ]
@@ -3167,6 +3403,18 @@ export type Database = {
         }
         Returns: string
       }
+      create_account_invoice: {
+        Args: {
+          _date: string
+          _gstin: string
+          _items: Json
+          _number: string
+          _party: string
+          _remarks: string
+          _type: string
+        }
+        Returns: string
+      }
       create_booking_atomic: {
         Args: {
           _booking_amount: number
@@ -3273,6 +3521,10 @@ export type Database = {
           _sale_id: string
         }
         Returns: string
+      }
+      record_delivery_accessories: {
+        Args: { _booking_id: string; _given: string[] }
+        Returns: undefined
       }
       record_spare_movement: {
         Args: {
