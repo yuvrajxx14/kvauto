@@ -9,6 +9,7 @@ import { PageHeader, Field } from "@/components/sales/ui";
 import { DocumentsPanel, documentProgress } from "@/components/sales/documents-panel";
 import { PaymentDialog } from "@/components/sales/payment-dialog";
 import { LoanInsuranceGate } from "@/components/sales/loan-insurance-gate";
+import { AdvanceDeliveryCard } from "@/components/sales/advance-delivery";
 import { DeliveryAccessories } from "@/components/sales/delivery-accessories";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -359,6 +360,8 @@ function DeliveryDetail() {
             )}
           </CardContent>
         </Card>
+
+        {alloc?.tractor_stock_id && <AdvanceDeliveryCard stockId={alloc.tractor_stock_id} />}
 
         {gatePass && <DeliveryAccessories bookingId={bookingId} />}
 

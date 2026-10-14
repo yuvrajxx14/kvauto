@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useStockItem } from "@/lib/erp";
 import { type StockStatus } from "@/lib/stock";
 import { fmtDate } from "@/lib/sales";
+import { AdvanceDeliveryCard } from "@/components/sales/advance-delivery";
 
 export const Route = createFileRoute("/_authenticated/stock/$stockId")({
   head: () => ({
@@ -58,7 +59,8 @@ function StockDetail() {
           </CardContent>
         </Card>
 
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-2">
+          <AdvanceDeliveryCard stockId={stockId} />
         </div>
       </div>
     </div>

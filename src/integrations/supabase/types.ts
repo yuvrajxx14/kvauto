@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.5"
+    PostgrestVersion: "14.15"
   }
   public: {
     Tables: {
@@ -3232,6 +3232,11 @@ export type Database = {
       }
       tractor_stock: {
         Row: {
+          adv_customer_name: string | null
+          adv_date: string | null
+          adv_mobile: string | null
+          adv_village: string | null
+          advance_delivered: boolean
           arrival_date: string | null
           branch: string
           chassis_number: string
@@ -3252,11 +3257,17 @@ export type Database = {
           pdi_remarks: string | null
           pdi_status: string
           received_from: string | null
+          remarks: string | null
           status: string
           updated_at: string
           variant: string | null
         }
         Insert: {
+          adv_customer_name?: string | null
+          adv_date?: string | null
+          adv_mobile?: string | null
+          adv_village?: string | null
+          advance_delivered?: boolean
           arrival_date?: string | null
           branch?: string
           chassis_number: string
@@ -3277,11 +3288,17 @@ export type Database = {
           pdi_remarks?: string | null
           pdi_status?: string
           received_from?: string | null
+          remarks?: string | null
           status?: string
           updated_at?: string
           variant?: string | null
         }
         Update: {
+          adv_customer_name?: string | null
+          adv_date?: string | null
+          adv_mobile?: string | null
+          adv_village?: string | null
+          advance_delivered?: boolean
           arrival_date?: string | null
           branch?: string
           chassis_number?: string
@@ -3302,6 +3319,7 @@ export type Database = {
           pdi_remarks?: string | null
           pdi_status?: string
           received_from?: string | null
+          remarks?: string | null
           status?: string
           updated_at?: string
           variant?: string | null
