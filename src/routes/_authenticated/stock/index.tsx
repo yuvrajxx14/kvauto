@@ -42,6 +42,7 @@ function StockPage() {
   const [model, setModel] = useState("all");
   const [location, setLocation] = useState("all");
   const [colour, setColour] = useState("all");
+  const [adv, setAdv] = useState("all");
   const [addOpen, setAddOpen] = useState(false);
   const { rows, isLoading } = useDemandVsStock();
   const units = useStock({ status });
@@ -54,20 +55,24 @@ function StockPage() {
     .filter((u) => model === "all" || u.model === model)
     .filter((u) => location === "all" || u.location === location)
     .filter((u) => colour === "all" || u.colour === colour)
+    .filter((u) => adv === "all" || (adv === "yes") === !!(u as { advance_delivered?: boolean }).advance_delivered)
     .filter((u) => {
       const s = q.trim().toLowerCase();
       if (!s) return true;
-      return [u.chassis_number, u.engine_number, u.received_from]
+      const x = u as { adv_customer_name?: string | null; adv_mobile?: string | null; remarks?: string | null };
+      return [u.chassis_number, u.engine_number, u.received_from, x.adv_customer_name, x.adv_mobile, x.remarks]
         .filter(Boolean)
         .some((v) => String(v).toLowerCase().includes(s));
-    });
-  const dirty = q !== "" || status !== "all" || model !== "all" || location !== "all" || colour !== "all";
+    })
+    .sort((a, b) => Number(!!(b as { advance_delivered?: boolean }).advance_delivered) - Number(!!(a as { advance_delivered?: boolean }).advance_delivered));
+  const dirty = adv !== "all" || q !== "" || status !== "all" || model !== "all" || location !== "all" || colour !== "all";
   const clear = () => {
     setQ("");
     setStatus("all");
     setModel("all");
     setLocation("all");
     setColour("all");
+    setAdv("all");
   };
 
 
@@ -242,6 +247,7 @@ function StockPage() {
         <FilterSelect value={model} onChange={setModel} options={modelOptions} className="w-44" />
         <FilterSelect value={location} onChange={setLocation} options={locationOptions} className="w-48" />
         <FilterSelect value={colour} onChange={setColour} options={colourOptions} className="w-40" />
+        <FilterSelect value={adv} onChange={setAdv} className="w-48" options={[{ value: "all", label: "All units" }, { value: "yes", label: "Advance delivered (sell first)" }, { value: "no", label: "Not advance delivered" }]} />
         <ClearFilters show={dirty} onClear={clear} />
       </FilterBar>
 
@@ -272,7 +278,15 @@ function StockPage() {
                   <TableCell>{u.colour ?? "—"}</TableCell>
                   <TableCell>{u.location}</TableCell>
 
-                  <TableCell><StockBadge status={u.status as StockStatus} /></TableCell>
+                  <TableCell>
+                    <StockBadge status={u.status as StockStatus} />
+                    {(u as { advance_delivered?: boolean }).advance_delivered && (
+                      <span className="ml-2 rounded bg-destructive/10 px-1.5 py-0.5 text-xs font-medium text-destructive">
+                        Advance delivered · {(u as { adv_customer_name?: string | null }).adv_customer_name ?? ""} — sell first
+                      </span>
+                    )}
+                    {(u as { remarks?: string | null }).remarks && <p className="text-xs text-muted-foreground">{(u as { remarks?: string | null }).remarks}</p>}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
