@@ -109,14 +109,10 @@ export function buildAttendanceWorkbook({ employees, records, year, monthIndex }
   XLSX.utils.book_append_sheet(wb, daily, `Daily ${MONTHS[monthIndex]}`);
 
   // ---- Weekly (selected month) ----------------------------------------
-  const weekRanges = [
-    [1, 7],
-    [8, 14],
-    [15, 21],
-    [22, 28],
-    [29, daysInMonth],
-  ].filter(([, end]) => end <= daysInMonth) as [number, number][];
-  const weeklyHeader = ["Employee", "Code", ...weekRanges.map(([, e], i) => `Week ${i + 1} (${e === daysInMonth ? `${weekRanges[weekRanges.length - 1][0]}-${e}` : `${[1, 8, 15, 22, 29][i]}-${e}`})`), "Total days", "Total hours"];
+  const weekRanges = ([1, 8, 15, 22, 29] as number[])
+    .filter((start) => start <= daysInMonth)
+    .map((start, i, arr): [number, number] => [start, i === arr.length - 1 ? daysInMonth : arr[i + 1] - 1]);
+  const weeklyHeader = ["Employee", "Code", ...weekRanges.map(([s, e], i) => `Week ${i + 1} (${s}-${e})`), "Total days", "Total hours"];
   const weeklyRows: (string | number)[][] = [weeklyHeader];
   for (const e of employees) {
     const m = byEmp.get(e.id);
