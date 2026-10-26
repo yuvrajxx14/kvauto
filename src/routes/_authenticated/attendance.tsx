@@ -101,6 +101,7 @@ function AttendancePage() {
           title="Your login is not linked to an employee record"
           hint="Ask management to link your login in HR to start marking attendance."
         />
+        <AttendanceReportCard />
       </div>
     );
   }
