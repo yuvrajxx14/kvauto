@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader } from "@/components/sales/ui";
 import { BookingBadge } from "@/components/sales/badges";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { useBookings } from "@/lib/erp";
@@ -26,9 +27,11 @@ export const Route = createFileRoute("/_authenticated/delivery/")({
 function DeliveryPage() {
   const { data, isLoading } = useBookings();
   const [q, setQ] = useState("");
-  const [view, setView] = useState("pending");
+  const [view, setView] = useState("delivered");
   const [model, setModel] = useState("all");
   const [alloc, setAlloc] = useState("all");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
 
   const all = (data ?? []).filter((b) => b.status !== "CANCELLED");
   const pending = all.filter((b) => b.status !== "DELIVERED");
@@ -46,6 +49,14 @@ function DeliveryPage() {
       return alloc === "allocated" ? !!a : !a;
     })
     .filter((b) => {
+      if (!from && !to) return true;
+      const d = Array.isArray(b.delivery) ? (b.delivery[0]?.delivery_date ?? null) : null;
+      if (!d) return false;
+      if (from && d < from) return false;
+      if (to && d > to) return false;
+      return true;
+    })
+    .filter((b) => {
       const s = q.trim().toLowerCase();
       if (!s) return true;
       const a = Array.isArray(b.allocation) ? b.allocation[0] : b.allocation;
@@ -54,12 +65,14 @@ function DeliveryPage() {
         .some((v) => String(v).toLowerCase().includes(s));
     });
 
-  const dirty = q !== "" || view !== "pending" || model !== "all" || alloc !== "all";
+  const dirty = q !== "" || view !== "delivered" || model !== "all" || alloc !== "all" || from !== "" || to !== "";
   const clear = () => {
     setQ("");
-    setView("pending");
+    setView("delivered");
     setModel("all");
     setAlloc("all");
+    setFrom("");
+    setTo("");
   };
 
   return (
@@ -74,6 +87,9 @@ function DeliveryPage() {
 
       <FilterBar>
         <SearchBox value={q} onChange={setQ} placeholder="Search booking, customer, model or chassis" />
+        <span className="text-xs text-muted-foreground">Delivered</span>
+        <Input type="date" aria-label="Delivered from" value={from} onChange={(e) => setFrom(e.target.value)} className="w-40" />
+        <Input type="date" aria-label="Delivered to" value={to} onChange={(e) => setTo(e.target.value)} className="w-40" />
         <FilterSelect
           value={view}
           onChange={setView}

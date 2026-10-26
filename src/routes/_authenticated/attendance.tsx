@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Clock, LogIn, LogOut, MapPin, Navigation } from "lucide-react";
+import { Clock, Download, LogIn, LogOut, MapPin, Navigation } from "lucide-react";
+import * as XLSX from "xlsx";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader, EmptyState } from "@/components/sales/ui";
+import { FilterSelect } from "@/components/sales/filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,11 +16,17 @@ import {
   fmtTime,
   mapsLink,
   monthEndExclusive,
+  monthLabel,
   monthStart,
+  recentMonths,
   useAttendance,
+  useEmployees,
   useMyEmployee,
   useTodayAttendance,
+  type AttendanceRecord,
 } from "@/lib/hr";
+import { buildAttendanceWorkbook, attendanceReportFilename } from "@/lib/attendance-report";
+import { usePerms } from "@/lib/permissions";
 
 export const Route = createFileRoute("/_authenticated/attendance")({
   head: () => ({
@@ -93,6 +101,7 @@ function AttendancePage() {
           title="Your login is not linked to an employee record"
           hint="Ask management to link your login in HR to start marking attendance."
         />
+        <AttendanceReportCard />
       </div>
     );
   }
@@ -195,6 +204,8 @@ function AttendancePage() {
           )}
         </CardContent>
       </Card>
+
+      <AttendanceReportCard />
     </div>
   );
 }
@@ -205,5 +216,60 @@ function Stat({ label, value }: { label: string; value: string }) {
       <p className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</p>
       <p className="mt-1 text-sm font-semibold">{value}</p>
     </div>
+  );
+}
+
+/** Excel attendance report: day-wise, week-wise, month-wise and year-wise sheets. */
+function AttendanceReportCard() {
+  const perms = usePerms();
+  const months = recentMonths(12);
+  const [month, setMonth] = useState(months[0] ?? monthStart());
+  const year = Number(month.slice(0, 4));
+  const monthIndex = Number(month.slice(5, 7)) - 1;
+
+  const { data: employees = [] } = useEmployees(true);
+  const { data: records = [], isFetching } = useQuery({
+    queryKey: ["attendance-report-data", year],
+    enabled: perms.can("hr.view"),
+    queryFn: async (): Promise<AttendanceRecord[]> => {
+      const { data, error } = await supabase
+        .from("attendance_records")
+        .select("employee_id, work_date, status, work_minutes")
+        .gte("work_date", `${year - 2}-01-01`)
+        .lt("work_date", `${year + 1}-01-01`);
+      if (error) throw error;
+      return (data ?? []) as unknown as AttendanceRecord[];
+    },
+  });
+
+  if (!perms.can("hr.view")) return null;
+
+  const download = () => {
+    const wb = buildAttendanceWorkbook({ employees, records, year, monthIndex });
+    XLSX.writeFile(wb, attendanceReportFilename(year, monthIndex));
+  };
+
+  return (
+    <Card className="mt-5 shadow-card">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base">Attendance report</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-1">
+          <FilterSelect
+            value={month}
+            onChange={setMonth}
+            className="w-52"
+            options={months.map((m) => ({ value: m, label: monthLabel(m) }))}
+          />
+          <p className="text-xs text-muted-foreground">
+            Excel with day-wise, week-wise, month-wise and year-wise sheets · employee wise · last 3 years.
+          </p>
+        </div>
+        <Button onClick={download} disabled={isFetching}>
+          <Download className="mr-2 h-4 w-4" /> Download Excel
+        </Button>
+      </CardContent>
+    </Card>
   );
 }
