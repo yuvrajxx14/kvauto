@@ -95,12 +95,12 @@ export function buildAttendanceWorkbook({ employees, records, year, monthIndex }
       e.employee_code,
       e.department,
       ...cells,
-      counts.PRESENT ?? 0,
-      counts.HALF_DAY ?? 0,
-      counts.ABSENT ?? 0,
-      (counts.LEAVE ?? 0) + (counts.PAID_LEAVE ?? 0),
-      counts.WEEKLY_OFF ?? 0,
-      counts.HOLIDAY ?? 0,
+      counts["PRESENT"] ?? 0,
+      counts["HALF_DAY"] ?? 0,
+      counts["ABSENT"] ?? 0,
+      (counts["LEAVE"] ?? 0) + (counts["PAID_LEAVE"] ?? 0),
+      counts["WEEKLY_OFF"] ?? 0,
+      counts["HOLIDAY"] ?? 0,
       hours(mins),
     ]);
   }
@@ -112,7 +112,7 @@ export function buildAttendanceWorkbook({ employees, records, year, monthIndex }
   const weekRanges = ([1, 8, 15, 22, 29] as number[])
     .filter((start) => start <= daysInMonth)
     .map((start, i, arr): [number, number] => [start, i === arr.length - 1 ? daysInMonth : arr[i + 1] - 1]);
-  const weeklyHeader = ["Employee", "Code", ...weekRanges.map(([s, e], i) => `Week ${i + 1} (${s}-${e})`), "Total days", "Total hours"];
+  const weeklyHeader = ["Employee", "Code", ...weekRanges.map(([s, e], i) => `Week ${i + 1} (${s}-${e})`), "Total days", "Total hours"] as (string | number)[];
   const weeklyRows: (string | number)[][] = [weeklyHeader];
   for (const e of employees) {
     const m = byEmp.get(e.id);
