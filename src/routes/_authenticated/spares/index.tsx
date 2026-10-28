@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
+import { SpareRequestEditDialog } from "@/components/spares/request-edit-dialog";
+import { usePerms } from "@/lib/permissions";
 import { fmtDate, inr } from "@/lib/sales";
 
 import {
@@ -36,6 +39,7 @@ export const Route = createFileRoute("/_authenticated/spares/")({
 });
 
 function SparesPage() {
+  const perms = usePerms();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("open");
   const [type, setType] = useState("all");

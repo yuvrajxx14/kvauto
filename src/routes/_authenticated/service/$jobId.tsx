@@ -4,6 +4,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { DeleteRecordButton } from "@/components/sales/delete-button";
+import { JobEditDialog } from "@/components/service/job-edit-dialog";
+import { usePerms } from "@/lib/permissions";
 import { Field, PageHeader } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -130,6 +132,7 @@ function ServiceJobPage() {
             <Badge variant="secondary" className={statusTone(status)}>
               {SERVICE_STATUS_LABEL[status] ?? status}
             </Badge>
+            {usePerms().isManagement && <JobEditDialog job={job as never} />}
             <DeleteRecordButton table="service_jobs" id={jobId} label="this service job" redirectTo="/service" />
           </div>
         }

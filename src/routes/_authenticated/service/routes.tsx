@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { MapPin, Navigation } from "lucide-react";
+import { MapPin, Navigation, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/sales/ui";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
 import { FilterBar, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
+import { usePerms } from "@/lib/permissions";
 import { supabase } from "@/integrations/supabase/client";
 
 import { useTechnicians } from "@/lib/queries";
@@ -39,8 +44,19 @@ export const Route = createFileRoute("/_authenticated/service/routes")({
   component: RoutePlannerPage,
 });
 
+type PlannedRoute = {
+  id: string;
+  route_number: string;
+  visit_date: string;
+  assigned_to: string | null;
+  villages: string[] | null;
+  status: string;
+  remarks: string | null;
+};
+
 function RoutePlannerPage() {
   const qc = useQueryClient();
+  const perms = usePerms();
   const { data: jobs } = usePendingFieldJobs();
   const { data: routes } = useServiceRoutes();
   const { data: staff } = useTechnicians();
@@ -49,6 +65,10 @@ function RoutePlannerPage() {
   const [mechanic, setMechanic] = useState("none");
   const [selected, setSelected] = useState<string[]>([]);
   const [openRoute, setOpenRoute] = useState<string | null>(null);
+  const [editing, setEditing] = useState<PlannedRoute | null>(null);
+  const [editDate, setEditDate] = useState("");
+  const [editMechanic, setEditMechanic] = useState("none");
+  const [editRemarks, setEditRemarks] = useState("");
 
   const [villageFilter, setVillageFilter] = useState("all");
   const [priority, setPriority] = useState("all");
@@ -143,6 +163,29 @@ function RoutePlannerPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["service-routes"] }),
     onError: (e: Error) => toast.error(e.message),
   });
+
+  const updateRoute = useMutation({
+    mutationFn: async (v: { id: string; visit_date: string; assigned_to: string | null; remarks: string | null }) => {
+      const { error } = await supabase
+        .from("service_routes")
+        .update({ visit_date: v.visit_date, assigned_to: v.assigned_to, remarks: v.remarks } as never)
+        .eq("id", v.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Route updated");
+      setEditing(null);
+      qc.invalidateQueries({ queryKey: ["service-routes"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const openEdit = (r: PlannedRoute) => {
+    setEditing(r);
+    setEditDate(r.visit_date);
+    setEditMechanic(r.assigned_to ?? "none");
+    setEditRemarks(r.remarks ?? "");
+  };
 
   return (
     <div>
@@ -243,6 +286,14 @@ function RoutePlannerPage() {
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
+                      {perms.isManagement && (
+                        <>
+                          <Button size="sm" variant="ghost" aria-label={`Edit route ${r.route_number}`} onClick={() => openEdit(r as PlannedRoute)}>
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <DeleteRecordButton table="service_routes" id={r.id} label="this route and its stops" />
+                        </>
+                      )}
                       <Button size="sm" variant="outline" asChild>
                         <a href={googleMapsRouteUrl(r.villages ?? [])} target="_blank" rel="noreferrer">
                           <Navigation className="mr-1 h-4 w-4" /> Navigate
@@ -310,6 +361,48 @@ function RoutePlannerPage() {
           </Card>
         </div>
       </div>
+
+      {/* Edit route (management only) */}
+      <Dialog open={!!editing} onOpenChange={(v) => !v && setEditing(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Edit route {editing?.route_number}</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">Visit date</Label>
+              <Input className="mt-1" type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} />
+            </div>
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">Mechanic</Label>
+              <Select value={editMechanic} onValueChange={setEditMechanic}>
+                <SelectTrigger className="mt-1"><SelectValue placeholder="Unassigned" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Unassigned</SelectItem>
+                  {(staff ?? []).map((p) => (
+                    <SelectItem key={p.id} value={p.id}>{p.full_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">Remarks</Label>
+              <Input className="mt-1" value={editRemarks} onChange={(e) => setEditRemarks(e.target.value)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              disabled={updateRoute.isPending || !editDate}
+              onClick={() => editing && updateRoute.mutate({
+                id: editing.id,
+                visit_date: editDate,
+                assigned_to: editMechanic === "none" ? null : editMechanic,
+                remarks: editRemarks.trim() || null,
+              })}
+            >
+              {updateRoute.isPending ? "Saving…" : "Save changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

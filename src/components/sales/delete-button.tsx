@@ -25,11 +25,21 @@ type DeletableTable =
   | "tractor_stock"
   | "service_jobs"
   | "service_routes"
+  | "service_route_stops"
   | "spare_requests"
+  | "spare_parts"
   | "products"
   | "villages"
   | "followups"
-  | "demos";
+  | "demos"
+  | "passing_records"
+  | "subsidy_cases"
+  | "booking_payments"
+  | "account_invoices"
+  | "account_invoice_items"
+  | "accessories"
+  | "implement_products"
+  | "implement_stock";
 
 /** Delete button rendered only for CEO / Manager / Sales Manager. */
 export function DeleteRecordButton({
