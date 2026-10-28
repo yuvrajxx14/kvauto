@@ -139,14 +139,15 @@ function ServiceRegisterPage() {
                 <TableHead>Complaint</TableHead>
                 <TableHead>Mechanic</TableHead>
                 <TableHead>Status</TableHead>
+                {perms.isManagement && <TableHead className="text-right">Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
-                <TableRow><TableCell colSpan={6} className="text-sm text-muted-foreground">Loading…</TableCell></TableRow>
+                <TableRow><TableCell colSpan={perms.isManagement ? 7 : 6} className="text-sm text-muted-foreground">Loading…</TableCell></TableRow>
               )}
               {!isLoading && rows.length === 0 && (
-                <TableRow><TableCell colSpan={6} className="text-sm text-muted-foreground">Nothing registered yet.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={perms.isManagement ? 7 : 6} className="text-sm text-muted-foreground">Nothing registered yet.</TableCell></TableRow>
               )}
               {rows.map((j) => (
                 <TableRow key={j.id}>
@@ -178,6 +179,14 @@ function ServiceRegisterPage() {
                       {SERVICE_STATUS_LABEL[j.status as ServiceStatus] ?? j.status}
                     </Badge>
                   </TableCell>
+                  {perms.isManagement && (
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <JobEditDialog job={j as never} />
+                        <DeleteRecordButton table="service_jobs" id={j.id} label="this service entry" />
+                      </div>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
