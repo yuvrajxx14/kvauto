@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FilterBar, SearchBox, FilterSelect, ClearFilters } from "@/components/sales/filters";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
+import { JobEditDialog } from "@/components/service/job-edit-dialog";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useProfiles } from "@/lib/queries";
@@ -147,6 +149,12 @@ function JobCardsPage() {
             isLoading={isLoading}
             empty="Every registered complaint has a mechanic."
             renderMechanic={(j) => <MechanicSelect jobId={j.id} value={j.assigned_to} />}
+            actions={canAssign ? (j) => (
+              <>
+                <JobEditDialog job={j as never} />
+                <DeleteRecordButton table="service_jobs" id={j.id} label="this service entry" />
+              </>
+            ) : undefined}
           />
         </CardContent>
       </Card>
@@ -163,6 +171,12 @@ function JobCardsPage() {
             isLoading={isLoading}
             empty="No jobs assigned yet."
             renderMechanic={(j) => <MechanicSelect jobId={j.id} value={j.assigned_to} />}
+            actions={canAssign ? (j) => (
+              <>
+                <JobEditDialog job={j as never} />
+                <DeleteRecordButton table="service_jobs" id={j.id} label="this service entry" />
+              </>
+            ) : undefined}
           />
         </CardContent>
       </Card>
