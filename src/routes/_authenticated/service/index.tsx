@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
+import { JobEditDialog } from "@/components/service/job-edit-dialog";
+import { usePerms } from "@/lib/permissions";
 import { fmtDate } from "@/lib/sales";
 
 import {
@@ -49,6 +52,7 @@ export function statusTone(status: ServiceStatus) {
 }
 
 function ServiceRegisterPage() {
+  const perms = usePerms();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("active");
   const [mode, setMode] = useState("all");
