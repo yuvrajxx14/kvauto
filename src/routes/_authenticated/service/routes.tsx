@@ -361,6 +361,48 @@ function RoutePlannerPage() {
           </Card>
         </div>
       </div>
+
+      {/* Edit route (management only) */}
+      <Dialog open={!!editing} onOpenChange={(v) => !v && setEditing(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Edit route {editing?.route_number}</DialogTitle></DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">Visit date</Label>
+              <Input className="mt-1" type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} />
+            </div>
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">Mechanic</Label>
+              <Select value={editMechanic} onValueChange={setEditMechanic}>
+                <SelectTrigger className="mt-1"><SelectValue placeholder="Unassigned" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Unassigned</SelectItem>
+                  {(staff ?? []).map((p) => (
+                    <SelectItem key={p.id} value={p.id}>{p.full_name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs uppercase tracking-wide text-muted-foreground">Remarks</Label>
+              <Input className="mt-1" value={editRemarks} onChange={(e) => setEditRemarks(e.target.value)} />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              disabled={updateRoute.isPending || !editDate}
+              onClick={() => editing && updateRoute.mutate({
+                id: editing.id,
+                visit_date: editDate,
+                assigned_to: editMechanic === "none" ? null : editMechanic,
+                remarks: editRemarks.trim() || null,
+              })}
+            >
+              {updateRoute.isPending ? "Saving…" : "Save changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
