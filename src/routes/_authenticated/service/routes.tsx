@@ -44,8 +44,19 @@ export const Route = createFileRoute("/_authenticated/service/routes")({
   component: RoutePlannerPage,
 });
 
+type PlannedRoute = {
+  id: string;
+  route_number: string;
+  visit_date: string;
+  assigned_to: string | null;
+  villages: string[] | null;
+  status: string;
+  remarks: string | null;
+};
+
 function RoutePlannerPage() {
   const qc = useQueryClient();
+  const perms = usePerms();
   const { data: jobs } = usePendingFieldJobs();
   const { data: routes } = useServiceRoutes();
   const { data: staff } = useTechnicians();
@@ -54,6 +65,10 @@ function RoutePlannerPage() {
   const [mechanic, setMechanic] = useState("none");
   const [selected, setSelected] = useState<string[]>([]);
   const [openRoute, setOpenRoute] = useState<string | null>(null);
+  const [editing, setEditing] = useState<PlannedRoute | null>(null);
+  const [editDate, setEditDate] = useState("");
+  const [editMechanic, setEditMechanic] = useState("none");
+  const [editRemarks, setEditRemarks] = useState("");
 
   const [villageFilter, setVillageFilter] = useState("all");
   const [priority, setPriority] = useState("all");
