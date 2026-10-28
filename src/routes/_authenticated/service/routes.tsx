@@ -286,6 +286,14 @@ function RoutePlannerPage() {
                       </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
+                      {perms.isManagement && (
+                        <>
+                          <Button size="sm" variant="ghost" aria-label={`Edit route ${r.route_number}`} onClick={() => openEdit(r as PlannedRoute)}>
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <DeleteRecordButton table="service_routes" id={r.id} label="this route and its stops" />
+                        </>
+                      )}
                       <Button size="sm" variant="outline" asChild>
                         <a href={googleMapsRouteUrl(r.villages ?? [])} target="_blank" rel="noreferrer">
                           <Navigation className="mr-1 h-4 w-4" /> Navigate
