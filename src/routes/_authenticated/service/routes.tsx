@@ -164,6 +164,29 @@ function RoutePlannerPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const updateRoute = useMutation({
+    mutationFn: async (v: { id: string; visit_date: string; assigned_to: string | null; remarks: string | null }) => {
+      const { error } = await supabase
+        .from("service_routes")
+        .update({ visit_date: v.visit_date, assigned_to: v.assigned_to, remarks: v.remarks } as never)
+        .eq("id", v.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Route updated");
+      setEditing(null);
+      qc.invalidateQueries({ queryKey: ["service-routes"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const openEdit = (r: PlannedRoute) => {
+    setEditing(r);
+    setEditDate(r.visit_date);
+    setEditMechanic(r.assigned_to ?? "none");
+    setEditRemarks(r.remarks ?? "");
+  };
+
   return (
     <div>
       <PageHeader
