@@ -255,9 +255,12 @@ function JobTable({
               </Badge>
             </TableCell>
             <TableCell className="text-right">
-              <Button asChild size="sm" variant="outline">
-                <Link to="/service/$jobId" params={{ jobId: j.id }}>Open job card</Link>
-              </Button>
+              <div className="flex items-center justify-end gap-1">
+                {actions?.(j)}
+                <Button asChild size="sm" variant="outline">
+                  <Link to="/service/$jobId" params={{ jobId: j.id }}>Open job card</Link>
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}
