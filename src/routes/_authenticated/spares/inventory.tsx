@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Upload, Download, ArrowDownToLine, ArrowUpFromLine, AlertTriangle } from "lucide-react";
+import { Plus, Upload, Download, ArrowDownToLine, ArrowUpFromLine, AlertTriangle, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/sales/ui";
@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
 import { inr } from "@/lib/sales";
 import { parseCsv, toCsv, downloadCsv } from "@/lib/bulk-import";
 import { usePerms } from "@/lib/permissions";
@@ -55,6 +56,7 @@ function SpareInventoryPage() {
   const [stock, setStock] = useState("all");
   const [addOpen, setAddOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [editPart, setEditPart] = useState<SparePart | null>(null);
   const [moveFor, setMoveFor] = useState<{ part: SparePart; kind: "IN" | "OUT" | "ADJUST" } | null>(null);
 
   const { data, isLoading } = useSpareParts({ search });
