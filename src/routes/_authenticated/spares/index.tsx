@@ -121,19 +121,20 @@ function SparesPage() {
                 <TableHead>Parts</TableHead>
                 <TableHead>Value</TableHead>
                 <TableHead>Status</TableHead>
+                {perms.isManagement && <TableHead className="text-right">Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-sm text-muted-foreground">
+                  <TableCell colSpan={perms.isManagement ? 7 : 6} className="text-sm text-muted-foreground">
                     Loading…
                   </TableCell>
                 </TableRow>
               )}
               {!isLoading && rows.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-sm text-muted-foreground">
+                  <TableCell colSpan={perms.isManagement ? 7 : 6} className="text-sm text-muted-foreground">
                     No spare parts requirements here.
                   </TableCell>
                 </TableRow>
@@ -170,6 +171,14 @@ function SparesPage() {
                         {SPARE_STATUS_LABEL[r.status as keyof typeof SPARE_STATUS_LABEL] ?? r.status}
                       </Badge>
                     </TableCell>
+                    {perms.isManagement && (
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <SpareRequestEditDialog request={r as never} />
+                          <DeleteRecordButton table="spare_requests" id={r.id} label="this spare requirement" />
+                        </div>
+                      </TableCell>
+                    )}
                   </TableRow>
                 );
               })}
