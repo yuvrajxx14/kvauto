@@ -229,6 +229,14 @@ function SpareInventoryPage() {
                         <Button size="sm" variant="ghost" onClick={() => setMoveFor({ part: p, kind: "OUT" })}>
                           <ArrowUpFromLine className="h-4 w-4" />
                         </Button>
+                        {perms.isManagement && (
+                          <>
+                            <Button size="sm" variant="ghost" aria-label={`Edit ${p.part_name}`} onClick={() => setEditPart(p)}>
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <DeleteRecordButton table="spare_parts" id={p.id} label={p.part_name} />
+                          </>
+                        )}
                       </div>
                     </TableCell>
                   )}
@@ -359,6 +367,48 @@ function SpareInventoryPage() {
       </Dialog>
 
       <UploadDialog open={uploadOpen} onOpenChange={setUploadOpen} />
+
+      <Dialog open={!!editPart} onOpenChange={(v) => !v && setEditPart(null)}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Edit spare part</DialogTitle></DialogHeader>
+          {editPart && (
+            <form
+              className="grid gap-3 sm:grid-cols-2"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.currentTarget);
+                const v = Object.fromEntries(Array.from(fd.entries()).map(([k, x]) => [k, String(x)]));
+                if (!cell(v, "part_number") || !cell(v, "part_name")) return void toast.error("Part number and name are required");
+                const { error } = await supabase.from("spare_parts").update({
+                  part_number: cell(v, "part_number"),
+                  part_name: cell(v, "part_name"),
+                  category: cell(v, "category") || null,
+                  brand: cell(v, "brand") || null,
+                  rack_location: cell(v, "rack_location") || null,
+                  purchase_rate: num(v, "purchase_rate"),
+                  sale_rate: num(v, "sale_rate"),
+                  min_qty: num(v, "min_qty"),
+                }).eq("id", editPart.id);
+                if (error) return void toast.error(error.message);
+                toast.success("Part updated");
+                setEditPart(null);
+                qc.invalidateQueries({ queryKey: ["spare-parts"] });
+              }}
+            >
+              <div><Label>Part number</Label><Input name="part_number" defaultValue={editPart.part_number} required /></div>
+              <div><Label>Part name</Label><Input name="part_name" defaultValue={editPart.part_name} required /></div>
+              <div><Label>Category</Label><Input name="category" defaultValue={editPart.category ?? ""} /></div>
+              <div><Label>Brand</Label><Input name="brand" defaultValue={editPart.brand ?? ""} /></div>
+              <div><Label>Rack / location</Label><Input name="rack_location" defaultValue={editPart.rack_location ?? ""} /></div>
+              <div><Label>Minimum stock</Label><Input name="min_qty" type="number" step="0.01" defaultValue={String(editPart.min_qty)} /></div>
+              <div><Label>Purchase rate</Label><Input name="purchase_rate" type="number" step="0.01" defaultValue={String(editPart.purchase_rate)} /></div>
+              <div><Label>Selling rate</Label><Input name="sale_rate" type="number" step="0.01" defaultValue={String(editPart.sale_rate)} /></div>
+              <p className="text-xs text-muted-foreground sm:col-span-2">To change quantity, use stock in / out so the movement history stays correct.</p>
+              <DialogFooter className="sm:col-span-2"><Button>Save changes</Button></DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
