@@ -211,7 +211,7 @@ function JobTable({
   isLoading: boolean;
   empty: string;
   renderMechanic: (j: Row) => React.ReactNode;
-  actions?: (j: Row) => React.ReactNode;
+  actions?: ((j: Row) => React.ReactNode) | undefined;
 }) {
   return (
     <Table>
