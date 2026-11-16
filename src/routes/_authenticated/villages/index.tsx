@@ -18,6 +18,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useVillages, type Village } from "@/lib/erp";
 import { TEHSILS } from "@/lib/geo";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
 import { useMe } from "@/lib/auth";
 
 export const Route = createFileRoute("/_authenticated/villages/")({
@@ -170,6 +171,7 @@ function VillagesPage() {
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
+                        <DeleteRecordButton table="villages" id={v.id} label={v.name} />
                       </div>
                     </TableCell>
                   )}

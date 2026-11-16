@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { useBookings, usePassingRecords } from "@/lib/erp";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
 import { fmtDate, inr } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/passing/")({
@@ -123,7 +124,7 @@ function PassingList() {
                     <TableCell className={out > 0 ? "text-destructive" : ""}>{inr(out)}</TableCell>
                     <TableCell className="text-right">
                       {rec?.passing_date ? (
-                        <Badge variant="secondary">Done · {fmtDate(rec.passing_date)}</Badge>
+                        <span className="inline-flex items-center gap-1"><Badge variant="secondary">Done · {fmtDate(rec.passing_date)}</Badge><Button asChild size="sm" variant="ghost"><Link to="/passing/$bookingId" params={{ bookingId: b.id }}>Edit</Link></Button><DeleteRecordButton table="passing_records" id={rec.id} label="this passing record" /></span>
                       ) : (
                         <Button asChild size="sm" variant="outline">
                           <Link to="/passing/$bookingId" params={{ bookingId: b.id }}>Open</Link>

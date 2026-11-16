@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FilterBar, SearchBox, FilterSelect, ClearFilters, optionsFrom } from "@/components/sales/filters";
 import { useAllPayments, useBookings } from "@/lib/erp";
 import { PaymentDialog } from "@/components/sales/payment-dialog";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 
 
@@ -164,6 +165,7 @@ function AccountingPage() {
                       <Link to="/print/receipt/$paymentId" params={{ paymentId: p.id }} target="_blank" className="text-xs text-primary hover:underline">
                         Receipt
                       </Link>
+                      <DeleteRecordButton table="booking_payments" id={p.id} label="this receipt (balance will be restored)" />
                     </TableCell>
                   </TableRow>
                 ))}
