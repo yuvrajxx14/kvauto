@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FilterBar, FilterSelect, SearchBox, ClearFilters } from "@/components/sales/filters";
 import { db, isReorder, useAccessories, useAccountInvoices, type Accessory } from "@/lib/accessories";
 import { useSpareParts } from "@/lib/spare-inventory";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 
 export const Route = createFileRoute("/_authenticated/accounts")({
@@ -79,7 +80,7 @@ function InvoiceList() {
           <TableHeader>
             <TableRow>
               <TableHead>Date</TableHead><TableHead>Type</TableHead><TableHead>Invoice no.</TableHead>
-              <TableHead>Party</TableHead><TableHead className="text-right">Amount</TableHead>
+              <TableHead>Party</TableHead><TableHead className="text-right">Amount</TableHead><TableHead />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -93,6 +94,7 @@ function InvoiceList() {
                   <TableCell>{r.invoice_number}</TableCell>
                   <TableCell>{r.party_name}</TableCell>
                   <TableCell className="text-right">{inr(r.total_amount)}</TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}><DeleteRecordButton table="account_invoices" id={r.id} label="this invoice (stock will be reversed)" /></TableCell>
                 </TableRow>
                 {open === r.id && (r.items ?? []).map((it) => (
                   <TableRow key={it.id} className="bg-muted/40 text-xs">

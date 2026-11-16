@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useSubsidyCases, usePassingRecords } from "@/lib/erp";
 import { InsuranceChargeDialog } from "@/components/sales/insurance-dialog";
+import { DeleteRecordButton } from "@/components/sales/delete-button";
 import { fmtDate, inr, todayISO } from "@/lib/sales";
 import { FilterBar, SearchBox, FilterSelect, ClearFilters } from "@/components/sales/filters";
 
@@ -232,6 +233,7 @@ function SubsidyPage() {
                         <span className="text-xs text-muted-foreground">Not required</span>
                       )}
                       {outstanding > 0 && <p className="text-xs text-destructive">Due {inr(outstanding)}</p>}
+                      <DeleteRecordButton table="subsidy_cases" id={r.id} label="this subsidy case" />
                     </TableCell>
                   </TableRow>
                 );
