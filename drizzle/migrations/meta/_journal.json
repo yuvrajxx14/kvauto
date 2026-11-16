@@ -8,6 +8,13 @@
       "when": 1793075170331,
       "tag": "0000_role_based_crud_access",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794806580368,
+      "tag": "0001_restrict_selected_staff_reads",
+      "breakpoints": true
     }
   ]
 }
