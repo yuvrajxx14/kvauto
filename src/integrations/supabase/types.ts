@@ -441,6 +441,7 @@ export type Database = {
           finance_company: string | null
           finance_required: boolean
           finance_type: string
+          hypothecation: string | null
           id: string
           inquiry_id: string
           insurance_amount: number
@@ -473,6 +474,7 @@ export type Database = {
           finance_company?: string | null
           finance_required?: boolean
           finance_type?: string
+          hypothecation?: string | null
           id?: string
           inquiry_id: string
           insurance_amount?: number
@@ -505,6 +507,7 @@ export type Database = {
           finance_company?: string | null
           finance_required?: boolean
           finance_type?: string
+          hypothecation?: string | null
           id?: string
           inquiry_id?: string
           insurance_amount?: number
@@ -3408,6 +3411,7 @@ export type Database = {
         Args: { _amount: number; _booking_id: string }
         Returns: undefined
       }
+      clear_dealership_data_for_ceo: { Args: never; Returns: undefined }
       complete_delivery_atomic: {
         Args: {
           _application_date?: string
