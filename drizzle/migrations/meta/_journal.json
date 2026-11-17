@@ -15,6 +15,20 @@
       "when": 1794806580368,
       "tag": "0001_restrict_selected_staff_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794905361129,
+      "tag": "0002_allow_ceo_to_reset_business_data",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794905374004,
+      "tag": "0003_store_customer_hypothecation_details",
+      "breakpoints": true
     }
   ]
 }
