@@ -2,14 +2,12 @@ import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Tractor } from "lucide-react";
 import { toast } from "sonner";
-import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -24,75 +22,48 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-const signInSchema = z.object({
-  email: z.string().trim().email("Enter a valid email").max(255),
-  password: z.string().min(6, "Password must be at least 6 characters").max(72),
-});
-
-const signUpSchema = signInSchema.extend({
-  fullName: z.string().trim().min(2, "Enter your full name").max(100),
-  phone: z.string().trim().max(15).optional(),
-});
-
 function AuthPage() {
   const { session } = useAuth();
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
 
   useEffect(() => {
     if (session) navigate({ to: "/dashboard", replace: true });
   }, [session, navigate]);
 
-  async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
+  async function requestOtp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const parsed = signInSchema.safeParse({
-      email: fd.get("email"),
-      password: fd.get("password"),
-    });
-    if (!parsed.success) {
-      toast.error(parsed.error.issues[0]!.message);
+    const normalized = phone.replace(/[\s()-]/g, "");
+    if (!/^\+[1-9]\d{7,14}$/.test(normalized)) {
+      toast.error("Enter your mobile number with country code, for example +919876543210.");
       return;
     }
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword(parsed.data);
+    const { error } = await supabase.auth.signInWithOtp({ phone: normalized, options: { shouldCreateUser: false } });
     setBusy(false);
     if (error) toast.error(error.message);
-    else toast.success("Welcome back");
+    else {
+      setPhone(normalized);
+      setOtpSent(true);
+      toast.success("Verification code sent to your mobile.");
+    }
   }
 
-  async function handleSignUp(e: React.FormEvent<HTMLFormElement>) {
+  async function verifyOtp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const parsed = signUpSchema.safeParse({
-      email: fd.get("email"),
-      password: fd.get("password"),
-      fullName: fd.get("fullName"),
-      phone: fd.get("phone") || undefined,
-    });
-    if (!parsed.success) {
-      toast.error(parsed.error.issues[0]!.message);
+    const token = otp.trim();
+    if (!/^\d{6,8}$/.test(token)) {
+      toast.error("Enter the verification code from your SMS.");
       return;
     }
     setBusy(true);
-    const { data, error } = await supabase.auth.signUp({
-      email: parsed.data.email,
-      password: parsed.data.password,
-      options: {
-        emailRedirectTo: window.location.origin,
-        data: { full_name: parsed.data.fullName, phone: parsed.data.phone ?? null },
-      },
-    });
+    const { error } = await supabase.auth.verifyOtp({ phone, token, type: "sms" });
     setBusy(false);
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-    if (!data.session) {
-      toast.success("Account created. Check your email to confirm before signing in.");
-    } else {
-      toast.success("Account created");
-    }
+    if (error) toast.error(error.message);
+    else toast.success("Signed in successfully.");
   }
 
   return (
@@ -109,71 +80,34 @@ function AuthPage() {
         <Card className="shadow-raised">
           <CardHeader>
             <CardTitle>Staff access</CardTitle>
-            <CardDescription>
-              Sign in with your dealership account. The first account created becomes the
-              CEO/Dealer.
-            </CardDescription>
+            <CardDescription>Sign in with your dealership mobile number.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign in</TabsTrigger>
-                <TabsTrigger value="signup">Create account</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4 pt-2">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="si-email">Email</Label>
-                    <Input id="si-email" name="email" type="email" required autoComplete="email" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="si-password">Password</Label>
-                    <Input
-                      id="si-password"
-                      name="password"
-                      type="password"
-                      required
-                      autoComplete="current-password"
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={busy}>
-                    {busy ? "Signing in…" : "Sign in"}
-                  </Button>
-                </form>
-              </TabsContent>
-
-              <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4 pt-2">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="su-name">Full name</Label>
-                    <Input id="su-name" name="fullName" required maxLength={100} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="su-phone">Mobile</Label>
-                    <Input id="su-phone" name="phone" inputMode="tel" maxLength={15} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="su-email">Email</Label>
-                    <Input id="su-email" name="email" type="email" required autoComplete="email" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="su-password">Password</Label>
-                    <Input
-                      id="su-password"
-                      name="password"
-                      type="password"
-                      required
-                      minLength={6}
-                      autoComplete="new-password"
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={busy}>
-                    {busy ? "Creating…" : "Create account"}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
+            {!otpSent ? (
+              <form onSubmit={requestOtp} className="space-y-4 pt-2">
+                <div className="space-y-1.5">
+                  <Label htmlFor="login-phone">Mobile number</Label>
+                  <Input id="login-phone" value={phone} onChange={(e) => setPhone(e.target.value)} inputMode="tel" autoComplete="tel" placeholder="+91 98765 43210" required />
+                </div>
+                <Button type="submit" className="w-full" disabled={busy}>
+                  {busy ? "Sending code…" : "Send verification code"}
+                </Button>
+              </form>
+            ) : (
+              <form onSubmit={verifyOtp} className="space-y-4 pt-2">
+                <p className="text-sm text-muted-foreground">Enter the code sent to {phone}.</p>
+                <div className="space-y-1.5">
+                  <Label htmlFor="login-otp">Verification code</Label>
+                  <Input id="login-otp" value={otp} onChange={(e) => setOtp(e.target.value)} inputMode="numeric" autoComplete="one-time-code" maxLength={8} required />
+                </div>
+                <Button type="submit" className="w-full" disabled={busy}>
+                  {busy ? "Verifying…" : "Verify and sign in"}
+                </Button>
+                <Button type="button" variant="ghost" className="w-full" onClick={() => { setOtpSent(false); setOtp(""); }} disabled={busy}>
+                  Change mobile number
+                </Button>
+              </form>
+            )}
           </CardContent>
         </Card>
       </div>

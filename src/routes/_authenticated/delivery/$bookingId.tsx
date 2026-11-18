@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, CheckCircle2, Printer, ShieldCheck, XCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, FileText, Printer, ShieldCheck, XCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -137,6 +137,20 @@ function DeliveryDetail() {
             </Button>
             {outstanding >= 1 && perms.can("payment.add") && (
               <PaymentDialog bookingId={bookingId} bookingNumber={b.booking_number} outstanding={outstanding} />
+            )}
+            {delivery && perms.canAny("delivery.manage", "booking.edit") && (
+              <>
+                <Button asChild variant="outline" size="sm">
+                  <Link to="/print/customer-profile/$bookingId" params={{ bookingId }} target="_blank">
+                    <FileText className="mr-1 h-4 w-4" /> Customer profile
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <Link to="/print/challan/$bookingId" params={{ bookingId }} target="_blank">
+                    <Printer className="mr-1 h-4 w-4" /> Delivery challan
+                  </Link>
+                </Button>
+              </>
             )}
           </div>
         }
@@ -323,9 +337,9 @@ function DeliveryDetail() {
                       <Printer className="mr-1 h-4 w-4" /> Print gate pass
                     </Link>
                   </Button>
-                  <Button asChild size="sm">
-                    <Link to="/print/challan/$bookingId" params={{ bookingId }} target="_blank">
-                      <Printer className="mr-1 h-4 w-4" /> Delivery challan
+                  <Button asChild size="sm" variant="outline">
+                    <Link to="/print/customer-profile/$bookingId" params={{ bookingId }} target="_blank">
+                      <FileText className="mr-1 h-4 w-4" /> Customer profile
                     </Link>
                   </Button>
                 </div>
